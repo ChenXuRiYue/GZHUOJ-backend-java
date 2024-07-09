@@ -1,18 +1,18 @@
-package com.gzhuoj.usr.dao.entity;
+package com.gzhuoj.usr.model.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Date;
 
-
-/**
- * 用户表实体
- */
-
-@Builder
 @Data
-public class UserDO {
+@Builder
+@AllArgsConstructor
+@RequiredArgsConstructor
+public class User {
     /**
      * 用户名
      */
@@ -52,4 +52,9 @@ public class UserDO {
      * 标记账号是否已经被删除 0 -> 未删除， 1 -》已删除
      */
     private Integer deleteflag;
+
+    /**
+     * 用户昵称
+     */
+    private String nickname;
 }
