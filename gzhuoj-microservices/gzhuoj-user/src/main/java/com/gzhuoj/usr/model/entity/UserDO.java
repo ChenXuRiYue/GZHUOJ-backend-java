@@ -1,10 +1,11 @@
 package com.gzhuoj.usr.model.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import common.database.BaseDO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Date;
 
@@ -12,7 +13,8 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class User {
+@TableName("user")
+public class UserDO extends BaseDO {
     /**
      * 用户名
      */
@@ -37,21 +39,6 @@ public class User {
      * 用户角色
      */
     private Integer role;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
-
-    /**
-     * 标记账号是否已经被删除 0 -> 未删除， 1 -》已删除
-     */
-    private Integer deleteflag;
 
     /**
      * 用户昵称
