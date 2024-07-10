@@ -7,17 +7,20 @@ import constant.HttpResponseCode;
  */
 public class Build {
 
-    /**
-     * 构造成功响应
-     */
+//    /**
+//     * 构造成功响应
+//     */
 //    public static Result<Void> success() {
-//        return Result<>
+//        return new Result<Void>()
+//                .setCode(HttpResponseCode.SUCCESS);
 //    }
-
-    /**
-     * 构造带有返回数据的成功响应
-     */
+//
+//    /**
+//     * 构造带有返回数据的成功响应
+//     */
 //    public static <T> Result<Void> success(T data){
+//        return new Result<T>()
+//                .setCode(HttpResponseCode.SUCCESS);
 //    }
 
 }

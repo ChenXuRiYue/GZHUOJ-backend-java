@@ -2,7 +2,7 @@ package constant;
 
 /**
  * 定义http响应码
- * 一边编码完善一边定义
+ * 一遍编码一遍定义
  */
 public enum HttpResponseCode {
     // =================== 成功码 S =====================

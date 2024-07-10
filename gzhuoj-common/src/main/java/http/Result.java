@@ -1,17 +1,9 @@
 package http;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * 请求响应对象实体
  */
-
-@Data
-@Builder
-public class Result<T> {
+public  class Result<T> {
 
     /**
      * 返回码
@@ -27,7 +19,6 @@ public class Result<T> {
      * 响应数据
      */
     private T data;
-
 
 //    /**
 //     * 请求id
