@@ -2,7 +2,7 @@ package com.gzhuoj.usr.service.Impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gzhuoj.usr.model.entity.User;
-import com.gzhuoj.usr.model.mapper.UserMapper;
+import com.gzhuoj.usr.mapper.UserMapper;
 import com.gzhuoj.usr.service.UserService;
 import org.springframework.stereotype.Service;
 

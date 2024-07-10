@@ -1,4 +1,4 @@
-package com.gzhuoj.usr.model.mapper;
+package com.gzhuoj.usr.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.gzhuoj.usr.model.entity.User;
