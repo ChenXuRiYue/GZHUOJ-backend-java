@@ -9,7 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>gzhuoj-user</artifactId>
+    <artifactId>gzhuoj-problem</artifactId>
 
     <dependencies>
         <dependency>
@@ -31,5 +31,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>gzhuoj</groupId>
+            <artifactId>gzhuoj-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
+
+
 </project>
