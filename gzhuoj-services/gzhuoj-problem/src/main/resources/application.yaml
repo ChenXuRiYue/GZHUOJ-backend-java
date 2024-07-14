@@ -1,0 +1,20 @@
+#server:
+#  port: 8009
+spring:
+  main:
+    web-application-type: reactive
+  application:
+    name: gzhuoj-problem-service
+  profiles:
+    active: dev
+#  datasource:
+#    username: root
+#    password: root
+#    url: jdbc:mysql://192.168.111.128:3306/gzhuoj_usr?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    hikari:
+#      connection-test-query: select 1
+#      connection-timeout: 20000
+#      idle-timeout: 300000
+#      maximum-pool-size: 5
+#      minimum-idle: 5
