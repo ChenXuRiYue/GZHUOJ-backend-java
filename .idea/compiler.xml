@@ -8,14 +8,19 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="gzhuoj-problem" />
+        <module name="gzhuoj-gateway" />
         <module name="gzhuoj-contest" />
         <module name="gzhuoj-user" />
-        <module name="gzhuoj-microservice-core" />
         <module name="gzhuoj-common" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="TESTdemo" target="1.8" />
     </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="gzhuoj-gateway" options="" />
+    </option>
   </component>
 </project>
