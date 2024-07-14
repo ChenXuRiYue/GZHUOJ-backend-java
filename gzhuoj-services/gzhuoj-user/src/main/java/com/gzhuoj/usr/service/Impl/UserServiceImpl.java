@@ -10,7 +10,7 @@ import com.gzhuoj.usr.dto.req.UserBatchImportReqDTO;
 import com.gzhuoj.usr.dto.req.UserLoginReqDTO;
 import com.gzhuoj.usr.dto.resp.UserLoginRespDTO;
 import com.gzhuoj.usr.model.entity.UserDO;
-import com.gzhuoj.usr.model.mapper.UserMapper;
+import com.gzhuoj.usr.mapper.UserMapper;
 import com.gzhuoj.usr.service.UserService;
 import com.gzhuoj.usr.utils.ExcelWriter;
 import com.gzhuoj.usr.utils.generateRandStrUtil;
