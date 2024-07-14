@@ -7,6 +7,7 @@ import com.gzhuoj.usr.dto.resp.UserLoginRespDTO;
 import com.gzhuoj.usr.service.UserService;
 import common.convention.result.Result;
 import common.convention.result.Results;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

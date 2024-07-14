@@ -1,18 +1,12 @@
-server:
-  port: 8009
-
+#server:
+#  port: 8009
 spring:
-  datasource:
-    username: root
-    password: gzhuoj
-    url: jdbc:mysql://47.120.53.127:3406/gzhuoj_user?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    hikari:
-      connection-test-query: select 1
-      connection-timeout: 20000
-      idle-timeout: 300000
-      maximum-pool-size: 5
-      minimum-idle: 5
+  main:
+    web-application-type: reactive
+  application:
+    name: gzhuoj-user-service
+  profiles:
+    active: dev
   data:
     redis:
       host: 47.120.53.127
