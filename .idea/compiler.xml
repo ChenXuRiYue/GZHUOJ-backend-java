@@ -15,8 +15,6 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="gzhuoj-config" target="17" />
-      <module name="gzhuoj-microservice-core" target="17" />
       <module name="TESTdemo" target="1.8" />
     </bytecodeTargetLevel>
   </component>
