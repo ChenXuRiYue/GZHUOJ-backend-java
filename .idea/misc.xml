@@ -18,8 +18,6 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/TESTdemo/pom.xml" />
-        <option value="$PROJECT_DIR$/gzhuoj-config/pom.xml" />
-        <option value="$PROJECT_DIR$/gzhuoj-microservice-core/pom.xml" />
       </set>
     </option>
   </component>

@@ -1,5 +1,7 @@
 package com.gzhuoj.usr.model.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import common.database.BaseDO;
 import lombok.AllArgsConstructor;
@@ -33,15 +35,35 @@ public class UserDO extends BaseDO {
     /**
      * 用户组织
      */
-    private String orgnization;
+    private String organization;
 
     /**
-     * 用户角色
+     * 用户角色  详情看 common.constant.RoleEnum
+     * 用9位 位运算来表示是否有该种权限
      */
     private Integer role;
 
     /**
-     * 用户昵称
+     * 创建时间
      */
-    private String nickname;
+    @TableField(fill = FieldFill.INSERT)
+    private Date createTime;
+
+    /**
+     * 更新时间
+     */
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private Date updateTime;
+
+    /**
+     * 标记账号是否已经被删除 0 -> 未删除， 1 -> 已删除
+     */
+    @TableField(fill = FieldFill.INSERT)
+    private Integer deleteFlag;
+
+    /**
+     * 用户账号
+     */
+    private String userAccount;
+
 }
