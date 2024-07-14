@@ -10,11 +10,16 @@
         <option value="$PROJECT_DIR$/gzhuoj-microservices/pom.xml" />
         <option value="$PROJECT_DIR$/gzhuoj-microservice-core/pom.xml" />
         <option value="$PROJECT_DIR$/TESTdemo/pom.xml" />
+        <option value="$PROJECT_DIR$/gzhuoj-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/gzhuoj-config/pom.xml" />
+        <option value="$PROJECT_DIR$/gzhuoj-services/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/TESTdemo/pom.xml" />
+        <option value="$PROJECT_DIR$/gzhuoj-config/pom.xml" />
+        <option value="$PROJECT_DIR$/gzhuoj-microservice-core/pom.xml" />
       </set>
     </option>
   </component>

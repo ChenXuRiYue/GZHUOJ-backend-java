@@ -1,0 +1,24 @@
+message: "This is gateway environment"
+server:
+  port: 8080
+  address: 0.0.0.0
+spring:
+  application:
+    name: gzhuoj-gateway
+  cloud:
+    consul:
+      host: 47.120.53.127
+      port: 8500
+      discovery:
+        service-name: gzhuoj-gateway
+        heartbeat:
+          enabled: true
+    gateway:
+      routes:
+        - id: user                #路由规则id
+          uri:  lb://gzhuoj-user-service #路由目标服务
+          predicates:             #路由断言
+            - Path=/user/**       #以请求路径作为判断规则
+
+
+
