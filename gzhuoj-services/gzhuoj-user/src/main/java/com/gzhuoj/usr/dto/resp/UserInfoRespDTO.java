@@ -1,19 +1,11 @@
 package com.gzhuoj.usr.dto.resp;
 
-
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 import java.util.Date;
 
 @Data
-public class AdminUserListRespDTO {
-
-    /**
-     * rank
-     */
-    private Integer idx;
+public class UserInfoRespDTO {
     /**
      * 用户账号
      */
