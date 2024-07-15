@@ -9,7 +9,10 @@ import com.gzhuoj.usr.dto.resp.AdminUserListRespDTO;
 import com.gzhuoj.usr.model.entity.UserDO;
 
 public interface AdminService extends IService<UserDO> {
-    IPage<AdminUserListRespDTO> userList(AdminUserListReqDTO requestParam);
 
     IPage<AdminPrivilegeListRespDTO> privilegeList(AdminPrivilegeListReqDTO requestParam);
+
+    IPage<AdminUserListRespDTO> userManagerList(AdminUserListReqDTO requestParam);
+
+    void deleteUser(String userAccount);
 }

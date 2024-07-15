@@ -9,21 +9,13 @@ import com.gzhuoj.usr.service.AdminService;
 import common.convention.result.Result;
 import common.convention.result.Results;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping("/gzhuoj/admin")
 public class AdminController {
     private final AdminService adminService;
-
-    @GetMapping("/userList")
-    public Result<IPage<AdminUserListRespDTO>> userList(AdminUserListReqDTO requestParam){
-        return Results.success(adminService.userList(requestParam));
-    }
 
     /**
      * 用户权限分页查询
@@ -35,4 +27,23 @@ public class AdminController {
         return Results.success(adminService.privilegeList(requestParam));
     }
 
+    /**
+     * 用户总表查询
+     * @param requestParam 关键字查询
+     * @return 用户分页查询返回数据
+     */
+    @GetMapping("/usermanager/userList")
+    public Result<IPage<AdminUserListRespDTO>> userManagerList(AdminUserListReqDTO requestParam){
+        return Results.success(adminService.userManagerList(requestParam));
+    }
+
+    /**
+     * 用户删除
+     * @param userAccount 用户账号
+     */
+    @DeleteMapping("/usermanager/delete")
+    public Result<Void> userDelete(@RequestParam String userAccount){
+        adminService.deleteUser(userAccount);
+        return Results.success();
+    }
 }
