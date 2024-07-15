@@ -1,6 +1,6 @@
 message: This is the development environment
 server:
-  port: 5121
+  port: 8009
 #  address: 0.0.0.0
 
 spring:

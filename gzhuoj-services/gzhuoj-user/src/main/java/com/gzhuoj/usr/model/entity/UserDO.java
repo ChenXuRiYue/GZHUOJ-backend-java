@@ -38,8 +38,7 @@ public class UserDO extends BaseDO {
     private String organization;
 
     /**
-     * 用户角色  详情看 common.constant.RoleEnum
-     * 用9位 位运算来表示是否有该种权限
+     * 用户角色
      */
     private Integer role;
 
