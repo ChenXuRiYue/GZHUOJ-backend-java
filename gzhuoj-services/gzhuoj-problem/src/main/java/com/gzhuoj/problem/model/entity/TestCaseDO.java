@@ -4,7 +4,7 @@ import common.database.BaseDO;
 import lombok.Data;
 
 @Data
-public class TestCase extends BaseDO {
+public class TestCaseDO extends BaseDO {
     /**
      * 数据在对应数据集中的相对序号
      */

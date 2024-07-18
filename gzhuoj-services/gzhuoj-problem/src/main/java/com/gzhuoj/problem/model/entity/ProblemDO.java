@@ -2,14 +2,22 @@ package com.gzhuoj.problem.model.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import common.database.BaseDO;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.sql.Date;
 
 
 @Data
-public class Problem extends BaseDO {
+@Builder
+@AllArgsConstructor
+@RequiredArgsConstructor
+@TableName("problem")
+public class ProblemDO extends BaseDO {
     /**
      * 题目标题
      */
@@ -37,12 +45,17 @@ public class Problem extends BaseDO {
 
 
     /**
-     * 出题人
-     */
-    private Integer author;
-
-    /**
      * 录题序号
      */
     private Integer problemNum;
+
+    /**
+     * 题目类型
+     */
+    private Integer ProblemType;
+
+    /**
+     * 题目状态
+     */
+    private Integer problemStatus;
 }
