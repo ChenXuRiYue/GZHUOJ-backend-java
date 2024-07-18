@@ -2,14 +2,18 @@ package com.gzhuoj.usr.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gzhuoj.usr.dto.req.AdminPrivilegeListReqDTO;
+import com.gzhuoj.usr.dto.req.AdminUserGenReqDTO;
 import com.gzhuoj.usr.dto.req.AdminUserListReqDTO;
 import com.gzhuoj.usr.dto.resp.AdminPrivilegeListRespDTO;
+import com.gzhuoj.usr.dto.resp.AdminUserGenRespDTO;
 import com.gzhuoj.usr.dto.resp.AdminUserListRespDTO;
 import com.gzhuoj.usr.service.AdminService;
 import common.convention.result.Result;
 import common.convention.result.Results;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -45,5 +49,10 @@ public class AdminController {
     public Result<Void> userDelete(@RequestParam String userAccount){
         adminService.deleteUser(userAccount);
         return Results.success();
+    }
+
+    @PostMapping("/usermanager/usergen")
+    public Result<List<AdminUserGenRespDTO>> userGen(@RequestBody AdminUserGenReqDTO requestParam){
+        return Results.success(adminService.userGen(requestParam));
     }
 }
