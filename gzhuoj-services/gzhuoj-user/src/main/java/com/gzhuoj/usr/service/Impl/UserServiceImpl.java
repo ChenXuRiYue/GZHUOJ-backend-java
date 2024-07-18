@@ -19,12 +19,10 @@ import com.gzhuoj.usr.model.entity.UserDO;
 import com.gzhuoj.usr.mapper.UserMapper;
 import com.gzhuoj.usr.service.UserService;
 import com.gzhuoj.usr.utils.ExcelWriter;
-import com.gzhuoj.usr.utils.generateRandStrUtil;
+import com.gzhuoj.usr.utils.GenerateRandStrUtil;
 import common.exception.ClientException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -110,7 +108,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
                 String userAccount = requestParam.getSchoolEngName() + "_" + fields[0].trim();
                 String username = fields[1].trim();
                 // 生成随机化的密码 -> 8位数字 + 大小写字母
-                String password = generateRandStrUtil.getRandStr(8);
+                String password = GenerateRandStrUtil.getRandStr(8);
 
                 UserDO userDO = UserDO.builder()
                         .userAccount(userAccount)
