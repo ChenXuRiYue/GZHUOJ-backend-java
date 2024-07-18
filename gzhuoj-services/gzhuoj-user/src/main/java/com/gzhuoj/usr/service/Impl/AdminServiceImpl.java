@@ -16,7 +16,6 @@ import com.gzhuoj.usr.model.entity.UserDO;
 import com.gzhuoj.usr.service.AdminService;
 import com.gzhuoj.usr.utils.RoleUtil;
 import common.constant.RoleEnum;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
