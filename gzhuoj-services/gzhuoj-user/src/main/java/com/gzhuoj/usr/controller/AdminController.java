@@ -51,6 +51,11 @@ public class AdminController {
         return Results.success();
     }
 
+    /**
+     * 用户批量生成
+     * @param requestParam 用户数据转编的URL编码字符串
+     * @return 生成的用户信息集合
+     */
     @PostMapping("/usermanager/usergen")
     public Result<List<AdminUserGenRespDTO>> userGen(@RequestBody AdminUserGenReqDTO requestParam){
         return Results.success(adminService.userGen(requestParam));
