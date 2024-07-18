@@ -2,8 +2,8 @@ package com.gzhuoj.usr.utils;
 
 import java.util.Random;
 
-public class generateRandStrUtil {
-    private static final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+public class GenerateRandStrUtil {
+    private static final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static Random rand = new Random();
     public static String getRandStr(int len) {
         StringBuilder result = new StringBuilder();
