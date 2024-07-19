@@ -3,11 +3,13 @@ package com.gzhuoj.problem.service.Impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gzhuoj.problem.dto.req.CreateProblemReqDTO;
 import com.gzhuoj.problem.dto.req.ListProblemReqDTO;
+import com.gzhuoj.problem.dto.req.UpdateProblemReqDTO;
 import com.gzhuoj.problem.dto.resp.ListProblemRespDTO;
 import com.gzhuoj.problem.mapper.ProblemMapper;
 import com.gzhuoj.problem.model.entity.ProblemDO;
@@ -15,6 +17,8 @@ import com.gzhuoj.problem.service.ProblemService;
 import common.exception.ClientException;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 @Service
 public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> implements ProblemService {
@@ -65,5 +69,29 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
         queryWrapper.orderBy(true, flag, ProblemDO::getProblemNum);
         IPage<ProblemDO> result = baseMapper.selectPage(requestParam, queryWrapper);
         return result.convert(each -> BeanUtil.toBean(each, ListProblemRespDTO.class));
+    }
+
+    @Override
+    public void updateProblem(UpdateProblemReqDTO requestParam) {
+        LambdaQueryWrapper<ProblemDO> queryWrapper = Wrappers.lambdaQuery(ProblemDO.class)
+                .eq(ProblemDO::getProblemNum, requestParam.getProblemNum())
+                .eq(ProblemDO::getDeleteFlag, 0);
+        ProblemDO hasProblemDO = baseMapper.selectOne(queryWrapper);
+        if(hasProblemDO == null){
+            throw new ClientException("题目不存在");
+        }
+        ProblemDO problemDO = ProblemDO.builder()
+                .problemNum(requestParam.getNewProblemNum() != null ? requestParam.getNewProblemNum() : requestParam.getProblemNum())
+                .ProblemType(requestParam.getProblemType())
+                .problemName(requestParam.getProblemName())
+                .timeLimit(requestParam.getTimeLimit())
+                .solution(requestParam.getSolution())
+                .memoryLimit(requestParam.getMemoryLimit())
+                .description(requestParam.getDescription())
+                .build();
+        LambdaUpdateWrapper<ProblemDO> updateWrapper = Wrappers.lambdaUpdate(ProblemDO.class)
+                .eq(ProblemDO::getProblemNum, requestParam.getProblemNum())
+                .eq(ProblemDO::getDeleteFlag, 0);
+        baseMapper.update(problemDO, updateWrapper);
     }
 }
