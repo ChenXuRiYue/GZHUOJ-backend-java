@@ -3,6 +3,7 @@ package com.gzhuoj.problem.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gzhuoj.problem.dto.req.CreateProblemReqDTO;
 import com.gzhuoj.problem.dto.req.ListProblemReqDTO;
+import com.gzhuoj.problem.dto.req.UpdateProblemReqDTO;
 import com.gzhuoj.problem.dto.resp.ListProblemRespDTO;
 import com.gzhuoj.problem.service.ProblemService;
 import common.convention.result.Result;
@@ -37,4 +38,16 @@ public class ProblemController {
     public Result<IPage<ListProblemRespDTO>> listProblem(ListProblemReqDTO requestParam) {
         return Results.success(problemService.listProblem(requestParam));
     }
+
+    /**
+     * 修改题目
+     * @param requestParam 修改题目字段参数
+     */
+    @PostMapping("/update")
+    public Result<Void> updateProblem(@RequestBody UpdateProblemReqDTO requestParam){
+        problemService.updateProblem(requestParam);
+        return Results.success();
+    }
+
+
 }
