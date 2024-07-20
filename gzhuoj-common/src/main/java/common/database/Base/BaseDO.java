@@ -1,4 +1,4 @@
-package common.database;
+package common.database.Base;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
