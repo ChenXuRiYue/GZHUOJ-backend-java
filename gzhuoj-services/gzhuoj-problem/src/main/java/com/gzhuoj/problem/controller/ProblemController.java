@@ -20,12 +20,12 @@ public class ProblemController {
     /**
      * 创建题目、题目单独更新，减小操作颗粒度
      *
-     * @param createProblemReqDTO
+     * @param requestParam
      * @return
      */
     @PostMapping("/create")
-    public Result<Void> createProblem(@RequestBody CreateProblemReqDTO createProblemReqDTO) {
-        problemService.createProblem(createProblemReqDTO);
+    public Result<Void> createProblem(@RequestBody CreateProblemReqDTO requestParam) {
+        problemService.createProblem(requestParam);
         return Results.success();
     }
 
@@ -48,4 +48,6 @@ public class ProblemController {
         problemService.updateProblem(requestParam);
         return Results.success();
     }
+
+//    public Result<>
 }
