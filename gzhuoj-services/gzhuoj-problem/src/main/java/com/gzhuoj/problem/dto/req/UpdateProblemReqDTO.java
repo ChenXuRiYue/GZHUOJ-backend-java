@@ -1,6 +1,10 @@
 package com.gzhuoj.problem.dto.req;
 
+import com.gzhuoj.problem.model.entity.TestCaseDO;
+import com.gzhuoj.problem.model.entity.TestExampleDO;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class UpdateProblemReqDTO {
@@ -13,11 +17,6 @@ public class UpdateProblemReqDTO {
      * 题目题面
      */
     private String description;
-
-    /**
-     * 题目参考代码
-     */
-    private String solution;
 
     /**
      * 时间限制
@@ -38,13 +37,14 @@ public class UpdateProblemReqDTO {
      * 新录题序号
      */
     private Integer newProblemNum;
+
     /**
      * 题目类型
      */
     private Integer ProblemType;
 
     /**
-     * 题目状态
+     * 样例
      */
-    private Integer problemStatus;
+    List<TestExampleDO> testExampleList;
 }
