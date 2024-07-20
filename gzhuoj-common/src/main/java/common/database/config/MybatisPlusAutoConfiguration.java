@@ -1,20 +1,27 @@
-package common.config;
+package common.database.config;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import common.database.handler.MyMetaObjectHandler;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-
-@Configuration
-public class DataBaseConfig {
+public class MybatisPlusAutoConfiguration {
+    /**
+     * 分页插件
+     */
     @Bean
-    @ConditionalOnMissingBean
-    public MybatisPlusInterceptor mybatisPlusInterceptorByAdmin() {
+    public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
         return interceptor;
+    }
+
+    /**
+     * 元数据填充
+     */
+    @Bean
+    public MyMetaObjectHandler myMetaObjectHandler() {
+        return new MyMetaObjectHandler();
     }
 }
