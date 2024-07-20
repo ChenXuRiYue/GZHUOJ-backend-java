@@ -88,6 +88,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
                 .solution(requestParam.getSolution())
                 .memoryLimit(requestParam.getMemoryLimit())
                 .description(requestParam.getDescription())
+                .problemStatus(requestParam.getProblemStatus())
                 .build();
         LambdaUpdateWrapper<ProblemDO> updateWrapper = Wrappers.lambdaUpdate(ProblemDO.class)
                 .eq(ProblemDO::getProblemNum, requestParam.getProblemNum())

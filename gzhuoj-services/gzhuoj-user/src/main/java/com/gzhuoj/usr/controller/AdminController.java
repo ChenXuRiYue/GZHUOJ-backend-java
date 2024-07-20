@@ -1,6 +1,7 @@
 package com.gzhuoj.usr.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.gzhuoj.usr.dto.req.AdminChangeStatusReqDTO;
 import com.gzhuoj.usr.dto.req.AdminPrivilegeListReqDTO;
 import com.gzhuoj.usr.dto.req.AdminUserGenReqDTO;
 import com.gzhuoj.usr.dto.req.AdminUserListReqDTO;
@@ -59,5 +60,11 @@ public class AdminController {
     @PostMapping("/usermanager/usergen")
     public Result<List<AdminUserGenRespDTO>> userGen(@RequestBody AdminUserGenReqDTO requestParam){
         return Results.success(adminService.userGen(requestParam));
+    }
+
+    @GetMapping("/changeStatus")
+    public Result<Void> changeStatus(AdminChangeStatusReqDTO requestParam){
+        adminService.changeStatus(requestParam);
+        return Results.success();
     }
 }
