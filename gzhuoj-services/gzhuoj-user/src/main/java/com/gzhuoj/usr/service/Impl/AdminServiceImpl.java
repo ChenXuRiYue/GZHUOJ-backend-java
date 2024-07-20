@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.gzhuoj.usr.dto.req.AdminChangeStatusReqDTO;
 import com.gzhuoj.usr.dto.req.AdminPrivilegeListReqDTO;
 import com.gzhuoj.usr.dto.req.AdminUserGenReqDTO;
 import com.gzhuoj.usr.dto.req.AdminUserListReqDTO;
@@ -15,10 +16,12 @@ import com.gzhuoj.usr.dto.resp.AdminUserGenRespDTO;
 import com.gzhuoj.usr.dto.resp.AdminUserListRespDTO;
 import com.gzhuoj.usr.mapper.UserMapper;
 import com.gzhuoj.usr.model.entity.UserDO;
+import com.gzhuoj.usr.remote.AdminRemoteService;
+import com.gzhuoj.usr.remote.dto.req.UpdateProblemReqDTO;
 import com.gzhuoj.usr.service.AdminService;
 import com.gzhuoj.usr.utils.RoleUtil;
 import com.gzhuoj.usr.utils.GenerateRandStrUtil;
-import jodd.util.StringUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.net.URLDecoder;
@@ -27,7 +30,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AdminServiceImpl extends ServiceImpl<UserMapper, UserDO> implements AdminService {
+
+    private final AdminRemoteService adminRemoteService;
 
     @Override
     public IPage<AdminPrivilegeListRespDTO> privilegeList(AdminPrivilegeListReqDTO requestParam) {
@@ -99,6 +105,20 @@ public class AdminServiceImpl extends ServiceImpl<UserMapper, UserDO> implements
         }
         Collections.sort(list, Comparator.comparing(AdminUserGenRespDTO::getUserAccount));
         return list;
+    }
+
+    @Override
+    public void changeStatus(AdminChangeStatusReqDTO requestParam) {
+        if(Objects.equals("problem", requestParam.getItem())){
+            UpdateProblemReqDTO updateProblemReqDTO = new UpdateProblemReqDTO();
+            updateProblemReqDTO.setProblemNum(requestParam.getId());
+            updateProblemReqDTO.setProblemStatus(requestParam.getStatus() ^ 1);
+            adminRemoteService.updateProblem(updateProblemReqDTO);
+        }
+        /*
+            TODO -> contest
+                 -> article
+        */
     }
 
     public static void main(String[] args) {

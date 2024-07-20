@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>../gzhuoj-common</module>
         <module>gzhuoj-user</module>
         <module>gzhuoj-problem</module>
         <module>gzhuoj-contest</module>

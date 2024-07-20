@@ -1,4 +1,4 @@
-package com.gzhuoj.problem.dto.req;
+package com.gzhuoj.usr.remote.dto.req;
 
 import lombok.Data;
 
@@ -38,6 +38,7 @@ public class UpdateProblemReqDTO {
      * 新录题序号
      */
     private Integer newProblemNum;
+
     /**
      * 题目类型
      */

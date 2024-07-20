@@ -48,6 +48,4 @@ public class ProblemController {
         problemService.updateProblem(requestParam);
         return Results.success();
     }
-
-
 }
