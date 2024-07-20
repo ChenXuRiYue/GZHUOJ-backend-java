@@ -1,6 +1,6 @@
 package com.gzhuoj.problem.model.entity;
 
-import common.database.BaseDO;
+import common.database.Base.BaseDO;
 import lombok.Data;
 
 @Data
