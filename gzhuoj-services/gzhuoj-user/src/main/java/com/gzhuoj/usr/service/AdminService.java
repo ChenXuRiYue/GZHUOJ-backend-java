@@ -2,6 +2,7 @@ package com.gzhuoj.usr.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.gzhuoj.usr.dto.req.AdminChangeStatusReqDTO;
 import com.gzhuoj.usr.dto.req.AdminPrivilegeListReqDTO;
 import com.gzhuoj.usr.dto.req.AdminUserGenReqDTO;
 import com.gzhuoj.usr.dto.req.AdminUserListReqDTO;
@@ -21,4 +22,6 @@ public interface AdminService extends IService<UserDO> {
     void deleteUser(String userAccount);
 
     List<AdminUserGenRespDTO> userGen(AdminUserGenReqDTO requestParam);
+
+    void changeStatus(AdminChangeStatusReqDTO requestParam);
 }
