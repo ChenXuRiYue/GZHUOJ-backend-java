@@ -7,10 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gzhuoj.usr.dto.req.AdminChangeStatusReqDTO;
-import com.gzhuoj.usr.dto.req.AdminPrivilegeListReqDTO;
-import com.gzhuoj.usr.dto.req.AdminUserGenReqDTO;
-import com.gzhuoj.usr.dto.req.AdminUserListReqDTO;
+import com.gzhuoj.usr.dto.req.*;
 import com.gzhuoj.usr.dto.resp.AdminPrivilegeListRespDTO;
 import com.gzhuoj.usr.dto.resp.AdminUserGenRespDTO;
 import com.gzhuoj.usr.dto.resp.AdminUserListRespDTO;
@@ -21,7 +18,10 @@ import com.gzhuoj.usr.remote.dto.req.UpdateProblemReqDTO;
 import com.gzhuoj.usr.service.AdminService;
 import com.gzhuoj.usr.utils.RoleUtil;
 import com.gzhuoj.usr.utils.GenerateRandStrUtil;
+import common.exception.ClientException;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.net.URLDecoder;
@@ -35,15 +35,8 @@ public class AdminServiceImpl extends ServiceImpl<UserMapper, UserDO> implements
 
     private final AdminRemoteService adminRemoteService;
 
-    @Override
-    public IPage<AdminPrivilegeListRespDTO> privilegeList(AdminPrivilegeListReqDTO requestParam) {
-        IPage<UserDO> resultPage = baseMapper.pageUserPrivilege(requestParam);
-        return resultPage.convert(each -> {
-            AdminPrivilegeListRespDTO bean = BeanUtil.toBean(each, AdminPrivilegeListRespDTO.class);
-            bean.setRole(RoleUtil.getRoleName(each.getRole()));
-            return bean;
-        });
-    }
+    @Value("${batchImport.max_users}")
+    private Integer MAX_USERS;
 
     @Override
     public IPage<AdminUserListRespDTO> userManagerList(AdminUserListReqDTO requestParam) {
@@ -76,10 +69,15 @@ public class AdminServiceImpl extends ServiceImpl<UserMapper, UserDO> implements
 
     @Override
     public List<AdminUserGenRespDTO> userGen(AdminUserGenReqDTO requestParam) {
+        // TODO 用户权限认证
+        if (StrUtil.isEmpty(requestParam.getUserDescription())) {
+            throw new ClientException("请输入至少一个用户描述和用户编号");
+        }
         String userDescription = requestParam.getUserDescription();
         String[] split = userDescription.split("%0A");
-        System.out.println(userDescription);
-        System.out.println(Arrays.asList(split));
+        if (split.length > MAX_USERS) {
+            throw new ClientException("一次最多生成" + MAX_USERS + "个用户");
+        }
         List<AdminUserGenRespDTO> list = new ArrayList<>();
         for (int i = 0; i < split.length; i++) {
             if (split[i].length() >= 3 && split[i].startsWith("%23")) {
@@ -89,19 +87,30 @@ public class AdminServiceImpl extends ServiceImpl<UserMapper, UserDO> implements
                     .stream(split[i].split("%23"))
                     .map(each -> URLDecoder.decode(each).trim())
                     .collect(Collectors.toList());
-            System.out.println(Arrays.asList(s));
+            if (s.size() != 5) { // 五个字段
+                continue;
+            }
             AdminUserGenRespDTO adminUserGenRespDTO = new AdminUserGenRespDTO("", "", "", "", "");
-            for(int j = 0; j < s.size(); j++) {
-                if(StrUtil.isEmpty(s.get(j))){
+            for (int j = 0; j < s.size(); j++) {
+                if (StrUtil.isEmpty(s.get(j))) {
                     continue;
                 }
-                if(j == 0) adminUserGenRespDTO.setUserAccount(s.get(j));
-                if(j == 1) adminUserGenRespDTO.setUsername(s.get(j));
-                if(j == 2) adminUserGenRespDTO.setOrganization(s.get(j));
-                if(j == 3) adminUserGenRespDTO.setEmail(s.get(j));
+                if (j == 0) adminUserGenRespDTO.setUserAccount(s.get(j));
+                if (j == 1) adminUserGenRespDTO.setUsername(s.get(j));
+                if (j == 2) adminUserGenRespDTO.setOrganization(s.get(j));
+                if (j == 3) adminUserGenRespDTO.setEmail(s.get(j));
             }
             adminUserGenRespDTO.setPassword(GenerateRandStrUtil.getRandStr(8));
-            list.add(adminUserGenRespDTO);
+            // 将生成的用户插入到数据库
+            UserDO userDO = BeanUtil.toBean(adminUserGenRespDTO, UserDO.class);
+            userDO.setRole(2); // 默认为普通用户
+            LambdaQueryWrapper<UserDO> queryWrapper = Wrappers.lambdaQuery(UserDO.class)
+                    .eq(UserDO::getUserAccount, userDO.getUserAccount())
+                    .eq(UserDO::getDeleteFlag, 0);
+            UserDO hasUserDO = baseMapper.selectOne(queryWrapper);
+            if(hasUserDO == null) {
+                list.add(adminUserGenRespDTO);
+            }
         }
         Collections.sort(list, Comparator.comparing(AdminUserGenRespDTO::getUserAccount));
         return list;
@@ -109,7 +118,7 @@ public class AdminServiceImpl extends ServiceImpl<UserMapper, UserDO> implements
 
     @Override
     public void changeStatus(AdminChangeStatusReqDTO requestParam) {
-        if(Objects.equals("problem", requestParam.getItem())){
+        if (Objects.equals("problem", requestParam.getItem())) {
             UpdateProblemReqDTO updateProblemReqDTO = new UpdateProblemReqDTO();
             updateProblemReqDTO.setProblemNum(requestParam.getId());
             updateProblemReqDTO.setProblemStatus(requestParam.getStatus() ^ 1);
@@ -121,8 +130,21 @@ public class AdminServiceImpl extends ServiceImpl<UserMapper, UserDO> implements
         */
     }
 
+    @Override
+    public Void fileManager(AdminFileManagerReqDTO requestParam) {
+        // TODO
+        if (Objects.equals("problem", requestParam.getItem())) {
+//            Wrappers.lambdaQuery()
+        }
+        return null;
+        /*
+            TODO -> contest
+                 -> article
+        */
+    }
+
     public static void main(String[] args) {
-        String[] s= {"aa", "ba", "bb"};
+        String[] s = {"aa", "ba", "bb"};
         Arrays.sort(s);
         System.out.println(Arrays.asList(s));
     }
