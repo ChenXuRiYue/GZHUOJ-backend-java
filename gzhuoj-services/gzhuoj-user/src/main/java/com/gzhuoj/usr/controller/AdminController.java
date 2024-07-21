@@ -1,10 +1,7 @@
 package com.gzhuoj.usr.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.gzhuoj.usr.dto.req.AdminChangeStatusReqDTO;
-import com.gzhuoj.usr.dto.req.AdminPrivilegeListReqDTO;
-import com.gzhuoj.usr.dto.req.AdminUserGenReqDTO;
-import com.gzhuoj.usr.dto.req.AdminUserListReqDTO;
+import com.gzhuoj.usr.dto.req.*;
 import com.gzhuoj.usr.dto.resp.AdminPrivilegeListRespDTO;
 import com.gzhuoj.usr.dto.resp.AdminUserGenRespDTO;
 import com.gzhuoj.usr.dto.resp.AdminUserListRespDTO;
@@ -20,17 +17,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/gzhuoj/admin")
 public class AdminController {
-    private final AdminService adminService;
 
-    /**
-     * 用户权限分页查询
-     * @param requestParam search -> 模糊查询字符串
-     * @return 用户 账号 + 用户名 + 权限组成
-     */
-    @GetMapping("/privilege/list")
-    public Result<IPage<AdminPrivilegeListRespDTO>> privilegeList(AdminPrivilegeListReqDTO requestParam){
-        return Results.success(adminService.privilegeList(requestParam));
-    }
+    private final AdminService adminService;
 
     /**
      * 用户总表查询
@@ -67,4 +55,11 @@ public class AdminController {
         adminService.changeStatus(requestParam);
         return Results.success();
     }
+
+    @GetMapping("/filemanager")
+    public Result<Void> fileManager(AdminFileManagerReqDTO  requestParam){
+        return Results.success(adminService.fileManager(requestParam));
+    }
+
+
 }
