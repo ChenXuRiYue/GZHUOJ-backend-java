@@ -83,60 +83,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         return new UserLoginRespDTO(uuid);
     }
 
-
-    /**
-     * 批量导入账号信息
-     *
-     * @param requestParam 账号CSV文件
-     * @return 账号信息的 List集合
-     */
-    @Override
-    public ResponseEntity<byte[]> batchImport(UserBatchImportReqDTO requestParam) throws IOException {
-        MultipartFile userExcelFile = requestParam.getUserExcelFile();
-
-        List<UserDO> userDOList = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(userExcelFile.getInputStream(), "GBK"))) {
-            String line;
-            boolean flag = false;
-            while ((line = reader.readLine()) != null) {
-                if (!flag) {
-                    flag = true;
-                    continue;
-                }
-                String[] fields = line.split("\t");
-                // 账号组成 -> 学校名英文缩写_学生学号
-                String userAccount = requestParam.getSchoolEngName() + "_" + fields[0].trim();
-                String username = fields[1].trim();
-                // 生成随机化的密码 -> 8位数字 + 大小写字母
-                String password = GenerateRandStrUtil.getRandStr(8);
-
-                UserDO userDO = UserDO.builder()
-                        .userAccount(userAccount)
-                        .username(username)
-                        .password(password)
-                        .email("")
-                        .role(1)  // 1 -> 普通用户
-                        .organization(requestParam.getSchoolEngName())
-                        .build();
-                userDOList.add(userDO);
-            }
-        } catch (IOException e) {
-            log.error("[CSV文件读取失败]");
-            throw new RuntimeException(e);
-        }
-
-        // 账号信息需存入数据库
-        userDOList.forEach(each -> {
-            baseMapper.insert(each);
-        });
-        byte[] excelContent = ExcelWriter.writeUsersToExcel(userDOList);
-        String fileName = "导出名单.xlsx";
-        return ResponseEntity.ok().
-                header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
-                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
-                .body(excelContent);
-    }
-
     @Override
     public UserInfoUpdateRespDTO updateInfo(UserInfoUpdateReqDTO requestParam) {
         LambdaQueryWrapper<UserDO> queryWrapper = Wrappers.lambdaQuery(UserDO.class)

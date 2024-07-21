@@ -17,8 +17,6 @@ public interface UserService extends IService<UserDO> {
 
     UserLoginRespDTO login(UserLoginReqDTO requestParam);
 
-    ResponseEntity<byte[]> batchImport(UserBatchImportReqDTO requestParam) throws IOException;
-
     UserInfoUpdateRespDTO updateInfo(UserInfoUpdateReqDTO requestParam);
 
     UserInfoRespDTO userInfo(String userAccount);
