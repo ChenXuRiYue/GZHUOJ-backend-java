@@ -49,4 +49,10 @@ public class ProblemDO extends BaseDO {
      * 题目状态
      */
     private Integer problemStatus;
+
+    /**
+     * 附件文件夹唯一标识
+     * 格式：yyyy-MM-dd_16位随机字符串
+     */
+    private String attach;
 }

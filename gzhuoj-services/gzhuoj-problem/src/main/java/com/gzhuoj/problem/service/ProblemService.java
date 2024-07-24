@@ -14,4 +14,6 @@ public interface ProblemService extends IService<ProblemDO> {
     IPage<ListProblemRespDTO> listProblem(ListProblemReqDTO requestParam);
 
     void updateProblem(UpdateProblemReqDTO requestParam);
+
+    ProblemDO queryProByNum(Integer num);
 }
