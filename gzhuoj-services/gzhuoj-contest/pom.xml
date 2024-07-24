@@ -42,11 +42,11 @@
             <groupId>com.github.dozermapper</groupId>
             <artifactId>dozer-core</artifactId>
         </dependency>
-        <!--路由转发-->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-gateway</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!--路由转发-->
         <!--consul服务发现-->
         <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-consul-discovery -->
         <dependency>

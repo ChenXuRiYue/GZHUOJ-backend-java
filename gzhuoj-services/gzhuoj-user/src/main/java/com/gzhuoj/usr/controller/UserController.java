@@ -28,11 +28,6 @@ public class UserController {
         return Results.success(userService.login(requestParam));
     }
 
-    @GetMapping("/batchImport")
-    public Result<ResponseEntity<byte[]>> batchImport(UserBatchImportReqDTO requestParam) throws IOException {
-        return Results.success(userService.batchImport(requestParam));
-    }
-
     /**
      * 用户信息更新
      * @param requestParam 用户信息, 每次更新时需要验证密码
@@ -43,6 +38,11 @@ public class UserController {
         return Results.success(userService.updateInfo(requestParam));
     }
 
+    /**
+     * 根据用户账号返回用户信息
+     * @param userAccount 用户账号
+     * @return 用户信息
+     */
     @GetMapping("/userinfo")
     public Result<UserInfoRespDTO> userInfo(@RequestParam String userAccount){
         return Results.success(userService.userInfo(userAccount));

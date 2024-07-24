@@ -34,4 +34,5 @@ public class AdminUserGenRespDTO {
      * 用户密码
      */
     private String password;
+
 }
