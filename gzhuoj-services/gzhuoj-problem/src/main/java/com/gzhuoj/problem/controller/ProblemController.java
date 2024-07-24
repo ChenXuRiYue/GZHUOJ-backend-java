@@ -5,6 +5,7 @@ import com.gzhuoj.problem.dto.req.CreateProblemReqDTO;
 import com.gzhuoj.problem.dto.req.ListProblemReqDTO;
 import com.gzhuoj.problem.dto.req.UpdateProblemReqDTO;
 import com.gzhuoj.problem.dto.resp.ListProblemRespDTO;
+import com.gzhuoj.problem.model.entity.ProblemDO;
 import com.gzhuoj.problem.service.ProblemService;
 import common.convention.result.Result;
 import common.convention.result.Results;
@@ -49,5 +50,8 @@ public class ProblemController {
         return Results.success();
     }
 
-//    public Result<>
+    @GetMapping("/query")
+    public Result<ProblemDO> queryProByNum(Integer num){
+        return Results.success(problemService.queryProByNum(num));
+    }
 }
