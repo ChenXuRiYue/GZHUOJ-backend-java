@@ -1,4 +1,4 @@
-package com.gzhuoj.usr.utils;
+package common.toolkit;
 
 import java.util.Random;
 
