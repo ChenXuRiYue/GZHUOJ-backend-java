@@ -1,6 +1,7 @@
 package common.convention.errorcode;
 
 import common.convention.errorcode.IErrorCode;
+import common.exception.AbstractException;
 
 /**
  * 基础错误码定义
@@ -10,15 +11,8 @@ public enum BaseErrorCode implements IErrorCode {
     // ========== 一级宏观错误码 客户端错误 ==========
     CLIENT_ERROR("A000001", "用户端错误"),
 
-    // ========== 二级宏观错误码 用户注册错误 ==========
-    USER_REGISTER_ERROR("A000100", "用户注册错误"),
-    USER_NAME_VERIFY_ERROR("A000110", "用户名校验失败"),
-    USER_NAME_EXIST_ERROR("A000111", "用户名已存在"),
-    USER_NAME_SENSITIVE_ERROR("A000112", "用户名包含敏感词"),
-    USER_NAME_SPECIAL_CHARACTER_ERROR("A000113", "用户名包含特殊字符"),
-    PASSWORD_VERIFY_ERROR("A000120", "密码校验失败"),
-    PASSWORD_SHORT_ERROR("A000121", "密码长度不够"),
-    PHONE_VERIFY_ERROR("A000151", "手机格式校验失败"),
+    // ========== 二级宏观错误码 用户注册错误 ==========】
+    USER_UPLOAD_ILLEGAL_FILE_ERROR("A000100", "用户上传文件部分失败，包含不合法的文件"),
 
     // ========== 二级宏观错误码 系统请求缺少幂等Token ==========
     IDEMPOTENT_TOKEN_NULL_ERROR("A000200", "幂等Token为空"),
