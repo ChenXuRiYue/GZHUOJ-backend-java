@@ -9,7 +9,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gzhuoj.usr.dto.req.UserBatchImportReqDTO;
 import com.gzhuoj.usr.dto.req.UserInfoUpdateReqDTO;
 import com.gzhuoj.usr.dto.req.UserLoginReqDTO;
 import com.gzhuoj.usr.dto.resp.UserInfoRespDTO;
@@ -18,23 +17,12 @@ import com.gzhuoj.usr.dto.resp.UserLoginRespDTO;
 import com.gzhuoj.usr.model.entity.UserDO;
 import com.gzhuoj.usr.mapper.UserMapper;
 import com.gzhuoj.usr.service.UserService;
-import com.gzhuoj.usr.utils.ExcelWriter;
-import com.gzhuoj.usr.utils.GenerateRandStrUtil;
 import common.exception.ClientException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -81,60 +69,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         stringRedisTemplate.opsForHash().put(KEY, uuid, JSON.toJSONString(userDO));
         stringRedisTemplate.expire(KEY, 30L, TimeUnit.DAYS);
         return new UserLoginRespDTO(uuid);
-    }
-
-
-    /**
-     * 批量导入账号信息
-     *
-     * @param requestParam 账号CSV文件
-     * @return 账号信息的 List集合
-     */
-    @Override
-    public ResponseEntity<byte[]> batchImport(UserBatchImportReqDTO requestParam) throws IOException {
-        MultipartFile userExcelFile = requestParam.getUserExcelFile();
-
-        List<UserDO> userDOList = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(userExcelFile.getInputStream(), "GBK"))) {
-            String line;
-            boolean flag = false;
-            while ((line = reader.readLine()) != null) {
-                if (!flag) {
-                    flag = true;
-                    continue;
-                }
-                String[] fields = line.split("\t");
-                // 账号组成 -> 学校名英文缩写_学生学号
-                String userAccount = requestParam.getSchoolEngName() + "_" + fields[0].trim();
-                String username = fields[1].trim();
-                // 生成随机化的密码 -> 8位数字 + 大小写字母
-                String password = GenerateRandStrUtil.getRandStr(8);
-
-                UserDO userDO = UserDO.builder()
-                        .userAccount(userAccount)
-                        .username(username)
-                        .password(password)
-                        .email("")
-                        .role(1)  // 1 -> 普通用户
-                        .organization(requestParam.getSchoolEngName())
-                        .build();
-                userDOList.add(userDO);
-            }
-        } catch (IOException e) {
-            log.error("[CSV文件读取失败]");
-            throw new RuntimeException(e);
-        }
-
-        // 账号信息需存入数据库
-        userDOList.forEach(each -> {
-            baseMapper.insert(each);
-        });
-        byte[] excelContent = ExcelWriter.writeUsersToExcel(userDOList);
-        String fileName = "导出名单.xlsx";
-        return ResponseEntity.ok().
-                header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
-                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
-                .body(excelContent);
     }
 
     @Override

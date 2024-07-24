@@ -20,10 +20,21 @@ import com.gzhuoj.problem.model.entity.TestCaseDO;
 import com.gzhuoj.problem.model.entity.TestExampleDO;
 import com.gzhuoj.problem.service.ProblemService;
 import common.exception.ClientException;
+import common.exception.ServiceException;
+import common.toolkit.GenerateRandStrUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -54,18 +65,36 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
                     .ProblemType(requestParam.getProblemType())
                     .problemStatus(0) // 默认设置为不公开
                     .build();
-            baseMapper.insert(problemDO);
             List<TestExampleDO> testExampleList = requestParam.getTestExampleList();
+            // 由于样例一般很小，直接用数据库存
             if(CollUtil.isNotEmpty(testExampleList)) {
                 testExampleList
                         .stream()
                         .peek(each -> each.setProblemId(requestParam.getProblemNum()))
                         .forEach(testExampleMapper::insert);
             }
+            // 创建题目时，在本地 data/public/problem 目录下创建可唯一标识的文件夹用于分别存储test_case和upload文件
+            // test_case 用于 judge
+            // upload 用于题面展示
+            // identify 文件夹唯一标识
+            String identify = createUniqueDir();
+            problemDO.setAttach(identify);
+            baseMapper.insert(problemDO);
         } catch (Exception e){
             e.printStackTrace();
             throw new ClientException("录入失败: 插入数据库失败");
         }
+    }
+
+    private String createUniqueDir() throws IOException {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String identify = String.format((LocalDate.now().format(dateTimeFormatter))+ "_%s", GenerateRandStrUtil.getRandStr(16));
+        Path path = Paths.get("");
+        Path testCase = path.resolve(String.format("data/public/%s/test_case", identify));
+        Path upload = path.resolve(String.format("data/public/%s/upload", identify));
+        Files.createDirectories(testCase);
+        Files.createDirectories(upload);
+        return identify;
     }
 
     @Override
@@ -118,5 +147,23 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
                     .peek(each -> each.setProblemId(problemNum))
                     .forEach(testExampleMapper::insert);
         }
+    }
+
+    @Override
+    public ProblemDO queryProByNum(Integer num) {
+        LambdaQueryWrapper<ProblemDO> queryWrapper = Wrappers.lambdaQuery(ProblemDO.class)
+                .eq(ProblemDO::getProblemNum, num)
+                .eq(ProblemDO::getDeleteFlag, 0);
+        return baseMapper.selectOne(queryWrapper);
+    }
+
+    @SneakyThrows
+    public static void main(String[] args) {
+        Path currentPath = Paths.get("").toAbsolutePath();
+        Path testCase = currentPath.resolve("data/public/problem/test_case");
+        Path upload = currentPath.resolve(String.format("data/public/problem/upload/%s", "ljc"));
+        Files.createDirectories(upload);
+        System.out.println(testCase);
+        System.out.println(upload);
     }
 }
