@@ -12,7 +12,8 @@ public enum BaseErrorCode implements IErrorCode {
     CLIENT_ERROR("A000001", "用户端错误"),
 
     // ========== 二级宏观错误码 用户注册错误 ==========】
-    USER_UPLOAD_ILLEGAL_FILE_ERROR("A000100", "用户上传文件部分失败，包含不合法的文件"),
+    ADMIN_UPLOAD_ILLEGAL_FILE_ERROR("A000100", "上传测试数据文件部分失败，包含不合法的文件"),
+    ADMIN_UPLOAD_ILLEGAL_PROBLEM_DESCRIPTION_ERROR("A000101", "上传题目描述附件部分失败，包含不合法的文件"),
 
     // ========== 二级宏观错误码 系统请求缺少幂等Token ==========
     IDEMPOTENT_TOKEN_NULL_ERROR("A000200", "幂等Token为空"),
