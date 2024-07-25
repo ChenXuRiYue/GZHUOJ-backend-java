@@ -1,13 +1,13 @@
 package com.gzhuoj.usr.controller;
 
 import com.gzhuoj.usr.dto.req.JudgeUploadCaseReqDTO;
-import com.gzhuoj.usr.service.JudgeService;
+import com.gzhuoj.usr.remote.AdminRemoteService;
 import common.convention.result.Result;
 import common.convention.result.Results;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,10 +18,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/gzhuoj")
 public class JudgeController {
-    private final JudgeService judgeService;
+    private final AdminRemoteService adminRemoteService;
 
-    @PostMapping("/admin/judge/upload")
-    public Result<List<String>> uploadJudgeCase(JudgeUploadCaseReqDTO requestParam){
-        return Results.success(judgeService.uploadJudgeCase(requestParam));
+    @PostMapping(value = "/admin/judge/upload")
+    public Result<Void> upload(@RequestParam("problemNum") Integer problemNum, @RequestPart("testCase") List<MultipartFile> testCase){
+        return adminRemoteService.upload(problemNum, testCase);
     }
 }
