@@ -50,11 +50,16 @@ public class AdminController {
         return Results.success(adminService.userGen(requestParam));
     }
 
+    /**
+     * 修改事件状态 -> 题目、文章、比赛开发状态
+     * @param requestParam 事件请求参数
+     */
     @GetMapping("/changeStatus")
     public Result<Void> changeStatus(AdminChangeStatusReqDTO requestParam){
         adminService.changeStatus(requestParam);
         return Results.success();
     }
+
 
     @GetMapping("/filemanager")
     public Result<Void> fileManager(AdminFileManagerReqDTO  requestParam){
