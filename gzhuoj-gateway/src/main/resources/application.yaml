@@ -1,5 +1,17 @@
 spring:
+  main:
+    web-application-type: reactive
   application:
     name: gzhuoj-gateway
   profiles:
     active: dev
+
+# JWT相关配置
+gzhuoj:
+  jwt:
+    location: classpath:gzhuoj.jks
+    alias:  gzhuoj
+    password: gzhuacm512
+    tokenTTL: 30m
+#  auth:
+
