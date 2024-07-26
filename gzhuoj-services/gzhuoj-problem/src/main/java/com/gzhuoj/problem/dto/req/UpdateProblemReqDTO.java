@@ -44,6 +44,11 @@ public class UpdateProblemReqDTO {
     private Integer spj;
 
     /**
+     * 题目状态
+     */
+    private Integer problemStatus;
+
+    /**
      * author
      */
     private String author;
