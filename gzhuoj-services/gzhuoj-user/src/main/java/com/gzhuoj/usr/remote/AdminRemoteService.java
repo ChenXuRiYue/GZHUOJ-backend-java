@@ -23,10 +23,7 @@ public interface AdminRemoteService {
     @PostMapping("/gzhuoj/problem/update")
     void updateProblem(@RequestBody UpdateProblemReqDTO requestParam);
 
-    @PostMapping(value = "/gzhuoj/judge/upload", consumes = {"multipart/form-data"})
-    Result<Void> upload(@RequestParam("problemNum") Integer problemNum, @RequestPart("testCase") List<MultipartFile> testCase);
-
-    public class MultipartSupportConfig {
+    class MultipartSupportConfig {
         @Bean
         @Primary
         @Scope("prototype")
