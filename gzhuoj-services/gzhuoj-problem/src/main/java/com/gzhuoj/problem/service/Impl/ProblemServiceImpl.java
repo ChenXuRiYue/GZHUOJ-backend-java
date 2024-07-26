@@ -64,6 +64,11 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
                     .timeLimit(requestParam.getTimeLimit())
                     .memoryLimit(requestParam.getMemoryLimit())
                     .ProblemType(requestParam.getProblemType())
+                    .spj(requestParam.getSpj())
+                    .author(requestParam.getAuthor())
+                    .submit(0)
+                    .accepted(0)
+                    .solved(0)
                     .problemStatus(0) // 默认设置为不公开
                     .build();
             List<TestExampleDO> testExampleList = requestParam.getTestExampleList();
@@ -132,6 +137,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
                 .timeLimit(requestParam.getTimeLimit())
                 .memoryLimit(requestParam.getMemoryLimit())
                 .description(requestParam.getDescription())
+                .author(requestParam.getAuthor())
+                .spj(requestParam.getSpj())
                 .build();
         LambdaUpdateWrapper<ProblemDO> updateWrapper = Wrappers.lambdaUpdate(ProblemDO.class)
                 .eq(ProblemDO::getProblemNum, requestParam.getProblemNum())
