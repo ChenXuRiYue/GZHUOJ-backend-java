@@ -40,6 +40,16 @@ public class CreateProblemReqDTO {
     private String description;
 
     /**
+     * author
+     */
+    private String author;
+
+    /**
+     * 是否启用spj 0 -> 不启用， 1 -> 启用
+     */
+    private Integer spj;
+
+    /**
      * 样例
      */
     List<TestExampleDO> testExampleList;
