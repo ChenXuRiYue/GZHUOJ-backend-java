@@ -139,6 +139,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
                 .description(requestParam.getDescription())
                 .author(requestParam.getAuthor())
                 .spj(requestParam.getSpj())
+                .problemStatus(requestParam.getProblemStatus())
                 .build();
         LambdaUpdateWrapper<ProblemDO> updateWrapper = Wrappers.lambdaUpdate(ProblemDO.class)
                 .eq(ProblemDO::getProblemNum, requestParam.getProblemNum())

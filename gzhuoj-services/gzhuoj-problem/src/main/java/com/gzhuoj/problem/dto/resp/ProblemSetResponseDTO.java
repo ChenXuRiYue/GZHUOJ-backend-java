@@ -15,6 +15,11 @@ public class ProblemSetResponseDTO {
     private String problemName;
 
     /**
+     * author
+     */
+    private String author;
+
+    /**
      * Accept Num
      */
     private Integer accepted;
