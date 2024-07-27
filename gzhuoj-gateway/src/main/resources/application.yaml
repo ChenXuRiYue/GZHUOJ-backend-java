@@ -11,7 +11,7 @@ gzhuoj:
   jwt:
     location: classpath:gzhuoj.jks
     alias:  gzhuoj
-    password: gzhuacm512
+    password: gzhuoj
     tokenTTL: 30m
 #  auth:
 

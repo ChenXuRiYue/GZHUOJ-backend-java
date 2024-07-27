@@ -61,7 +61,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     public UserLoginRespDTO login(UserLoginReqDTO requestParam) {
         // TODO 覆盖更多的场景，用户名不存在。等等情形
         LambdaQueryWrapper<UserDO> queryWrapper = Wrappers.lambdaQuery(UserDO.class)
-                .eq(UserDO::getUsername, requestParam.getUserAccount())
+                .eq(UserDO::getUserAccount, requestParam.getUserAccount())
                 .eq(UserDO::getPassword, requestParam.getPassword())
                 .eq(UserDO::getDeleteFlag, 0);
         UserDO userDO = baseMapper.selectOne(queryWrapper);
