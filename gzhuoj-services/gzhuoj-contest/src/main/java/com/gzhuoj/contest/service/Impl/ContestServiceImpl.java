@@ -1,15 +1,19 @@
 package com.gzhuoj.contest.service.Impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.gzhuoj.contest.constant.PathConstant;
+import com.gzhuoj.contest.dto.req.ContestAllReqDTO;
 import com.gzhuoj.contest.dto.req.ContestCreateReqDTO;
 import com.gzhuoj.contest.dto.req.ContestUpdateReqDTO;
+import com.gzhuoj.contest.dto.resp.ContestAllRespDTO;
 import com.gzhuoj.contest.mapper.ContestDescrMapper;
 import com.gzhuoj.contest.mapper.ContestMapper;
 import com.gzhuoj.contest.mapper.ContestProblemMapper;
@@ -102,12 +106,37 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, ContestDO> im
         }
     }
 
+    @Override
+    public ContestDO queryByNum(Integer num) {
+        LambdaQueryWrapper<ContestDO> queryWrapper = Wrappers.lambdaQuery(ContestDO.class)
+                .eq(ContestDO::getContestId, num)
+                .eq(ContestDO::getDeleteFlag, 0);
+        return baseMapper.selectOne(queryWrapper);
+    }
+
+    @Override
+    public IPage<ContestAllRespDTO> all(ContestAllReqDTO requestParam) {
+        LambdaQueryWrapper<ContestDO> queryWrapper = Wrappers.lambdaQuery(ContestDO.class)
+                .eq(ContestDO::getDeleteFlag, 0);
+        if(!StrUtil.isEmpty(requestParam.getSearch())){
+            queryWrapper.like(ContestDO::getTitle, requestParam.getSearch())
+                    .or().like(ContestDO::getContestId, requestParam.getSearch());
+        }
+        if(requestParam.getOrder() == null){
+            throw new ClientException("排序默认应为正序");
+        }
+        boolean flag = requestParam.getOrder().equals("asc");
+        queryWrapper.orderBy(true, flag, ContestDO::getContestId);
+        IPage<ContestDO> result = baseMapper.selectPage(requestParam, queryWrapper);
+        return result.convert(each -> BeanUtil.toBean(each, ContestAllRespDTO.class));
+    }
+
     @SneakyThrows
     private String createUniqueDir() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String identify = String.format((LocalDate.now().format(dateTimeFormatter))+ "_%s", GenerateRandStrUtil.getRandStr(16));
         Path path = Paths.get("");
-        Path upload = path.resolve(String.format("data/public/%s/upload", identify));
+        Path upload = path.resolve(String.format(PathConstant.CONTEST_UPLOAD_PATH, identify));
         Files.createDirectories(upload);
         return identify;
     }
