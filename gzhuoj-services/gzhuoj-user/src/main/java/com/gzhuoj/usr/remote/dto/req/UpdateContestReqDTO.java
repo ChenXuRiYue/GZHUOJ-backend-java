@@ -1,28 +1,21 @@
-package com.gzhuoj.contest.model.entity;
+package com.gzhuoj.usr.remote.dto.req;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import common.database.Base.BaseDO;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 import java.util.Date;
 
-/**
- * 比赛实体
- */
 @Data
-@RequiredArgsConstructor
-@AllArgsConstructor
-@Builder
-@TableName(value = "contest")
-public class ContestDO extends BaseDO {
+public class UpdateContestReqDTO {
 
     /**
      * 比赛编号
      */
     private Integer contestId;
+
+    /**
+     * 新的比赛编号
+     */
+    private Integer newContestID;
 
     /**
      * 比赛标题
@@ -43,6 +36,11 @@ public class ContestDO extends BaseDO {
      * 比赛开放状态 0 -> 不开放， 1 -> 开放
      */
     private Integer contestStatus;
+
+    /**
+     * 比赛描述
+     */
+    private String description;
 
     /**
      * 比赛访问权限 0 -> private 1 -> public 2 -> protect(需要密码)
@@ -72,7 +70,7 @@ public class ContestDO extends BaseDO {
     /**
      * 获奖比例
      */
-    private String awardRatio;
+    private Integer awardRatio;
 
     /**
      * 封榜分钟数
