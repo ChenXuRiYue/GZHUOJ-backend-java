@@ -14,7 +14,7 @@ import java.security.KeyPair;
  * 工具的自动装配
  */
 @Configuration
-@EnableConfigurationProperties(JwtProperties.class) // 注册JwtProperties 为一个bean。在这里写，是为了让其更加紧密
+@EnableConfigurationProperties(JwtProperties.class) // 注册JwtProperties 为一个bean。在这里写，是更加紧密
 public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder(){

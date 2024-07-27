@@ -33,7 +33,9 @@ spring:
         - id: user                #路由规则id
           uri:  lb://gzhuoj-user-service #路由目标服务
           predicates:             #路由断言
-            - Path=/user/**       #以请求路径作为判断规则
+            - Path=/gzhuoj/user/**       #以请求路径作为判断规则
+          filters:
+            - Auth
         - id: problem
           uri:  lb://gzhuoj-problem-service
           predicates:

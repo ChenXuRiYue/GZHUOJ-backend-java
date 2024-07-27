@@ -1,4 +1,4 @@
-package com.gzhuoj.gateway.util;
+package com.gzhuoj.gateway.utils;
 
 import cn.hutool.core.exceptions.ValidateException;
 import cn.hutool.jwt.JWT;
@@ -40,7 +40,7 @@ public class JwtTool {
      * @param token token
      * @return 解析刷新token得到的用户信息
      */
-    public Long parseToken(String token) {
+    public String parseToken(String token) {
         // 1.校验token是否为空
         if (token == null) {
             throw new UnauthorizedException("未登录");
@@ -72,7 +72,7 @@ public class JwtTool {
 
         // 5.数据解析
         try {
-            return Long.valueOf(userPayload.toString());
+            return userPayload.toString();
         } catch (RuntimeException e) {
             // 数据格式有误
             throw new UnauthorizedException("无效的token");
