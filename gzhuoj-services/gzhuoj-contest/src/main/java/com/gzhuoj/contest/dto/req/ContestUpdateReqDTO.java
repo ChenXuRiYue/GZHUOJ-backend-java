@@ -130,7 +130,7 @@ public class ContestUpdateReqDTO {
     private Integer frozenAfter;
 
     /**
-     *
+     * 题目颜色映射
      */
     private List<ProblemMapDO> problemMapDOList;
 }

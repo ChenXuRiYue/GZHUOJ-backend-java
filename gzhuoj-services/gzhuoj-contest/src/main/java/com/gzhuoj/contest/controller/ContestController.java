@@ -6,6 +6,7 @@ import com.gzhuoj.contest.constant.PathConstant;
 import com.gzhuoj.contest.constant.PatternConstant;
 import com.gzhuoj.contest.dto.req.ContestAllReqDTO;
 import com.gzhuoj.contest.dto.req.ContestCreateReqDTO;
+import com.gzhuoj.contest.dto.req.ContestStatusReqDTO;
 import com.gzhuoj.contest.dto.req.ContestUpdateReqDTO;
 import com.gzhuoj.contest.dto.resp.ContestAllRespDTO;
 import com.gzhuoj.contest.model.entity.ContestDO;
@@ -72,8 +73,22 @@ public class ContestController {
         return Results.success();
     }
 
+    /**
+     * 比赛列表分页查询
+     * @param requestParam 分页查询参数
+     * @return 分页查询返回集合
+     */
     @GetMapping("/admin/all")
     public Result<IPage<ContestAllRespDTO>> all(ContestAllReqDTO requestParam){
         return Results.success(contestService.all(requestParam));
+    }
+
+    /**
+     *
+     */
+    @GetMapping("/status")
+    public Result<Void> changeStatus(ContestStatusReqDTO requestParam){
+        contestService.changeStatus(requestParam);
+        return Results.success();
     }
 }
