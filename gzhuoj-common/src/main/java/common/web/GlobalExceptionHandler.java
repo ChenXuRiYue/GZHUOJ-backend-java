@@ -62,5 +62,4 @@ public class GlobalExceptionHandler {
         }
         return request.getRequestURL().toString() + "?" + request.getQueryString();
     }
-
 }
