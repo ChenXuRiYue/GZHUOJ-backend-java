@@ -5,3 +5,5 @@ spring:
     name: gzhuoj-contest-service
   profiles:
     active: dev
+Contest:
+  max-file-num: 10

@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.gzhuoj.problem.constant.PathConstant;
 import com.gzhuoj.problem.dto.req.CreateProblemReqDTO;
 import com.gzhuoj.problem.dto.req.ListProblemReqDTO;
 import com.gzhuoj.problem.dto.req.UpdateProblemReqDTO;
@@ -96,8 +97,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String identify = String.format((LocalDate.now().format(dateTimeFormatter))+ "_%s", GenerateRandStrUtil.getRandStr(16));
         Path path = Paths.get("");
-        Path testCase = path.resolve(String.format("data/public/%s/test_case", identify));
-        Path upload = path.resolve(String.format("data/public/%s/upload", identify));
+        Path testCase = path.resolve(String.format(PathConstant.PROBLEM_TESTCASE_PATH, identify));
+        Path upload = path.resolve(String.format(PathConstant.PROBLEM_UPLOAD_PATH, identify));
         Files.createDirectories(testCase);
         Files.createDirectories(upload);
         return identify;
