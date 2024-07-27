@@ -14,7 +14,7 @@ spring:
       port: 8500
       discovery:
         ## 注册到consul的服务名称
-        service-name: gzhuoj-usr-service
+        service-name: gzhuoj-user-service
         heartbeat:
           enabled: true
 
