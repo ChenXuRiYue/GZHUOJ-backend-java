@@ -9,6 +9,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.gzhuoj.usr.config.JwtProperties;
+import com.gzhuoj.usr.dto.req.UserBatchImportReqDTO;
 import com.gzhuoj.usr.dto.req.UserInfoUpdateReqDTO;
 import com.gzhuoj.usr.dto.req.UserLoginReqDTO;
 import com.gzhuoj.usr.dto.resp.UserInfoRespDTO;
@@ -17,6 +19,7 @@ import com.gzhuoj.usr.dto.resp.UserLoginRespDTO;
 import com.gzhuoj.usr.model.entity.UserDO;
 import com.gzhuoj.usr.mapper.UserMapper;
 import com.gzhuoj.usr.service.UserService;
+import com.gzhuoj.usr.utils.JwtTool;
 import common.exception.ClientException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +35,8 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements UserService {
     private final StringRedisTemplate stringRedisTemplate;
-
+    private final JwtTool jwtTool;
+    private final JwtProperties jwtProperties;
     @Override
     public String test() {
         return "fuck";
@@ -44,31 +48,35 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
      */
     @Override
     public UserLoginRespDTO login(UserLoginReqDTO requestParam) {
+        // TODO 覆盖更多的场景，用户名不存在。等等情形
         LambdaQueryWrapper<UserDO> queryWrapper = Wrappers.lambdaQuery(UserDO.class)
-                .eq(UserDO::getUsername, requestParam.getUserAccount())
+                .eq(UserDO::getUserAccount, requestParam.getUserAccount())
                 .eq(UserDO::getPassword, requestParam.getPassword())
                 .eq(UserDO::getDeleteFlag, 0);
         UserDO userDO = baseMapper.selectOne(queryWrapper);
         if (userDO == null) {
-            throw new ClientException("用户不存在");
+            throw new ClientException("用户不存在或密码错误");
         }
 
-        // 用redis存储用户信息 ->  返回一个token来证明用户已经登录
-        String KEY = "Login_" + requestParam.getUserAccount();
-        Map<Object, Object> keyMap = stringRedisTemplate.opsForHash().entries(KEY);
-        if (CollUtil.isNotEmpty(keyMap)) {
-            String token = keyMap.keySet()
-                    .stream()
-                    .findFirst()
-                    .map(Object::toString)
-                    .orElseThrow(() -> new ClientException("用户登录失败"));
-            return new UserLoginRespDTO(token);
-        }
-        String uuid = UUID.randomUUID().toString();
-
-        stringRedisTemplate.opsForHash().put(KEY, uuid, JSON.toJSONString(userDO));
-        stringRedisTemplate.expire(KEY, 30L, TimeUnit.DAYS);
-        return new UserLoginRespDTO(uuid);
+        String token = jwtTool.createToken(userDO.getUserAccount(), jwtProperties.getTokenTTL());
+// token 本身就可以包含用户信息；
+//        // 用redis存储用户信息 ->  返回一个token来证明用户已经登录
+//        String KEY = "Login_" + requestParam.getUserAccount();
+//        Map<Object, Object> keyMap = stringRedisTemplate.opsForHash().entries(KEY);
+//        // 使用一套更加完善的校验工具。
+//        if (CollUtil.isNotEmpty(keyMap)) {
+//            String token = keyMap.keySet()
+//                    .stream()
+//                    .findFirst()
+//                    .map(Object::toString)
+//                    .orElseThrow(() -> new ClientException("用户登录失败"));
+//            return new UserLoginRespDTO(token);
+//        }
+//        String uuid = UUID.randomUUID().toString();
+//
+//        stringRedisTemplate.opsForHash().put(KEY, uuid, JSON.toJSONString(userDO));
+//        stringRedisTemplate.expire(KEY, 30L, TimeUnit.DAYS);
+        return new UserLoginRespDTO(token);
     }
 
     @Override
