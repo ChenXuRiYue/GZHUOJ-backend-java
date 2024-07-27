@@ -12,8 +12,8 @@ import com.gzhuoj.usr.dto.resp.AdminUserGenRespDTO;
 import com.gzhuoj.usr.dto.resp.AdminUserListRespDTO;
 import com.gzhuoj.usr.mapper.UserMapper;
 import com.gzhuoj.usr.model.entity.UserDO;
-import com.gzhuoj.usr.remote.AdminRemoteService;
-import com.gzhuoj.usr.remote.dto.req.UpdateContestReqDTO;
+import com.gzhuoj.usr.remote.ContestRemoteService;
+import com.gzhuoj.usr.remote.ProblemRemoteService;
 import com.gzhuoj.usr.remote.dto.req.UpdateProblemReqDTO;
 import com.gzhuoj.usr.service.AdminService;
 import common.toolkit.GenerateRandStrUtil;
@@ -31,7 +31,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AdminServiceImpl extends ServiceImpl<UserMapper, UserDO> implements AdminService {
 
-    private final AdminRemoteService adminRemoteService;
+    private final ProblemRemoteService problemRemoteService;
+    private final ContestRemoteService contestRemoteService;
 
     @Value("${batchImport.max_users}")
     private Integer MAX_USERS;
@@ -120,12 +121,9 @@ public class AdminServiceImpl extends ServiceImpl<UserMapper, UserDO> implements
             UpdateProblemReqDTO updateProblemReqDTO = new UpdateProblemReqDTO();
             updateProblemReqDTO.setProblemNum(requestParam.getId());
             updateProblemReqDTO.setProblemStatus(requestParam.getStatus() ^ 1);
-            adminRemoteService.updateProblem(updateProblemReqDTO);
+            problemRemoteService.updateProblem(updateProblemReqDTO);
         } else if(Objects.equals("contest", requestParam.getItem())){
-            UpdateContestReqDTO updateContestReqDTO = new UpdateContestReqDTO();
-            updateContestReqDTO.setContestStatus(requestParam.getId());
-            updateContestReqDTO.setContestStatus(requestParam.getStatus() ^ 1);
-            adminRemoteService.updateContest(updateContestReqDTO);
+            contestRemoteService.changeStatus(requestParam.getId(), requestParam.getStatus());
         }
         /*
             TODO -> contest

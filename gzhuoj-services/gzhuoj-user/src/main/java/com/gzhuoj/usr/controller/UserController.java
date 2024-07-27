@@ -23,7 +23,7 @@ import java.io.IOException;
 public class UserController {
     private final UserService userService;
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public Result<UserLoginRespDTO> login(UserLoginReqDTO requestParam) {
         return Results.success(userService.login(requestParam));
     }

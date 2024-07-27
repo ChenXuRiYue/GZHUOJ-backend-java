@@ -1,8 +1,6 @@
 #server:
 #  port: 8009
 spring:
-  main:
-    web-application-type: reactive
   application:
     name: gzhuoj-user-service
   profiles:
