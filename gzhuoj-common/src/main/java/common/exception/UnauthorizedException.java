@@ -5,13 +5,14 @@ import common.convention.errorcode.IErrorCode;
 
 import java.util.Optional;
 
+import static common.convention.errorcode.BaseErrorCode.USER_ACCOUNT_VERIFY_ERROR;
 
 // 校验失败抛出的异常类定义
 public class UnauthorizedException extends AbstractException {
 
-//    public UnauthorizedException(String message) {
-//        this(message, null, BaseErrorCode.USER_NAME_VERIFY_ERROR);
-//    }
+    public UnauthorizedException(String message) {
+        this(message, null, BaseErrorCode.USER_ACCOUNT_VERIFY_ERROR);
+    }
 
     public UnauthorizedException(String message, IErrorCode errorCode) {
         this(message, null, errorCode);
