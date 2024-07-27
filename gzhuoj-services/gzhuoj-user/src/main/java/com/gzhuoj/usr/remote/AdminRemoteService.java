@@ -1,5 +1,6 @@
 package com.gzhuoj.usr.remote;
 
+import com.gzhuoj.usr.remote.dto.req.UpdateContestReqDTO;
 import com.gzhuoj.usr.remote.dto.req.UpdateProblemReqDTO;
 import common.convention.result.Result;
 import feign.form.spring.SpringFormEncoder;
@@ -22,6 +23,9 @@ public interface AdminRemoteService {
 
     @PostMapping("/gzhuoj/problem/update")
     void updateProblem(@RequestBody UpdateProblemReqDTO requestParam);
+
+    @PostMapping("/gzhuoj/contest/update")
+    void updateContest(@RequestBody UpdateContestReqDTO requestParam);
 
     class MultipartSupportConfig {
         @Bean

@@ -1,8 +1,9 @@
 package com.gzhuoj.contest.dto.req;
 
+import com.gzhuoj.contest.model.entity.ProblemMapDO;
 import lombok.Data;
 
-import java.util.Date;
+import java.util.List;
 
 @Data
 public class ContestUpdateReqDTO {
@@ -13,19 +14,64 @@ public class ContestUpdateReqDTO {
     private Integer contestId;
 
     /**
+     * 新比赛编号
+     */
+    private Integer newContestId;
+
+    /**
      * 比赛标题
      */
     private String title;
 
     /**
-     * 开始时间
+     * 开始年份
      */
-    private Date startTime;
+    private String startYear;
 
     /**
-     * 结束时间
+     * 开始月份
      */
-    private Date endTime;
+    private String startMonth;
+
+    /**
+     * 开始天
+     */
+    private String startDay;
+
+    /**
+     * 开始小时
+     */
+    private String startHour;
+
+    /**
+     * 开始分钟
+     */
+    private String startMinute;
+
+    /**
+     * 结束年份
+     */
+    private String endYear;
+
+    /**
+     * 结束月份
+     */
+    private String endMonth;
+
+    /**
+     * 结束天
+     */
+    private String endDay;
+
+    /**
+     * 结束小时
+     */
+    private String endHour;
+
+    /**
+     * 结束分钟
+     */
+    private String endMinute;
 
     /**
      * 比赛开放状态 0 -> 不开放， 1 -> 开放
@@ -43,9 +89,9 @@ public class ContestUpdateReqDTO {
     private Integer access;
 
     /**
-     * 比赛可用语言的二进制编码rn0 -> c，rn1 -> c，rn2 -> java，rn3 -> python，rn4 -> go
+     * 比赛可用语言
      */
-    private Integer languageMask;
+    private List<Integer> language;
 
     /**
      * 比赛密码
@@ -53,19 +99,25 @@ public class ContestUpdateReqDTO {
     private String password;
 
     /**
-     * 比赛描述附件
-     */
-    private String attach;
-
-    /**
      * 每个学校或组织显示排名最高的k支队r
      */
     private Integer topteam;
 
     /**
-     * 获奖比例
+     * 金奖获奖率
      */
-    private Integer awardRatio;
+    private String ratioGold;
+
+    /**
+     * 银奖获奖率
+     */
+    private String ratiosilver;
+
+    /**
+     * 铜奖获奖率
+     */
+    private String ratiobronze;
+
 
     /**
      * 封榜分钟数
@@ -76,4 +128,9 @@ public class ContestUpdateReqDTO {
      * 结束后持续封榜分钟数
      */
     private Integer frozenAfter;
+
+    /**
+     *
+     */
+    private List<ProblemMapDO> problemMapDOList;
 }
