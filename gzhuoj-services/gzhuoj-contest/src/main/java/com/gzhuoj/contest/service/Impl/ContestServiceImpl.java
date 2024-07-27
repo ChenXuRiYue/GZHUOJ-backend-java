@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gzhuoj.contest.constant.PathConstant;
 import com.gzhuoj.contest.dto.req.ContestAllReqDTO;
 import com.gzhuoj.contest.dto.req.ContestCreateReqDTO;
+import com.gzhuoj.contest.dto.req.ContestStatusReqDTO;
 import com.gzhuoj.contest.dto.req.ContestUpdateReqDTO;
 import com.gzhuoj.contest.dto.resp.ContestAllRespDTO;
 import com.gzhuoj.contest.mapper.ContestDescrMapper;
@@ -131,6 +132,23 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, ContestDO> im
         return result.convert(each -> BeanUtil.toBean(each, ContestAllRespDTO.class));
     }
 
+    @Override
+    public void changeStatus(ContestStatusReqDTO requestParam) {
+        LambdaQueryWrapper<ContestDO> queryWrapper = Wrappers.lambdaQuery(ContestDO.class)
+                .eq(ContestDO::getContestId, requestParam.getId())
+                .eq(ContestDO::getDeleteFlag, 0);
+        ContestDO hasContestDO = baseMapper.selectOne(queryWrapper);
+        if(hasContestDO == null){
+            throw new ClientException("比赛编号不存在");
+        }
+        LambdaUpdateWrapper<ContestDO> updateWrapper = Wrappers.lambdaUpdate(ContestDO.class)
+                .eq(ContestDO::getContestId, requestParam.getId())
+                .eq(ContestDO::getDeleteFlag, 0);
+        ContestDO contestDO = new ContestDO();
+        contestDO.setContestStatus(requestParam.getStatus() ^ 1);
+        baseMapper.update(contestDO, updateWrapper);
+    }
+
     @SneakyThrows
     private String createUniqueDir() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -166,8 +184,10 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, ContestDO> im
                 , requestParam.getEndMinute()
         );
         int mask = 0;
-        for(Integer num : requestParam.getLanguage()){
-            mask |= num;
+        if(CollUtil.isNotEmpty(requestParam.getLanguage())) {
+            for (Integer num : requestParam.getLanguage()) {
+                mask |= num;
+            }
         }
         Integer contestID = requestParam.getNewContestId() == null ? requestParam.getContestId() : requestParam.getNewContestId();
         ContestDO contestDO = ContestDO.builder()

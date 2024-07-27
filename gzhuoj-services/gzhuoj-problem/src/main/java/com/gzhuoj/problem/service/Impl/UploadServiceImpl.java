@@ -1,6 +1,5 @@
 package com.gzhuoj.problem.service.Impl;
 
-import com.gzhuoj.problem.constant.PathConstant;
 import com.gzhuoj.problem.model.entity.ProblemDO;
 import com.gzhuoj.problem.service.ProblemService;
 import com.gzhuoj.problem.service.UploadService;
