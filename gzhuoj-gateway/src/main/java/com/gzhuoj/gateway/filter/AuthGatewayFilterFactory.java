@@ -36,7 +36,7 @@ public class AuthGatewayFilterFactory extends AbstractGatewayFilterFactory<Objec
                 ServerHttpRequest request = exchange.getRequest();
 
                 // 使用hutools工具包判断是否在白名单中
-                if(CollUtil.contains(authProperties.getExcludePaths(), request.getPath())){
+                if(checkExclude(String.valueOf(request.getPath()))){
                     return chain.filter(exchange);
                 }
 
@@ -63,5 +63,14 @@ public class AuthGatewayFilterFactory extends AbstractGatewayFilterFactory<Objec
                 return chain.filter(ex);
             }
         };
+    }
+    private boolean checkExclude(String path){
+        List<String> excludePaths = authProperties.getExcludePaths();
+        for(String str : excludePaths){
+            if(str.equals(path)){
+                return true;
+            }
+        }
+        return false;
     }
 }
