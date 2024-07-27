@@ -21,7 +21,7 @@ public class ContestController {
     }
 
     @PostMapping("/update")
-    public Result<Void> update(ContestUpdateReqDTO requestParam){
+    public Result<Void> update(@RequestBody ContestUpdateReqDTO requestParam){
         contestService.update(requestParam);
         return Results.success();
     }

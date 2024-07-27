@@ -13,6 +13,7 @@ import com.gzhuoj.usr.dto.resp.AdminUserListRespDTO;
 import com.gzhuoj.usr.mapper.UserMapper;
 import com.gzhuoj.usr.model.entity.UserDO;
 import com.gzhuoj.usr.remote.AdminRemoteService;
+import com.gzhuoj.usr.remote.dto.req.UpdateContestReqDTO;
 import com.gzhuoj.usr.remote.dto.req.UpdateProblemReqDTO;
 import com.gzhuoj.usr.service.AdminService;
 import common.toolkit.GenerateRandStrUtil;
@@ -120,6 +121,11 @@ public class AdminServiceImpl extends ServiceImpl<UserMapper, UserDO> implements
             updateProblemReqDTO.setProblemNum(requestParam.getId());
             updateProblemReqDTO.setProblemStatus(requestParam.getStatus() ^ 1);
             adminRemoteService.updateProblem(updateProblemReqDTO);
+        } else if(Objects.equals("contest", requestParam.getItem())){
+            UpdateContestReqDTO updateContestReqDTO = new UpdateContestReqDTO();
+            updateContestReqDTO.setContestStatus(requestParam.getId());
+            updateContestReqDTO.setContestStatus(requestParam.getStatus() ^ 1);
+            adminRemoteService.updateContest(updateContestReqDTO);
         }
         /*
             TODO -> contest
