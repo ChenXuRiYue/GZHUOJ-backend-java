@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.gzhuoj.contest.dto.req.*;
 import com.gzhuoj.contest.dto.resp.RegContestGenTeamRespDTO;
+import com.gzhuoj.contest.dto.resp.RegContestTeamInfoRespDTO;
 import com.gzhuoj.contest.mapper.TeamMapper;
 import com.gzhuoj.contest.model.entity.TeamDO;
 import com.gzhuoj.contest.service.ContestService;
@@ -222,6 +223,20 @@ public class RegContestServiceImpl implements RegContestService {
         LambdaUpdateWrapper<TeamDO> updateWrapper = Wrappers.lambdaUpdate(TeamDO.class)
                 .eq(TeamDO::getTeamId, requestParam.getTeamId());
         teamMapper.update(teamDO, updateWrapper);
+    }
+
+    @Override
+    public RegContestTeamInfoRespDTO teamInfo(RegContestTeamInfoReqDTO requestParam) {
+        LambdaQueryWrapper<TeamDO> queryWrapper = Wrappers.lambdaQuery(TeamDO.class)
+                .eq(TeamDO::getContestId, requestParam.getCid())
+                .eq(TeamDO::getTeamId, requestParam.getTeamId());
+        TeamDO hasTeamDO = teamMapper.selectOne(queryWrapper);
+        if(hasTeamDO == null){
+            throw new ClientException(TEAM_INFO_NOT_FOUND_ERROR);
+        }
+        RegContestTeamInfoRespDTO bean = BeanUtil.toBean(hasTeamDO, RegContestTeamInfoRespDTO.class);
+        bean.setCid(requestParam.getCid());
+        return bean;
     }
 
 

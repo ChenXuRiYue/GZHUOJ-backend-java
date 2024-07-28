@@ -19,7 +19,8 @@ public enum BaseErrorCode implements IErrorCode {
     TEAM_LOGIN_PASSWORD_ERROR("A000202", "密码错误"),
     TEAM_DELETE_ERROR("A000203", "删除队伍失败"),
     TEAM_UPDATE_NOT_FOUND_ERROR("A000204", "队伍不存在"),
-    TEAM_UPDATE_LOW_PASSWORD_ERROR("A000204", "密码长度至少为六位"),
+    TEAM_INFO_NOT_FOUND_ERROR("A000205", "队伍不存在"),
+    TEAM_UPDATE_LOW_PASSWORD_ERROR("A000206", "密码长度至少为六位"),
 
 
 
