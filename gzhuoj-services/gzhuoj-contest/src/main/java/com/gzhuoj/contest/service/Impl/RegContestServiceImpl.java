@@ -3,11 +3,11 @@ package com.gzhuoj.contest.service.Impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.gzhuoj.contest.dto.req.RegContestGenTeamReqDTO;
-import com.gzhuoj.contest.dto.req.RegContestLoginReqDTO;
-import com.gzhuoj.contest.dto.req.RegContestLogoutReqDTO;
+import com.gzhuoj.contest.dto.req.*;
 import com.gzhuoj.contest.dto.resp.RegContestGenTeamRespDTO;
+import com.gzhuoj.contest.dto.resp.RegContestTeamInfoRespDTO;
 import com.gzhuoj.contest.mapper.TeamMapper;
 import com.gzhuoj.contest.model.entity.TeamDO;
 import com.gzhuoj.contest.service.ContestService;
@@ -27,8 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import static common.convention.errorcode.BaseErrorCode.TEAM_LOGIN_ACCOUNT_ERROR;
-import static common.convention.errorcode.BaseErrorCode.TEAM_LOGIN_PASSWORD_ERROR;
+import static common.convention.errorcode.BaseErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -62,7 +61,7 @@ public class RegContestServiceImpl implements RegContestService {
         List<String> teamList = StrUtil.isEmpty(description) ? new ArrayList<>() : Arrays.asList(description.split("\n"));
         List<RegContestGenTeamRespDTO> teamRespList = new ArrayList<>();
         List<TeamDO> resultTeam = new ArrayList<>();
-        String teamPrefix = "Team";
+        String teamPrefix = "team";
         if(teamList.size() == 1){ // 只有一行可能是根据数量生成空队伍
             String[] line = teamList.get(0).split("[#\\t]");
             if(line.length == 1) {
@@ -76,7 +75,7 @@ public class RegContestServiceImpl implements RegContestService {
                         teamDO.setContestId(requestParam.getCid());
                         teamDO.setTeamStatus(0);
                         teamDO.setTeamType(0);
-                        teamDO.setTeamId(StrUtil.join("_", teamPrefix, leadZero(Integer.toString(i), 4)));
+                        teamDO.setTeamId(teamPrefix + leadZero(Integer.toString(i), 4));
                         teamDO.setPassword(GenerateRandStrUtil.getRandStr(8));
                         resultTeam.add(teamDO);
                         teamRespList.add(BeanUtil.toBean(teamDO, RegContestGenTeamRespDTO.class));
@@ -179,6 +178,65 @@ public class RegContestServiceImpl implements RegContestService {
     @Override
     public void logout(RegContestLogoutReqDTO requestParam) {
         // TODO
+    }
+
+    @Override
+    public void deleteTeam(RegContestDelTeamReqDTO requestParam) {
+        LambdaQueryWrapper<TeamDO> queryWrapper = Wrappers.lambdaQuery(TeamDO.class)
+                .eq(TeamDO::getTeamId, requestParam.getTeamId())
+                .eq(TeamDO::getContestId, requestParam.getCid());
+        teamMapper.delete(queryWrapper);
+    }
+
+    @Override
+    public void updateTeam(RegContestUpdateTeamReqDTO requestParam) {
+        LambdaQueryWrapper<TeamDO> queryWrapper = Wrappers.lambdaQuery(TeamDO.class)
+                .eq(TeamDO::getContestId, requestParam.getCid())
+                .eq(TeamDO::getTeamId, requestParam.getTeamId());
+        TeamDO hasTeamDO = teamMapper.selectOne(queryWrapper);
+        if(hasTeamDO == null){
+            throw new ClientException(TEAM_UPDATE_NOT_FOUND_ERROR);
+        }
+        String newPassword = requestParam.getNewPassword();
+        if(!StrUtil.isEmpty(newPassword)){
+            if(newPassword.length() < 6){
+                throw new ClientException(TEAM_UPDATE_LOW_PASSWORD_ERROR);
+            }
+        }
+        Integer teamType = requestParam.getTeamType();
+        if(teamType != null){
+            if(teamType < 0 || teamType > 2){
+                teamType = 0;
+            }
+        }
+        // TODO privilege判断
+        TeamDO teamDO = TeamDO.builder()
+                .teamName(requestParam.getTeamName())
+                .teamMember(requestParam.getTeamMember())
+                .coach(requestParam.getCoach())
+                .school(requestParam.getSchool())
+                .room(requestParam.getRoom())
+                .teamType(teamType)
+                .privilege(requestParam.getPrivilege())
+                .password(newPassword)
+                .build();
+        LambdaUpdateWrapper<TeamDO> updateWrapper = Wrappers.lambdaUpdate(TeamDO.class)
+                .eq(TeamDO::getTeamId, requestParam.getTeamId());
+        teamMapper.update(teamDO, updateWrapper);
+    }
+
+    @Override
+    public RegContestTeamInfoRespDTO teamInfo(RegContestTeamInfoReqDTO requestParam) {
+        LambdaQueryWrapper<TeamDO> queryWrapper = Wrappers.lambdaQuery(TeamDO.class)
+                .eq(TeamDO::getContestId, requestParam.getCid())
+                .eq(TeamDO::getTeamId, requestParam.getTeamId());
+        TeamDO hasTeamDO = teamMapper.selectOne(queryWrapper);
+        if(hasTeamDO == null){
+            throw new ClientException(TEAM_INFO_NOT_FOUND_ERROR);
+        }
+        RegContestTeamInfoRespDTO bean = BeanUtil.toBean(hasTeamDO, RegContestTeamInfoRespDTO.class);
+        bean.setCid(requestParam.getCid());
+        return bean;
     }
 
 

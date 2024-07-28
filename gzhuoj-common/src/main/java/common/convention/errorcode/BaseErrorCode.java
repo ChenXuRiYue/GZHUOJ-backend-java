@@ -17,6 +17,12 @@ public enum BaseErrorCode implements IErrorCode {
     USER_ACCOUNT_VERIFY_ERROR("A000110", "用户账号校验失败"),
     TEAM_LOGIN_ACCOUNT_ERROR("A000201", "队伍不存在"),
     TEAM_LOGIN_PASSWORD_ERROR("A000202", "密码错误"),
+    TEAM_DELETE_ERROR("A000203", "删除队伍失败"),
+    TEAM_UPDATE_NOT_FOUND_ERROR("A000204", "队伍不存在"),
+    TEAM_INFO_NOT_FOUND_ERROR("A000205", "队伍不存在"),
+    TEAM_UPDATE_LOW_PASSWORD_ERROR("A000206", "密码长度至少为六位"),
+
+
 
     // ========== 二级宏观错误码 系统请求缺少幂等Token ==========
     IDEMPOTENT_TOKEN_NULL_ERROR("A000200", "幂等Token为空"),

@@ -33,7 +33,7 @@ public class UserController {
      * @param requestParam 用户信息, 每次更新时需要验证密码
      * @return 用户账号
      */
-    @PostMapping("/update")
+    @PutMapping("/update")
     public Result<UserInfoUpdateRespDTO> updateInfo(@RequestBody UserInfoUpdateReqDTO requestParam) {
         return Results.success(userService.updateInfo(requestParam));
     }
