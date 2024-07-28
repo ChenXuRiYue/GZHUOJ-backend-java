@@ -2,6 +2,7 @@ package com.gzhuoj.contest.controller;
 
 import com.gzhuoj.contest.dto.req.RegContestGenTeamReqDTO;
 import com.gzhuoj.contest.dto.req.RegContestLoginReqDTO;
+import com.gzhuoj.contest.dto.req.RegContestLogoutReqDTO;
 import com.gzhuoj.contest.dto.resp.RegContestGenTeamRespDTO;
 import com.gzhuoj.contest.service.RegContestService;
 import common.convention.result.Result;
@@ -28,6 +29,12 @@ public class RegContestController {
     @PostMapping("/login")
     public Result<Void> login(@RequestBody RegContestLoginReqDTO requestParam){
         regContestService.login(requestParam);
+        return Results.success();
+    }
+
+    @GetMapping("/logout")
+    public Result<Void> logout(RegContestLogoutReqDTO requestParam){
+        regContestService.logout(requestParam);
         return Results.success();
     }
 }

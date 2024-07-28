@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.gzhuoj.contest.dto.req.RegContestGenTeamReqDTO;
 import com.gzhuoj.contest.dto.req.RegContestLoginReqDTO;
+import com.gzhuoj.contest.dto.req.RegContestLogoutReqDTO;
 import com.gzhuoj.contest.dto.resp.RegContestGenTeamRespDTO;
 import com.gzhuoj.contest.mapper.TeamMapper;
 import com.gzhuoj.contest.model.entity.TeamDO;
@@ -174,6 +175,12 @@ public class RegContestServiceImpl implements RegContestService {
         }
         // TODO
     }
+
+    @Override
+    public void logout(RegContestLogoutReqDTO requestParam) {
+        // TODO
+    }
+
 
     private String leadZero(String s, int len) {
         StringBuilder sBuilder = new StringBuilder(s);
