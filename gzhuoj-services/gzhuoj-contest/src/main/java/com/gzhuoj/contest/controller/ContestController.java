@@ -23,6 +23,9 @@ import java.util.regex.Pattern;
 
 import static common.convention.errorcode.BaseErrorCode.ADMIN_UPLOAD_ILLEGAL_PROBLEM_DESCRIPTION_ERROR;
 
+/**
+ * 比赛后端管理控制层
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/gzhuoj/contest")
