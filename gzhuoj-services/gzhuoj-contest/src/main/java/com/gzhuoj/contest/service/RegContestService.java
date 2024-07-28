@@ -2,6 +2,7 @@ package com.gzhuoj.contest.service;
 
 import com.gzhuoj.contest.dto.req.*;
 import com.gzhuoj.contest.dto.resp.RegContestGenTeamRespDTO;
+import com.gzhuoj.contest.dto.resp.RegContestTeamInfoRespDTO;
 
 import java.util.List;
 
@@ -15,4 +16,6 @@ public interface RegContestService {
     void deleteTeam(RegContestDelTeamReqDTO requestParam);
 
     void updateTeam(RegContestUpdateTeamReqDTO requestParam);
+
+    RegContestTeamInfoRespDTO teamInfo(RegContestTeamInfoReqDTO requestParam);
 }

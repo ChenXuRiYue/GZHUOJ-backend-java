@@ -46,7 +46,7 @@ public class ContestController {
      * 更新比赛
      * @param requestParam 更新比赛参数
      */
-    @PostMapping("/update")
+    @PutMapping("/update")
     public Result<Void> update(@RequestBody ContestUpdateReqDTO requestParam){
         contestService.update(requestParam);
         return Results.success();
