@@ -5,11 +5,13 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.gzhuoj.contest.dto.req.RegContestGenTeamReqDTO;
+import com.gzhuoj.contest.dto.req.RegContestLoginReqDTO;
 import com.gzhuoj.contest.dto.resp.RegContestGenTeamRespDTO;
 import com.gzhuoj.contest.mapper.TeamMapper;
 import com.gzhuoj.contest.model.entity.TeamDO;
 import com.gzhuoj.contest.service.ContestService;
 import com.gzhuoj.contest.service.RegContestService;
+import common.convention.errorcode.BaseErrorCode;
 import common.exception.ClientException;
 import common.toolkit.GenerateRandStrUtil;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
+import static common.convention.errorcode.BaseErrorCode.TEAM_LOGIN_ACCOUNT_ERROR;
+import static common.convention.errorcode.BaseErrorCode.TEAM_LOGIN_PASSWORD_ERROR;
 
 @Service
 @RequiredArgsConstructor
@@ -153,6 +158,21 @@ public class RegContestServiceImpl implements RegContestService {
         }
         resultTeam.forEach(teamMapper::insertOrUpdateTeam);
         return teamRespList;
+    }
+
+    @Override
+    public void login(RegContestLoginReqDTO requestParam) {
+        // TODO 权限判断
+        LambdaQueryWrapper<TeamDO> queryWrapper = Wrappers.lambdaQuery(TeamDO.class)
+                .eq(TeamDO::getTeamId, requestParam.getTeamId());
+        TeamDO teamDO = teamMapper.selectOne(queryWrapper);
+        if(teamDO == null){
+            throw new ClientException(TEAM_LOGIN_ACCOUNT_ERROR);
+        }
+        if(!Objects.equals(teamDO.getPassword(), requestParam.getPassword())){
+            throw new ClientException(TEAM_LOGIN_PASSWORD_ERROR);
+        }
+        // TODO
     }
 
     private String leadZero(String s, int len) {

@@ -1,6 +1,7 @@
 package com.gzhuoj.contest.controller;
 
 import com.gzhuoj.contest.dto.req.RegContestGenTeamReqDTO;
+import com.gzhuoj.contest.dto.req.RegContestLoginReqDTO;
 import com.gzhuoj.contest.dto.resp.RegContestGenTeamRespDTO;
 import com.gzhuoj.contest.service.RegContestService;
 import common.convention.result.Result;
@@ -22,5 +23,11 @@ public class RegContestController {
     @PostMapping("/admin/genteam")
     public Result<List<RegContestGenTeamRespDTO>> genTeam(@RequestBody RegContestGenTeamReqDTO requestParam){
         return Results.success(regContestService.genTeam(requestParam));
+    }
+
+    @PostMapping("/login")
+    public Result<Void> login(@RequestBody RegContestLoginReqDTO requestParam){
+        regContestService.login(requestParam);
+        return Results.success();
     }
 }
