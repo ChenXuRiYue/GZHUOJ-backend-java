@@ -1,9 +1,8 @@
 package com.gzhuoj.contest.service;
 
-import com.gzhuoj.contest.dto.req.RegContestGenTeamReqDTO;
-import com.gzhuoj.contest.dto.req.RegContestLoginReqDTO;
-import com.gzhuoj.contest.dto.req.RegContestLogoutReqDTO;
+import com.gzhuoj.contest.dto.req.*;
 import com.gzhuoj.contest.dto.resp.RegContestGenTeamRespDTO;
+import com.gzhuoj.contest.dto.resp.RegContestTeamInfoRespDTO;
 
 import java.util.List;
 
@@ -13,4 +12,10 @@ public interface RegContestService {
     void login(RegContestLoginReqDTO requestParam);
 
     void logout(RegContestLogoutReqDTO requestParam);
+
+    void deleteTeam(RegContestDelTeamReqDTO requestParam);
+
+    void updateTeam(RegContestUpdateTeamReqDTO requestParam);
+
+    RegContestTeamInfoRespDTO teamInfo(RegContestTeamInfoReqDTO requestParam);
 }
