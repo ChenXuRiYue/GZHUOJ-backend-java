@@ -13,39 +13,38 @@ import com.gzhuoj.problem.dto.req.CreateProblemReqDTO;
 import com.gzhuoj.problem.dto.req.ListProblemReqDTO;
 import com.gzhuoj.problem.dto.req.UpdateProblemReqDTO;
 import com.gzhuoj.problem.dto.resp.ListProblemRespDTO;
+import com.gzhuoj.problem.mapper.ProblemDescrMapper;
 import com.gzhuoj.problem.mapper.ProblemMapper;
-import com.gzhuoj.problem.mapper.TestCaseMapper;
 import com.gzhuoj.problem.mapper.TestExampleMapper;
 import com.gzhuoj.problem.model.entity.ProblemDO;
-import com.gzhuoj.problem.model.entity.TestCaseDO;
+import com.gzhuoj.problem.model.entity.ProblemDescrDO;
 import com.gzhuoj.problem.model.entity.TestExampleDO;
 import com.gzhuoj.problem.service.ProblemService;
+import common.convention.errorcode.BaseErrorCode;
 import common.exception.ClientException;
-import common.exception.ServiceException;
 import common.toolkit.GenerateRandStrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+
+import static common.convention.errorcode.BaseErrorCode.PROBLEM_ID_EXISTED;
 
 @Service
 @RequiredArgsConstructor
 public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> implements ProblemService {
 
-    private final TestCaseMapper testCaseMapper;
     private final TestExampleMapper testExampleMapper;
+    private final ProblemDescrMapper problemDescrMapper;
     @Override
     public void createProblem(CreateProblemReqDTO requestParam) {
         // 处理更新时间，创建时间？
@@ -61,7 +60,6 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
             ProblemDO problemDO = ProblemDO.builder()
                     .problemNum(requestParam.getProblemNum())
                     .problemName(requestParam.getProblemName())
-                    .description(requestParam.getDescription())
                     .timeLimit(requestParam.getTimeLimit())
                     .memoryLimit(requestParam.getMemoryLimit())
                     .ProblemType(requestParam.getProblemType())
@@ -72,6 +70,10 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
                     .solved(0)
                     .problemStatus(0) // 默认设置为不公开
                     .build();
+
+            ProblemDescrDO problemDescrDO = new ProblemDescrDO(requestParam.getProblemNum(), requestParam.getDescription());
+            problemDescrMapper.insert(problemDescrDO);
+
             List<TestExampleDO> testExampleList = requestParam.getTestExampleList();
             // 由于样例一般很小，直接用数据库存
             if(CollUtil.isNotEmpty(testExampleList)) {
@@ -131,17 +133,32 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
             throw new ClientException("题目不存在");
         }
         Integer problemNum = requestParam.getNewProblemNum() != null ? requestParam.getNewProblemNum() : requestParam.getProblemNum();
+        if(!Objects.equals(problemNum, requestParam.getProblemNum())){
+            LambdaQueryWrapper<ProblemDO> hsaQueryWrapper = Wrappers.lambdaQuery(ProblemDO.class)
+                    .eq(ProblemDO::getProblemNum, problemNum)
+                    .eq(ProblemDO::getDeleteFlag, 0);
+            ProblemDO problemDO = baseMapper.selectOne(hsaQueryWrapper);
+            if(problemDO != null){
+                throw new ClientException(PROBLEM_ID_EXISTED);
+            }
+        }
         ProblemDO problemDO = ProblemDO.builder()
                 .problemNum(problemNum)
                 .ProblemType(requestParam.getProblemType())
                 .problemName(requestParam.getProblemName())
                 .timeLimit(requestParam.getTimeLimit())
                 .memoryLimit(requestParam.getMemoryLimit())
-                .description(requestParam.getDescription())
                 .author(requestParam.getAuthor())
                 .spj(requestParam.getSpj())
                 .problemStatus(requestParam.getProblemStatus())
                 .build();
+        // 删除原本的题目描述，插入新的
+        LambdaQueryWrapper<ProblemDescrDO> problemDescrDO = Wrappers.lambdaQuery(ProblemDescrDO.class)
+                .eq(ProblemDescrDO::getProblemNum, requestParam.getProblemNum());
+        problemDescrMapper.delete(problemDescrDO);
+        ProblemDescrDO newProblemDescrDO = new ProblemDescrDO(problemNum, requestParam.getDescription());
+        problemDescrMapper.insert(newProblemDescrDO);
+
         LambdaUpdateWrapper<ProblemDO> updateWrapper = Wrappers.lambdaUpdate(ProblemDO.class)
                 .eq(ProblemDO::getProblemNum, requestParam.getProblemNum())
                 .eq(ProblemDO::getDeleteFlag, 0);
