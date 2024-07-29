@@ -20,11 +20,6 @@ public class ProblemDO extends BaseDO {
     private String problemName;
 
     /**
-     * 题目题面
-     */
-    private String description;
-
-    /**
      * 时间限制
      */
     private Integer timeLimit;
