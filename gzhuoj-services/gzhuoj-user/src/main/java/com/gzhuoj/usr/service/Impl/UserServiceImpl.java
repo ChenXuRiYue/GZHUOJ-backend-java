@@ -1,16 +1,12 @@
 package com.gzhuoj.usr.service.Impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gzhuoj.usr.config.JwtProperties;
-import com.gzhuoj.usr.dto.req.UserBatchImportReqDTO;
 import com.gzhuoj.usr.dto.req.UserInfoUpdateReqDTO;
 import com.gzhuoj.usr.dto.req.UserLoginReqDTO;
 import com.gzhuoj.usr.dto.resp.UserInfoRespDTO;
@@ -21,14 +17,13 @@ import com.gzhuoj.usr.mapper.UserMapper;
 import com.gzhuoj.usr.service.UserService;
 import com.gzhuoj.usr.utils.JwtTool;
 import common.exception.ClientException;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -47,7 +42,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
      * @return
      */
     @Override
-    public UserLoginRespDTO login(UserLoginReqDTO requestParam) {
+    public UserLoginRespDTO login(UserLoginReqDTO requestParam, HttpServletResponse response) {
         // TODO 覆盖更多的场景，用户名不存在。等等情形
         LambdaQueryWrapper<UserDO> queryWrapper = Wrappers.lambdaQuery(UserDO.class)
                 .eq(UserDO::getUserAccount, requestParam.getUserAccount())
@@ -59,6 +54,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         }
 
         String token = jwtTool.createToken(userDO.getUserAccount(), jwtProperties.getTokenTTL());
+        response.addHeader("token", token);
+//        response.addHeader("Access-Controler-Expose-headers", "token");
+
+        return new UserLoginRespDTO().builder()
+                .userName(userDO.getUsername())
+                .userAccount(userDO.getUserAccount())
+                .build();
 // token 本身就可以包含用户信息；
 //        // 用redis存储用户信息 ->  返回一个token来证明用户已经登录
 //        String KEY = "Login_" + requestParam.getUserAccount();
@@ -76,7 +78,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
 //
 //        stringRedisTemplate.opsForHash().put(KEY, uuid, JSON.toJSONString(userDO));
 //        stringRedisTemplate.expire(KEY, 30L, TimeUnit.DAYS);
-        return new UserLoginRespDTO(token);
+//         new UserLoginRespDTO(token);
     }
 
     @Override
