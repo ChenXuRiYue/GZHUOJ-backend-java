@@ -16,5 +16,5 @@ public class JwtProperties {
     private String password;
     private String alias;
     // 默认三十分钟
-    private Duration tokenTTL = Duration.ofMinutes(30);
+    private Duration tokenTTL = Duration.ofHours(30);
 }

@@ -1,7 +1,9 @@
 package com.gzhuoj.contest.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gzhuoj.contest.dto.req.*;
 import com.gzhuoj.contest.dto.resp.RegContestGenTeamRespDTO;
+import com.gzhuoj.contest.dto.resp.RegContestStatusRespDTO;
 import com.gzhuoj.contest.dto.resp.RegContestTeamInfoRespDTO;
 
 import java.util.List;
@@ -18,4 +20,6 @@ public interface RegContestService {
     void updateTeam(RegContestUpdateTeamReqDTO requestParam);
 
     RegContestTeamInfoRespDTO teamInfo(RegContestTeamInfoReqDTO requestParam);
+
+    IPage<RegContestStatusRespDTO> status(RegContestStatusReqDTO requestParam);
 }
