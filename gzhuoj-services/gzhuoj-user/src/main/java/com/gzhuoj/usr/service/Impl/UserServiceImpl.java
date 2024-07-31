@@ -16,6 +16,8 @@ import com.gzhuoj.usr.model.entity.UserDO;
 import com.gzhuoj.usr.mapper.UserMapper;
 import com.gzhuoj.usr.service.UserService;
 import com.gzhuoj.usr.utils.JwtTool;
+import common.biz.user.UserContext;
+import common.convention.errorcode.BaseErrorCode;
 import common.exception.ClientException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,9 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
+
+import static common.convention.errorcode.BaseErrorCode.USER_ACCOUNT_VERIFY_ERROR;
+import static common.convention.errorcode.BaseErrorCode.USER_PASSWORD_VERIFY_ERROR;
 
 @Service
 @Slf4j
@@ -46,21 +51,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         // TODO 覆盖更多的场景，用户名不存在。等等情形
         LambdaQueryWrapper<UserDO> queryWrapper = Wrappers.lambdaQuery(UserDO.class)
                 .eq(UserDO::getUserAccount, requestParam.getUserAccount())
-                .eq(UserDO::getPassword, requestParam.getPassword())
                 .eq(UserDO::getDeleteFlag, 0);
         UserDO userDO = baseMapper.selectOne(queryWrapper);
         if (userDO == null) {
-            throw new ClientException("用户不存在或密码错误");
+            throw new ClientException(USER_ACCOUNT_VERIFY_ERROR);
+        }
+        if(!Objects.equals(userDO.getPassword(), requestParam.getPassword())){
+            throw new ClientException(USER_PASSWORD_VERIFY_ERROR);
         }
 
-        String token = jwtTool.createToken(userDO.getUserAccount(), jwtProperties.getTokenTTL());
-        response.addHeader("token", token);
 //        response.addHeader("Access-Controler-Expose-headers", "token");
-
-        return new UserLoginRespDTO().builder()
-                .userName(userDO.getUsername())
-                .userAccount(userDO.getUserAccount())
-                .build();
+        Integer role = userDO.getRole() == null ? 2 : userDO.getRole();
+        String token = jwtTool.createToken(userDO.getUserAccount(), role, jwtProperties.getTokenTTL());
+        response.addHeader("token", token);
 // token 本身就可以包含用户信息；
 //        // 用redis存储用户信息 ->  返回一个token来证明用户已经登录
 //        String KEY = "Login_" + requestParam.getUserAccount();
@@ -78,7 +81,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
 //
 //        stringRedisTemplate.opsForHash().put(KEY, uuid, JSON.toJSONString(userDO));
 //        stringRedisTemplate.expire(KEY, 30L, TimeUnit.DAYS);
-//         new UserLoginRespDTO(token);
+        return new UserLoginRespDTO(token);
     }
 
     @Override

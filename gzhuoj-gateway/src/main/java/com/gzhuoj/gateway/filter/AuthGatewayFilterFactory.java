@@ -10,6 +10,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,8 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
 @Component
 @RequiredArgsConstructor
@@ -42,23 +45,29 @@ public class AuthGatewayFilterFactory extends AbstractGatewayFilterFactory<Objec
 
                 // 获取请求头 中校验的token
                 String token = null;
-                List<String> headers = request.getHeaders().get("authorization");
+                List<String> headers = request.getHeaders().get("token");
                 if(CollUtil.isNotEmpty(headers)){
                     token = headers.get(0);
                 }
                 // 校验token
-                String userId = null;
+                Map<String, Object> claims = null;
                 try{
-                    userId = jwtTool.parseToken(token);
+                    claims = jwtTool.parseToken(token);
                 }catch(UnauthorizedException e){
+                    e.printStackTrace();
                     ServerHttpResponse response = exchange.getResponse();
+                    response.setStatusCode(HttpStatus.UNAUTHORIZED);
                     return response.setComplete();
                 }
                 // TODO  传递用户信息到下游服务中
-                System.out.println("userId = " + userId);
-                String userInfo = userId.toString();
+                Map<String, Object> finalClaims = claims;
+                ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
+                        .headers(httpHeaders -> {
+                            finalClaims.forEach((key, value) -> httpHeaders.add(key, value.toString()));
+                        })
+                        .build();
                 ServerWebExchange ex = exchange.mutate()
-                        .request(b -> b.header("userId", userInfo))
+                        .request(mutatedRequest)
                         .build();
                 return chain.filter(ex);
             }
