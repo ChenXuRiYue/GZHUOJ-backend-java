@@ -4,14 +4,19 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.gzhuoj.contest.dto.req.*;
 import com.gzhuoj.contest.dto.resp.RegContestGenTeamRespDTO;
+import com.gzhuoj.contest.dto.resp.RegContestStatusRespDTO;
 import com.gzhuoj.contest.dto.resp.RegContestTeamInfoRespDTO;
+import com.gzhuoj.contest.mapper.SubmitMapper;
 import com.gzhuoj.contest.mapper.TeamMapper;
+import com.gzhuoj.contest.model.entity.SubmitDO;
 import com.gzhuoj.contest.model.entity.TeamDO;
 import com.gzhuoj.contest.service.ContestService;
 import com.gzhuoj.contest.service.RegContestService;
+import common.biz.user.UserContext;
 import common.convention.errorcode.BaseErrorCode;
 import common.exception.ClientException;
 import common.toolkit.GenerateRandStrUtil;
@@ -35,6 +40,7 @@ import static common.convention.errorcode.BaseErrorCode.*;
 public class RegContestServiceImpl implements RegContestService {
     private final TeamMapper teamMapper;
     private final ContestService contestService;
+    private final SubmitMapper submitMapper;
 
     @Value("${RegContest.max-gen-team}")
     private Integer MAX_GEN_TEAM;
@@ -172,7 +178,6 @@ public class RegContestServiceImpl implements RegContestService {
         if(!Objects.equals(teamDO.getPassword(), requestParam.getPassword())){
             throw new ClientException(TEAM_LOGIN_PASSWORD_ERROR);
         }
-        // TODO
     }
 
     @Override
@@ -237,6 +242,29 @@ public class RegContestServiceImpl implements RegContestService {
         RegContestTeamInfoRespDTO bean = BeanUtil.toBean(hasTeamDO, RegContestTeamInfoRespDTO.class);
         bean.setCid(requestParam.getCid());
         return bean;
+    }
+
+    @Override
+    public IPage<RegContestStatusRespDTO> status(RegContestStatusReqDTO requestParam) {
+        // TODO 要判断当前team的比赛编号是否和传入的比赛编号相同
+        // TODO 要判断当前线程team的编号是否和传入的team编号相同
+        LambdaQueryWrapper<SubmitDO> queryWrapper = Wrappers.lambdaQuery(SubmitDO.class)
+                .eq(SubmitDO::getContestId, requestParam.getContestId());
+        if(requestParam.getProblemId() != null){
+            queryWrapper.eq(SubmitDO::getProblemId, requestParam.getProblemId());
+        }
+        if(requestParam.getLanguage() != null){
+            queryWrapper.eq(SubmitDO::getLanguage, requestParam.getLanguage());
+        }
+        if(requestParam.getStatus() != null){
+            queryWrapper.eq(SubmitDO::getStatus, requestParam.getStatus());
+        }
+        if(!StrUtil.isEmpty(requestParam.getTeamId())){
+            queryWrapper.like(SubmitDO::getTeamId, requestParam.getTeamId());
+        }
+        queryWrapper.orderBy(true, true, SubmitDO::getSubmitTime);
+        IPage<SubmitDO> result = submitMapper.selectPage(requestParam, queryWrapper);
+        return result.convert(each -> BeanUtil.toBean(each, RegContestStatusRespDTO.class));
     }
 
 

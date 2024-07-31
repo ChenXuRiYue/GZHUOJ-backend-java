@@ -1,7 +1,9 @@
 package com.gzhuoj.contest.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gzhuoj.contest.dto.req.*;
 import com.gzhuoj.contest.dto.resp.RegContestGenTeamRespDTO;
+import com.gzhuoj.contest.dto.resp.RegContestStatusRespDTO;
 import com.gzhuoj.contest.dto.resp.RegContestTeamInfoRespDTO;
 import com.gzhuoj.contest.service.RegContestService;
 import common.convention.result.Result;
@@ -77,5 +79,10 @@ public class RegContestController {
     @GetMapping("/teaminfo")
     public Result<RegContestTeamInfoRespDTO> teamInfo(RegContestTeamInfoReqDTO requestParam){
         return Results.success(regContestService.teamInfo(requestParam));
+    }
+
+    @GetMapping("/status")
+    public Result<IPage<RegContestStatusRespDTO>> status(RegContestStatusReqDTO requestParam){
+        return Results.success(regContestService.status(requestParam));
     }
 }

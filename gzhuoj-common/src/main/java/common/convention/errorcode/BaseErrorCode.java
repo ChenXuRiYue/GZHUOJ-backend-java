@@ -15,12 +15,15 @@ public enum BaseErrorCode implements IErrorCode {
     ADMIN_UPLOAD_ILLEGAL_FILE_ERROR("A000100", "上传测试数据文件部分失败，包含不合法的文件"),
     ADMIN_UPLOAD_ILLEGAL_PROBLEM_DESCRIPTION_ERROR("A000101", "上传题目描述附件部分失败，包含不合法的文件"),
     USER_ACCOUNT_VERIFY_ERROR("A000110", "用户账号校验失败"),
+    USER_PASSWORD_VERIFY_ERROR("A000111", "用户密码校验失败"),
     TEAM_LOGIN_ACCOUNT_ERROR("A000201", "队伍不存在"),
     TEAM_LOGIN_PASSWORD_ERROR("A000202", "密码错误"),
     TEAM_DELETE_ERROR("A000203", "删除队伍失败"),
     TEAM_UPDATE_NOT_FOUND_ERROR("A000204", "队伍不存在"),
     TEAM_INFO_NOT_FOUND_ERROR("A000205", "队伍不存在"),
     TEAM_UPDATE_LOW_PASSWORD_ERROR("A000206", "密码长度至少为六位"),
+
+    PROBLEM_ID_EXISTED("A000301", "新设题目编号已存在"),
 
 
 
