@@ -28,7 +28,7 @@ public class JwtTool {
     public String createToken(String userId, Duration ttl) {
         // 1.生成jws
         return JWT.create()
-                .setPayload("user", userId)
+                .setPayload("userId", userId)
                 .setExpiresAt(new Date(System.currentTimeMillis() + ttl.toMillis()))
                 .setSigner(jwtSigner)
                 .sign();
@@ -64,7 +64,7 @@ public class JwtTool {
             throw new UnauthorizedException("token已经过期");
         }
         // 4.数据格式校验
-        Object userPayload = jwt.getPayload("user");
+        Object userPayload = jwt.getPayload("userId");
         if (userPayload == null) {
             // 数据为空
             throw new UnauthorizedException("无效的token");
