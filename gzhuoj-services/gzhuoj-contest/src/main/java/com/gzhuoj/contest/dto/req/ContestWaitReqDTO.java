@@ -4,4 +4,5 @@ public class ContestWaitReqDTO {
     private Integer teamAccount;
     private Integer contestId;
 
+
 }
