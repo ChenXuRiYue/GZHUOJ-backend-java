@@ -86,6 +86,7 @@ public class RegContestServiceImpl implements RegContestService {
                         resultTeam.add(teamDO);
                         teamRespList.add(BeanUtil.toBean(teamDO, RegContestGenTeamRespDTO.class));
                     }
+
                     resultTeam.forEach(teamMapper::insertOrUpdateTeam);
                     return teamRespList;
                 }

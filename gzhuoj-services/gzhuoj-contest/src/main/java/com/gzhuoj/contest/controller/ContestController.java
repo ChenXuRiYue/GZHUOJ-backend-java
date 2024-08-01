@@ -93,9 +93,5 @@ public class ContestController {
         contestService.changeStatus(requestParam);
         return Results.success();
     }
-    /*
-    @GetMapping("/wait")
-    public Result<ContestWaitRespDTO> waitContest(@RequestBody ContestWaitReqDTO requestParam){
 
-    }*/
 }
