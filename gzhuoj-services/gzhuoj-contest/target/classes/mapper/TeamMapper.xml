@@ -9,7 +9,7 @@
     <insert id="insertOrUpdateTeam" parameterType="com.gzhuoj.contest.model.entity.TeamDO">
         INSERT INTO team (team_id, contest_id, team_status, password, team_name, team_member, team_type, coach, school,
                           room, privilege)
-        VALUES (#{team.teamId}, #{team.contestId}, #{team.teamStatus}, #{team.password}, #{team.teamName},
+        VALUES (#{team.teamAccount}, #{team.contestId}, #{team.teamStatus}, #{team.password}, #{team.teamName},
                 #{team.teamMember}, #{team.teamType}, #{team.coach}, #{team.school}, #{team.room},
                 #{team.privilege}) ON DUPLICATE KEY
         UPDATE

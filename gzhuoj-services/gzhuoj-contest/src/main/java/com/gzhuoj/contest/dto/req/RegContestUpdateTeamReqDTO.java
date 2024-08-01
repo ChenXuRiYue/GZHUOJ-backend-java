@@ -13,7 +13,7 @@ public class RegContestUpdateTeamReqDTO {
     /**
      * 队伍编号
      */
-    private String teamId;
+    private String teamAccount;
 
     /**
      * 队伍名

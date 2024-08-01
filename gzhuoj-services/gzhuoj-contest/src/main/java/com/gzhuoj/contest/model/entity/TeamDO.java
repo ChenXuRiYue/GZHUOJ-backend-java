@@ -16,7 +16,7 @@ public class TeamDO {
     /**
      * 队伍编号
      */
-    private String teamId;
+    private String teamAccount;
 
     /**
      * 比赛编号
@@ -67,4 +67,6 @@ public class TeamDO {
      * 队伍权限
      */
     private Integer teamPrivilege;
+
+
 }

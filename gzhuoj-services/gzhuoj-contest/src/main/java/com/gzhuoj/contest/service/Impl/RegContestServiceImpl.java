@@ -81,7 +81,7 @@ public class RegContestServiceImpl implements RegContestService {
                         teamDO.setContestId(requestParam.getCid());
                         teamDO.setTeamStatus(0);
                         teamDO.setTeamType(0);
-                        teamDO.setTeamId(teamPrefix + leadZero(Integer.toString(i), 4));
+                        teamDO.setTeamAccount(teamPrefix + leadZero(Integer.toString(i), 4));
                         teamDO.setPassword(GenerateRandStrUtil.getRandStr(8));
                         resultTeam.add(teamDO);
                         teamRespList.add(BeanUtil.toBean(teamDO, RegContestGenTeamRespDTO.class));
@@ -116,7 +116,7 @@ public class RegContestServiceImpl implements RegContestService {
                         if(!StrUtil.isEmpty(field)){
                             curTeamNum = field;
                         }
-                        teamDO.setTeamId(teamPrefix + curTeamNum);
+                        teamDO.setTeamAccount(teamPrefix + curTeamNum);
                     }
                     case "team_name" -> {
                         if(field.length() > 100){
@@ -170,7 +170,7 @@ public class RegContestServiceImpl implements RegContestService {
     public void login(RegContestLoginReqDTO requestParam) {
         // TODO 权限判断
         LambdaQueryWrapper<TeamDO> queryWrapper = Wrappers.lambdaQuery(TeamDO.class)
-                .eq(TeamDO::getTeamId, requestParam.getTeamId());
+                .eq(TeamDO::getTeamAccount, requestParam.getTeamAccount());
         TeamDO teamDO = teamMapper.selectOne(queryWrapper);
         if(teamDO == null){
             throw new ClientException(TEAM_LOGIN_ACCOUNT_ERROR);
@@ -188,7 +188,7 @@ public class RegContestServiceImpl implements RegContestService {
     @Override
     public void deleteTeam(RegContestDelTeamReqDTO requestParam) {
         LambdaQueryWrapper<TeamDO> queryWrapper = Wrappers.lambdaQuery(TeamDO.class)
-                .eq(TeamDO::getTeamId, requestParam.getTeamId())
+                .eq(TeamDO::getTeamAccount, requestParam.getTeamAccount())
                 .eq(TeamDO::getContestId, requestParam.getCid());
         teamMapper.delete(queryWrapper);
     }
@@ -197,7 +197,7 @@ public class RegContestServiceImpl implements RegContestService {
     public void updateTeam(RegContestUpdateTeamReqDTO requestParam) {
         LambdaQueryWrapper<TeamDO> queryWrapper = Wrappers.lambdaQuery(TeamDO.class)
                 .eq(TeamDO::getContestId, requestParam.getCid())
-                .eq(TeamDO::getTeamId, requestParam.getTeamId());
+                .eq(TeamDO::getTeamAccount, requestParam.getTeamAccount());
         TeamDO hasTeamDO = teamMapper.selectOne(queryWrapper);
         if(hasTeamDO == null){
             throw new ClientException(TEAM_UPDATE_NOT_FOUND_ERROR);
@@ -226,7 +226,7 @@ public class RegContestServiceImpl implements RegContestService {
                 .password(newPassword)
                 .build();
         LambdaUpdateWrapper<TeamDO> updateWrapper = Wrappers.lambdaUpdate(TeamDO.class)
-                .eq(TeamDO::getTeamId, requestParam.getTeamId());
+                .eq(TeamDO::getTeamAccount, requestParam.getTeamAccount());
         teamMapper.update(teamDO, updateWrapper);
     }
 
@@ -234,7 +234,7 @@ public class RegContestServiceImpl implements RegContestService {
     public RegContestTeamInfoRespDTO teamInfo(RegContestTeamInfoReqDTO requestParam) {
         LambdaQueryWrapper<TeamDO> queryWrapper = Wrappers.lambdaQuery(TeamDO.class)
                 .eq(TeamDO::getContestId, requestParam.getCid())
-                .eq(TeamDO::getTeamId, requestParam.getTeamId());
+                .eq(TeamDO::getTeamAccount, requestParam.getTeamAccount());
         TeamDO hasTeamDO = teamMapper.selectOne(queryWrapper);
         if(hasTeamDO == null){
             throw new ClientException(TEAM_INFO_NOT_FOUND_ERROR);
@@ -259,8 +259,8 @@ public class RegContestServiceImpl implements RegContestService {
         if(requestParam.getStatus() != null){
             queryWrapper.eq(SubmitDO::getStatus, requestParam.getStatus());
         }
-        if(!StrUtil.isEmpty(requestParam.getTeamId())){
-            queryWrapper.like(SubmitDO::getTeamId, requestParam.getTeamId());
+        if(!StrUtil.isEmpty(requestParam.getTeamAccount())){
+            queryWrapper.like(SubmitDO::getTeamAccount, requestParam.getTeamAccount());
         }
         queryWrapper.orderBy(true, true, SubmitDO::getSubmitTime);
         IPage<SubmitDO> result = submitMapper.selectPage(requestParam, queryWrapper);
