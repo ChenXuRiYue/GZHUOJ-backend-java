@@ -1,0 +1,47 @@
+message: "This is gateway environment"
+server:
+  port: 8080
+  address: 0.0.0.0
+
+
+spring:
+  ## 数据库配置
+  datasource:
+    username: root
+    password: gzhuoj
+    url: jdbc:mysql://47.120.53.127:3406/gzhuoj_user?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-test-query: select 1
+      connection-timeout: 20000
+      idle-timeout: 300000
+      maximum-pool-size: 5
+      minimum-idle: 5
+
+  application:
+    name: gzhuoj-gateway
+  cloud:
+    consul:
+      host: 47.120.53.127
+      port: 8500
+      discovery:
+        service-name: gzhuoj-gateway
+        heartbeat:
+          enabled: true
+    gateway:
+      routes:
+        - id: user                #路由规则id
+          uri:  lb://gzhuoj-user-service #路由目标服务
+          predicates:             #路由断言
+            - Path=/gzhuoj/user/**       #以请求路径作为判断规则
+          filters:
+            - Auth
+        - id: problem
+          uri:  lb://gzhuoj-problem-service
+          predicates:
+            - Path=/problem/**
+          filters:
+            - Auth #定义过滤器示例
+
+
+
