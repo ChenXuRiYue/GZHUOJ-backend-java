@@ -222,7 +222,7 @@ public class RegContestServiceImpl implements RegContestService {
                 .school(requestParam.getSchool())
                 .room(requestParam.getRoom())
                 .teamType(teamType)
-                .privilege(requestParam.getPrivilege())
+                .teamPrivilege(requestParam.getTeamPrivilege())
                 .password(newPassword)
                 .build();
         LambdaUpdateWrapper<TeamDO> updateWrapper = Wrappers.lambdaUpdate(TeamDO.class)

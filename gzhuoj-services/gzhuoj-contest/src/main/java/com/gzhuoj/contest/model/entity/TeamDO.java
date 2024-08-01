@@ -64,7 +64,7 @@ public class TeamDO {
     private String room;
 
     /**
-     * 账号权限
+     * 队伍权限
      */
-    private String privilege;
+    private Integer teamPrivilege;
 }

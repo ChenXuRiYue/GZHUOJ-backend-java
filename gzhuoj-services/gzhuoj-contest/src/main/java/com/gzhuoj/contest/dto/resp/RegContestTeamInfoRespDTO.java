@@ -48,5 +48,5 @@ public class RegContestTeamInfoRespDTO {
     /**
      * 账号权限
      */
-    private String privilege;
+    private Integer teamPrivilege;
 }
