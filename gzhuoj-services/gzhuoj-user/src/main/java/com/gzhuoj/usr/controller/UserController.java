@@ -1,18 +1,15 @@
 package com.gzhuoj.usr.controller;
 
-import com.gzhuoj.usr.dto.req.UserBatchImportReqDTO;
 import com.gzhuoj.usr.dto.req.UserInfoUpdateReqDTO;
 import com.gzhuoj.usr.dto.req.UserLoginReqDTO;
-import com.gzhuoj.usr.dto.resp.UserBatchImportRespDTO;
 import com.gzhuoj.usr.dto.resp.UserInfoRespDTO;
 import com.gzhuoj.usr.dto.resp.UserInfoUpdateRespDTO;
 import com.gzhuoj.usr.dto.resp.UserLoginRespDTO;
 import com.gzhuoj.usr.service.UserService;
 import common.convention.result.Result;
 import common.convention.result.Results;
-import lombok.AllArgsConstructor;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -24,8 +21,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public Result<UserLoginRespDTO> login(@RequestBody UserLoginReqDTO requestParam) {
-        return Results.success(userService.login(requestParam));
+    public Result<UserLoginRespDTO> login(@RequestBody UserLoginReqDTO requestParam, HttpServletResponse response) {
+        return Results.success(userService.login(requestParam, response));
     }
 
     /**

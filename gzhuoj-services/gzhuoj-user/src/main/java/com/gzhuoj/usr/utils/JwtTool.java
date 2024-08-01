@@ -21,6 +21,7 @@ public class JwtTool {
     public JwtTool(KeyPair keyPair) {
         this.jwtSigner = JWTSignerUtil.createSigner("rs256", keyPair);
     }
+
     /**
      * 创建 access-token
      *
@@ -68,7 +69,7 @@ public class JwtTool {
             throw new UnauthorizedException("token已经过期");
         }
         // 4.数据格式校验
-        Object userPayload = jwt.getPayload("user");
+        Object userPayload = jwt.getPayload("userId");
         if (userPayload == null) {
             // 数据为空
             throw new UnauthorizedException("无效的token");
