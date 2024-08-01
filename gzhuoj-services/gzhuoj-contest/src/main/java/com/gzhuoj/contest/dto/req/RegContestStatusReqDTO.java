@@ -19,7 +19,7 @@ public class RegContestStatusReqDTO extends Page<SubmitDO> {
     /**
      * 队伍编号
      */
-    private String teamId;
+    private String teamAccount;
 
     /**
      * 比赛编号
