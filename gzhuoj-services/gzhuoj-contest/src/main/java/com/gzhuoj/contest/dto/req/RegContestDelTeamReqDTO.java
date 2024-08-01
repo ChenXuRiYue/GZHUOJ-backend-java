@@ -12,5 +12,5 @@ public class RegContestDelTeamReqDTO {
     /**
      * 队伍id
      */
-    private String teamId;
+    private String teamAccount;
 }
