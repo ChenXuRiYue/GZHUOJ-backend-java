@@ -8,24 +8,24 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.gzhuoj.contest.dto.req.*;
 import com.gzhuoj.contest.dto.resp.RegContestGenTeamRespDTO;
+import com.gzhuoj.contest.dto.resp.RegContestProSetRespDTO;
 import com.gzhuoj.contest.dto.resp.RegContestStatusRespDTO;
 import com.gzhuoj.contest.dto.resp.RegContestTeamInfoRespDTO;
+import com.gzhuoj.contest.mapper.ContestMapper;
 import com.gzhuoj.contest.mapper.SubmitMapper;
 import com.gzhuoj.contest.mapper.TeamMapper;
+import com.gzhuoj.contest.model.entity.ContestDO;
 import com.gzhuoj.contest.model.entity.SubmitDO;
 import com.gzhuoj.contest.model.entity.TeamDO;
 import com.gzhuoj.contest.service.ContestService;
 import com.gzhuoj.contest.service.RegContestService;
-import common.biz.user.UserContext;
 import common.convention.errorcode.BaseErrorCode;
 import common.exception.ClientException;
 import common.toolkit.GenerateRandStrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +41,7 @@ public class RegContestServiceImpl implements RegContestService {
     private final TeamMapper teamMapper;
     private final ContestService contestService;
     private final SubmitMapper submitMapper;
+    private final ContestMapper contestMapper;
 
     @Value("${RegContest.max-gen-team}")
     private Integer MAX_GEN_TEAM;
@@ -265,6 +266,32 @@ public class RegContestServiceImpl implements RegContestService {
         queryWrapper.orderBy(true, true, SubmitDO::getSubmitTime);
         IPage<SubmitDO> result = submitMapper.selectPage(requestParam, queryWrapper);
         return result.convert(each -> BeanUtil.toBean(each, RegContestStatusRespDTO.class));
+    }
+
+    @Override
+    public List<RegContestProSetRespDTO> problemSet(RegContestProSetReqDTO requestParam) {
+        if(!exist(requestParam.getCid())){
+            throw new ClientException(CONTEST_NOT_FOUND_ERROR);
+        }
+        // 获取题目列表和颜色
+        // 题目在比赛中实际的位置 多表查询
+
+
+        // 获取每道题的ac数 -> 每个队只算一次
+
+        // 该用户是否AC 无提交则无颜色变化 WA -> 红  AC -> 绿
+
+        // 查询到结果后将结果缓存15s 查询压力
+        return null;
+    }
+
+    @Override
+    public Boolean exist(Integer cid) {
+        LambdaQueryWrapper<ContestDO> queryWrapper = Wrappers.lambdaQuery(ContestDO.class)
+                .eq(ContestDO::getContestId, cid)
+                .eq(ContestDO::getDeleteFlag, 0);
+        ContestDO contestDO = contestMapper.selectOne(queryWrapper);
+        return contestDO != null;
     }
 
 

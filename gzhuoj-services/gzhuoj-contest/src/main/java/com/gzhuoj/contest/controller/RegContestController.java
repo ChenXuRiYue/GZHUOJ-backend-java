@@ -3,6 +3,7 @@ package com.gzhuoj.contest.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gzhuoj.contest.dto.req.*;
 import com.gzhuoj.contest.dto.resp.RegContestGenTeamRespDTO;
+import com.gzhuoj.contest.dto.resp.RegContestProSetRespDTO;
 import com.gzhuoj.contest.dto.resp.RegContestStatusRespDTO;
 import com.gzhuoj.contest.dto.resp.RegContestTeamInfoRespDTO;
 import com.gzhuoj.contest.service.RegContestService;
@@ -81,8 +82,23 @@ public class RegContestController {
         return Results.success(regContestService.teamInfo(requestParam));
     }
 
+    /**
+     * 评测结果展示
+     * @param requestParam 评测结果查询参数
+     * @return 评测结果分页查询
+     */
     @GetMapping("/status")
     public Result<IPage<RegContestStatusRespDTO>> status(RegContestStatusReqDTO requestParam){
         return Results.success(regContestService.status(requestParam));
+    }
+
+    @GetMapping("/exist")
+    public Result<Boolean> exist(Integer cid){
+        return Results.success(regContestService.exist(cid));
+    }
+
+    @GetMapping("/problemset")
+    public Result<List<RegContestProSetRespDTO>>  problemSet(RegContestProSetReqDTO requestParam){
+        return Results.success(regContestService.problemSet(requestParam));
     }
 }
