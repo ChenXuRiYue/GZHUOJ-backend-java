@@ -14,7 +14,7 @@ public class RegContestStatusRespDTO {
     /**
      * 队伍编号
      */
-    private String teamId;
+    private String teamAccount;
 
     /**
      * 题目编号

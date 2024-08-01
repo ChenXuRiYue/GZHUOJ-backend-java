@@ -2,6 +2,7 @@ package com.gzhuoj.contest.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gzhuoj.contest.dto.req.*;
+import com.gzhuoj.contest.dto.resp.ContestWaitRespDTO;
 import com.gzhuoj.contest.dto.resp.RegContestGenTeamRespDTO;
 import com.gzhuoj.contest.dto.resp.RegContestStatusRespDTO;
 import com.gzhuoj.contest.dto.resp.RegContestTeamInfoRespDTO;
@@ -85,4 +86,10 @@ public class RegContestController {
     public Result<IPage<RegContestStatusRespDTO>> status(RegContestStatusReqDTO requestParam){
         return Results.success(regContestService.status(requestParam));
     }
+
+/*
+    @GetMapping("/wait")
+    public Result<ContestWaitRespDTO> waitContest(@RequestBody ContestWaitReqDTO requestParam){
+
+    }*/
 }
