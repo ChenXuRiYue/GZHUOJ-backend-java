@@ -6,6 +6,7 @@ import java.util.Date;
 
 @Data
 public class RegContestStatusRespDTO {
+
     /**
      * 提交编号
      */
