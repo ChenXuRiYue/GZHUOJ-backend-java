@@ -1,0 +1,15 @@
+#server:
+#  port: 8009
+spring:
+  application:
+    name: gzhuoj-contest-service
+  profiles:
+    active: dev
+Contest:
+  max-file-num: 10
+RegContest:
+  max-gen-team: 500
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:**/mapper/*.xml
