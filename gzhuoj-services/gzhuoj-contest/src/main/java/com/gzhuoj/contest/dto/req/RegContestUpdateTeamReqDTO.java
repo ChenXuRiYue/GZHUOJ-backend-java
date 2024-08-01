@@ -13,7 +13,7 @@ public class RegContestUpdateTeamReqDTO {
     /**
      * 队伍编号
      */
-    private String teamId;
+    private String teamAccount;
 
     /**
      * 队伍名
@@ -48,7 +48,7 @@ public class RegContestUpdateTeamReqDTO {
     /**
      * 账号权限
      */
-    private String privilege;
+    private Integer teamPrivilege;
 
     /**
      * 密码

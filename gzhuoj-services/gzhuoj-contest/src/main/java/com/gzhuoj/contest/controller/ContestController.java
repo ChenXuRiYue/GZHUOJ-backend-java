@@ -4,17 +4,16 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gzhuoj.contest.constant.PathConstant;
 import com.gzhuoj.contest.constant.PatternConstant;
-import com.gzhuoj.contest.dto.req.ContestAllReqDTO;
-import com.gzhuoj.contest.dto.req.ContestCreateReqDTO;
-import com.gzhuoj.contest.dto.req.ContestStatusReqDTO;
-import com.gzhuoj.contest.dto.req.ContestUpdateReqDTO;
+import com.gzhuoj.contest.dto.req.*;
 import com.gzhuoj.contest.dto.resp.ContestAllRespDTO;
+import com.gzhuoj.contest.dto.resp.ContestWaitRespDTO;
 import com.gzhuoj.contest.model.entity.ContestDO;
 import com.gzhuoj.contest.service.ContestService;
 import com.gzhuoj.contest.service.UploadService;
 import common.convention.result.Result;
 import common.convention.result.Results;
 import lombok.RequiredArgsConstructor;
+import org.apache.ibatis.jdbc.Null;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -94,4 +93,5 @@ public class ContestController {
         contestService.changeStatus(requestParam);
         return Results.success();
     }
+
 }
