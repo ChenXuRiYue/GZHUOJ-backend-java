@@ -7,11 +7,14 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.gzhuoj.contest.dto.req.*;
+import com.gzhuoj.contest.dto.resp.ContestWaitRespDTO;
 import com.gzhuoj.contest.dto.resp.RegContestGenTeamRespDTO;
 import com.gzhuoj.contest.dto.resp.RegContestStatusRespDTO;
 import com.gzhuoj.contest.dto.resp.RegContestTeamInfoRespDTO;
+import com.gzhuoj.contest.mapper.ContestMapper;
 import com.gzhuoj.contest.mapper.SubmitMapper;
 import com.gzhuoj.contest.mapper.TeamMapper;
+import com.gzhuoj.contest.model.entity.ContestDO;
 import com.gzhuoj.contest.model.entity.SubmitDO;
 import com.gzhuoj.contest.model.entity.TeamDO;
 import com.gzhuoj.contest.service.ContestService;
@@ -22,15 +25,13 @@ import common.exception.ClientException;
 import common.toolkit.GenerateRandStrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static common.convention.errorcode.BaseErrorCode.*;
 
@@ -41,6 +42,7 @@ public class RegContestServiceImpl implements RegContestService {
     private final TeamMapper teamMapper;
     private final ContestService contestService;
     private final SubmitMapper submitMapper;
+    private final ContestMapper contestMapper;
 
     @Value("${RegContest.max-gen-team}")
     private Integer MAX_GEN_TEAM;
@@ -266,6 +268,35 @@ public class RegContestServiceImpl implements RegContestService {
         queryWrapper.orderBy(true, true, SubmitDO::getSubmitTime);
         IPage<SubmitDO> result = submitMapper.selectPage(requestParam, queryWrapper);
         return result.convert(each -> BeanUtil.toBean(each, RegContestStatusRespDTO.class));
+    }
+
+
+    @Override
+    public ContestWaitRespDTO waitTime(ContestWaitReqDTO requestParam) {
+        //比赛等待时间查询
+        Integer contestId = requestParam.getContestId();
+        String teamAccount = requestParam.getTeamAccount();
+
+        ContestDO contestDO = contestMapper.selectByContestId(contestId);
+        TeamDO teamDO = teamMapper.selectByTeamAccount(teamAccount);
+
+        Date startTime = contestDO.getStartTime();
+        Date nowTime = new Date();
+        if (startTime.getTime() < nowTime.getTime()) {
+            throw new ClientException(CONTEST_HAVE_BEGIN);
+        }
+        long restTime = startTime.getTime() - nowTime.getTime();
+
+        ContestWaitRespDTO result = new ContestWaitRespDTO();
+        result.days=restTime/(1000*60*60*24); restTime%=(1000*60*60*24);
+        result.hours=restTime/(1000*60*60); restTime%=(1000*60*60);
+        result.minutes=restTime/(1000*60); restTime%=(1000*60);
+        result.seconds=restTime/1000; restTime%=1000;
+
+        result.contestName=contestDO.getTitle();
+        result.teamName= teamDO.getTeamName();
+        result.teamTotal=teamMapper.teamTotalByContestId(contestId);
+        return result;
     }
 
 

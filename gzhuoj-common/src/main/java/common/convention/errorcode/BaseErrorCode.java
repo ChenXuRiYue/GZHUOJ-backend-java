@@ -22,7 +22,7 @@ public enum BaseErrorCode implements IErrorCode {
     TEAM_UPDATE_NOT_FOUND_ERROR("A000204", "队伍不存在"),
     TEAM_INFO_NOT_FOUND_ERROR("A000205", "队伍不存在"),
     TEAM_UPDATE_LOW_PASSWORD_ERROR("A000206", "密码长度至少为六位"),
-
+    CONTEST_HAVE_BEGIN("A000207","比赛已经开始了"),
     PROBLEM_ID_EXISTED("A000301", "新设题目编号已存在"),
 
 
