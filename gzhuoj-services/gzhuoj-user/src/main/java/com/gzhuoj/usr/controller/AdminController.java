@@ -9,6 +9,7 @@ import com.gzhuoj.usr.service.AdminService;
 import common.convention.result.Result;
 import common.convention.result.Results;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,6 +50,10 @@ public class AdminController {
     public Result<List<AdminUserGenRespDTO>> userGen(@RequestBody AdminUserGenReqDTO requestParam){
         return Results.success(adminService.userGen(requestParam));
     }
+    // TODO 更友好的导入
+//    @PostMapping("/usermanager/usergen/csv")
+//    public Result<>
+
 
     /**
      * 修改事件状态 -> 题目、文章、比赛开发状态
@@ -65,6 +70,5 @@ public class AdminController {
     public Result<Void> fileManager(AdminFileManagerReqDTO  requestParam){
         return Results.success(adminService.fileManager(requestParam));
     }
-
 
 }
