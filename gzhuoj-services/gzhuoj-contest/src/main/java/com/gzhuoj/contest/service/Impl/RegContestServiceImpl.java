@@ -7,30 +7,29 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.gzhuoj.contest.dto.req.*;
+import com.gzhuoj.contest.dto.resp.ContestWaitRespDTO;
 import com.gzhuoj.contest.dto.resp.RegContestGenTeamRespDTO;
+import com.gzhuoj.contest.dto.resp.RegContestProSetRespDTO;
 import com.gzhuoj.contest.dto.resp.RegContestStatusRespDTO;
 import com.gzhuoj.contest.dto.resp.RegContestTeamInfoRespDTO;
+import com.gzhuoj.contest.mapper.ContestMapper;
 import com.gzhuoj.contest.mapper.SubmitMapper;
 import com.gzhuoj.contest.mapper.TeamMapper;
+import com.gzhuoj.contest.model.entity.ContestDO;
 import com.gzhuoj.contest.model.entity.SubmitDO;
 import com.gzhuoj.contest.model.entity.TeamDO;
 import com.gzhuoj.contest.service.ContestService;
 import com.gzhuoj.contest.service.RegContestService;
-import common.biz.user.UserContext;
 import common.convention.errorcode.BaseErrorCode;
 import common.exception.ClientException;
 import common.toolkit.GenerateRandStrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static common.convention.errorcode.BaseErrorCode.*;
 
@@ -41,6 +40,7 @@ public class RegContestServiceImpl implements RegContestService {
     private final TeamMapper teamMapper;
     private final ContestService contestService;
     private final SubmitMapper submitMapper;
+    private final ContestMapper contestMapper;
 
     @Value("${RegContest.max-gen-team}")
     private Integer MAX_GEN_TEAM;
@@ -81,11 +81,12 @@ public class RegContestServiceImpl implements RegContestService {
                         teamDO.setContestId(requestParam.getCid());
                         teamDO.setTeamStatus(0);
                         teamDO.setTeamType(0);
-                        teamDO.setTeamId(teamPrefix + leadZero(Integer.toString(i), 4));
+                        teamDO.setTeamAccount(teamPrefix + leadZero(Integer.toString(i), 4));
                         teamDO.setPassword(GenerateRandStrUtil.getRandStr(8));
                         resultTeam.add(teamDO);
                         teamRespList.add(BeanUtil.toBean(teamDO, RegContestGenTeamRespDTO.class));
                     }
+
                     resultTeam.forEach(teamMapper::insertOrUpdateTeam);
                     return teamRespList;
                 }
@@ -116,7 +117,7 @@ public class RegContestServiceImpl implements RegContestService {
                         if(!StrUtil.isEmpty(field)){
                             curTeamNum = field;
                         }
-                        teamDO.setTeamId(teamPrefix + curTeamNum);
+                        teamDO.setTeamAccount(teamPrefix + curTeamNum);
                     }
                     case "team_name" -> {
                         if(field.length() > 100){
@@ -170,7 +171,7 @@ public class RegContestServiceImpl implements RegContestService {
     public void login(RegContestLoginReqDTO requestParam) {
         // TODO 权限判断
         LambdaQueryWrapper<TeamDO> queryWrapper = Wrappers.lambdaQuery(TeamDO.class)
-                .eq(TeamDO::getTeamId, requestParam.getTeamId());
+                .eq(TeamDO::getTeamAccount, requestParam.getTeamAccount());
         TeamDO teamDO = teamMapper.selectOne(queryWrapper);
         if(teamDO == null){
             throw new ClientException(TEAM_LOGIN_ACCOUNT_ERROR);
@@ -188,7 +189,7 @@ public class RegContestServiceImpl implements RegContestService {
     @Override
     public void deleteTeam(RegContestDelTeamReqDTO requestParam) {
         LambdaQueryWrapper<TeamDO> queryWrapper = Wrappers.lambdaQuery(TeamDO.class)
-                .eq(TeamDO::getTeamId, requestParam.getTeamId())
+                .eq(TeamDO::getTeamAccount, requestParam.getTeamAccount())
                 .eq(TeamDO::getContestId, requestParam.getCid());
         teamMapper.delete(queryWrapper);
     }
@@ -197,7 +198,7 @@ public class RegContestServiceImpl implements RegContestService {
     public void updateTeam(RegContestUpdateTeamReqDTO requestParam) {
         LambdaQueryWrapper<TeamDO> queryWrapper = Wrappers.lambdaQuery(TeamDO.class)
                 .eq(TeamDO::getContestId, requestParam.getCid())
-                .eq(TeamDO::getTeamId, requestParam.getTeamId());
+                .eq(TeamDO::getTeamAccount, requestParam.getTeamAccount());
         TeamDO hasTeamDO = teamMapper.selectOne(queryWrapper);
         if(hasTeamDO == null){
             throw new ClientException(TEAM_UPDATE_NOT_FOUND_ERROR);
@@ -222,11 +223,11 @@ public class RegContestServiceImpl implements RegContestService {
                 .school(requestParam.getSchool())
                 .room(requestParam.getRoom())
                 .teamType(teamType)
-                .privilege(requestParam.getPrivilege())
+                .teamPrivilege(requestParam.getTeamPrivilege())
                 .password(newPassword)
                 .build();
         LambdaUpdateWrapper<TeamDO> updateWrapper = Wrappers.lambdaUpdate(TeamDO.class)
-                .eq(TeamDO::getTeamId, requestParam.getTeamId());
+                .eq(TeamDO::getTeamAccount, requestParam.getTeamAccount());
         teamMapper.update(teamDO, updateWrapper);
     }
 
@@ -234,7 +235,7 @@ public class RegContestServiceImpl implements RegContestService {
     public RegContestTeamInfoRespDTO teamInfo(RegContestTeamInfoReqDTO requestParam) {
         LambdaQueryWrapper<TeamDO> queryWrapper = Wrappers.lambdaQuery(TeamDO.class)
                 .eq(TeamDO::getContestId, requestParam.getCid())
-                .eq(TeamDO::getTeamId, requestParam.getTeamId());
+                .eq(TeamDO::getTeamAccount, requestParam.getTeamAccount());
         TeamDO hasTeamDO = teamMapper.selectOne(queryWrapper);
         if(hasTeamDO == null){
             throw new ClientException(TEAM_INFO_NOT_FOUND_ERROR);
@@ -259,12 +260,67 @@ public class RegContestServiceImpl implements RegContestService {
         if(requestParam.getStatus() != null){
             queryWrapper.eq(SubmitDO::getStatus, requestParam.getStatus());
         }
-        if(!StrUtil.isEmpty(requestParam.getTeamId())){
-            queryWrapper.like(SubmitDO::getTeamId, requestParam.getTeamId());
+        if(!StrUtil.isEmpty(requestParam.getTeamAccount())){
+            queryWrapper.like(SubmitDO::getTeamAccount, requestParam.getTeamAccount());
         }
         queryWrapper.orderBy(true, true, SubmitDO::getSubmitTime);
         IPage<SubmitDO> result = submitMapper.selectPage(requestParam, queryWrapper);
         return result.convert(each -> BeanUtil.toBean(each, RegContestStatusRespDTO.class));
+    }
+
+    @Override
+    public List<RegContestProSetRespDTO> problemSet(RegContestProSetReqDTO requestParam) {
+        if(!exist(requestParam.getCid())){
+            throw new ClientException(CONTEST_NOT_FOUND_ERROR);
+        }
+        // 获取题目列表和颜色
+        // 题目在比赛中实际的位置 多表查询
+
+
+        // 获取每道题的ac数 -> 每个队只算一次
+
+        // 该用户是否AC 无提交则无颜色变化 WA -> 红  AC -> 绿
+
+        // 查询到结果后将结果缓存15s 查询压力
+        return null;
+    }
+
+    @Override
+    public Boolean exist(Integer cid) {
+        LambdaQueryWrapper<ContestDO> queryWrapper = Wrappers.lambdaQuery(ContestDO.class)
+                .eq(ContestDO::getContestId, cid)
+                .eq(ContestDO::getDeleteFlag, 0);
+        ContestDO contestDO = contestMapper.selectOne(queryWrapper);
+        return contestDO != null;
+    }
+
+
+    @Override
+    public ContestWaitRespDTO waitTime(ContestWaitReqDTO requestParam) {
+        //比赛等待时间查询
+        Integer contestId = requestParam.getContestId();
+        String teamAccount = requestParam.getTeamAccount();
+
+        ContestDO contestDO = contestMapper.selectByContestId(contestId);
+        TeamDO teamDO = teamMapper.selectByTeamAccount(teamAccount);
+
+        Date startTime = contestDO.getStartTime();
+        Date nowTime = new Date();
+        if (startTime.getTime() < nowTime.getTime()) {
+            throw new ClientException(CONTEST_HAVE_BEGIN);
+        }
+        long restTime = startTime.getTime() - nowTime.getTime();
+
+        ContestWaitRespDTO result = new ContestWaitRespDTO();
+        result.days=restTime/(1000*60*60*24); restTime%=(1000*60*60*24);
+        result.hours=restTime/(1000*60*60); restTime%=(1000*60*60);
+        result.minutes=restTime/(1000*60); restTime%=(1000*60);
+        result.seconds=restTime/1000; restTime%=1000;
+
+        result.contestName=contestDO.getTitle();
+        result.teamName= teamDO.getTeamName();
+        result.teamTotal=teamMapper.teamTotalByContestId(contestId);
+        return result;
     }
 
 
