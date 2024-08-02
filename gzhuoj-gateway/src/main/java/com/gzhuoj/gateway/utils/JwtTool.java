@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.security.KeyPair;
 import java.time.Duration;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -29,15 +30,17 @@ public class JwtTool {
      *
      * @return access-token
      */
-    public String createToken(Long userId, Duration ttl) {
+    public String createToken(String userId, Integer role, Duration ttl) {
         // 1.生成jws
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", userId);
+        claims.put("role", role);
         return JWT.create()
-                .setPayload("user", userId)
+                .addPayloads(claims)
                 .setExpiresAt(new Date(System.currentTimeMillis() + ttl.toMillis()))
                 .setSigner(jwtSigner)
                 .sign();
     }
-
     /**
      * 解析token
      *
