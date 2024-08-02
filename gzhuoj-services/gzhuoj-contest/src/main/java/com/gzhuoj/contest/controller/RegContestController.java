@@ -93,6 +93,7 @@ public class RegContestController {
         return Results.success(regContestService.status(requestParam));
     }
 
+
     @GetMapping("/exist")
     public Result<Boolean> exist(Integer cid){
         return Results.success(regContestService.exist(cid));
@@ -103,9 +104,10 @@ public class RegContestController {
         return Results.success(regContestService.problemSet(requestParam));
     }
 
-/*
-    @GetMapping("/wait")
-    public Result<ContestWaitRespDTO> waitContest(@RequestBody ContestWaitReqDTO requestParam){
 
-    }*/
+
+    @GetMapping("/wait")
+    public Result<ContestWaitRespDTO> waitContest(ContestWaitReqDTO requestParam){
+        return Results.success(regContestService.waitTime(requestParam));
+    }
 }

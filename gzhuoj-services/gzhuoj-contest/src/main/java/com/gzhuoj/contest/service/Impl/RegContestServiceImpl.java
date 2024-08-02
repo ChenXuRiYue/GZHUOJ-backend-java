@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.gzhuoj.contest.dto.req.*;
+import com.gzhuoj.contest.dto.resp.ContestWaitRespDTO;
 import com.gzhuoj.contest.dto.resp.RegContestGenTeamRespDTO;
 import com.gzhuoj.contest.dto.resp.RegContestProSetRespDTO;
 import com.gzhuoj.contest.dto.resp.RegContestStatusRespDTO;
@@ -24,13 +25,11 @@ import common.exception.ClientException;
 import common.toolkit.GenerateRandStrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static common.convention.errorcode.BaseErrorCode.*;
 
@@ -293,6 +292,35 @@ public class RegContestServiceImpl implements RegContestService {
                 .eq(ContestDO::getDeleteFlag, 0);
         ContestDO contestDO = contestMapper.selectOne(queryWrapper);
         return contestDO != null;
+    }
+
+
+    @Override
+    public ContestWaitRespDTO waitTime(ContestWaitReqDTO requestParam) {
+        //比赛等待时间查询
+        Integer contestId = requestParam.getContestId();
+        String teamAccount = requestParam.getTeamAccount();
+
+        ContestDO contestDO = contestMapper.selectByContestId(contestId);
+        TeamDO teamDO = teamMapper.selectByTeamAccount(teamAccount);
+
+        Date startTime = contestDO.getStartTime();
+        Date nowTime = new Date();
+        if (startTime.getTime() < nowTime.getTime()) {
+            throw new ClientException(CONTEST_HAVE_BEGIN);
+        }
+        long restTime = startTime.getTime() - nowTime.getTime();
+
+        ContestWaitRespDTO result = new ContestWaitRespDTO();
+        result.days=restTime/(1000*60*60*24); restTime%=(1000*60*60*24);
+        result.hours=restTime/(1000*60*60); restTime%=(1000*60*60);
+        result.minutes=restTime/(1000*60); restTime%=(1000*60);
+        result.seconds=restTime/1000; restTime%=1000;
+
+        result.contestName=contestDO.getTitle();
+        result.teamName= teamDO.getTeamName();
+        result.teamTotal=teamMapper.teamTotalByContestId(contestId);
+        return result;
     }
 
 
