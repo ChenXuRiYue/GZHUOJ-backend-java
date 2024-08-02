@@ -25,7 +25,7 @@ public class AdminController {
      * @param requestParam 关键字查询
      * @return 用户分页查询返回数据
      */
-    @GetMapping("/usermanager/userList")
+    @GetMapping("/userManager/userList")
     public Result<IPage<AdminUserListRespDTO>> userManagerList(AdminUserListReqDTO requestParam){
         return Results.success(adminService.userManagerList(requestParam));
     }
