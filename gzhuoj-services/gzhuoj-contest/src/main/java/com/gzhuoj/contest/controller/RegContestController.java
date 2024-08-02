@@ -87,9 +87,9 @@ public class RegContestController {
         return Results.success(regContestService.status(requestParam));
     }
 
-/*
-    @GetMapping("/wait")
-    public Result<ContestWaitRespDTO> waitContest(@RequestBody ContestWaitReqDTO requestParam){
 
-    }*/
+    @GetMapping("/wait")
+    public Result<ContestWaitRespDTO> waitContest(ContestWaitReqDTO requestParam){
+        return Results.success(regContestService.waitTime(requestParam));
+    }
 }
