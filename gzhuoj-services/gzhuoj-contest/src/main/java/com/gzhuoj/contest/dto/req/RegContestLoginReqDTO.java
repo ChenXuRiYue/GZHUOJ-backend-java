@@ -7,7 +7,7 @@ public class RegContestLoginReqDTO {
     /**
      * 队伍编号
      */
-    private String teamId;
+    private String teamAccount;
 
     /**
      * 密码

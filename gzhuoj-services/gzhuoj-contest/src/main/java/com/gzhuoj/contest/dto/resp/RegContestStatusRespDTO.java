@@ -6,6 +6,7 @@ import java.util.Date;
 
 @Data
 public class RegContestStatusRespDTO {
+
     /**
      * 提交编号
      */
@@ -14,7 +15,7 @@ public class RegContestStatusRespDTO {
     /**
      * 队伍编号
      */
-    private String teamId;
+    private String teamAccount;
 
     /**
      * 题目编号
