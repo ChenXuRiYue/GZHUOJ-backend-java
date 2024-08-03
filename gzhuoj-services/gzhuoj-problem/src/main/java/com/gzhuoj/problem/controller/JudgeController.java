@@ -19,7 +19,7 @@ import static common.convention.errorcode.BaseErrorCode.ADMIN_UPLOAD_ILLEGAL_FIL
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/gzhuoj/judge")
+@RequestMapping("/api/gzhuoj-problem/judge")
 public class JudgeController {
     private final JudgeService judgeService;
     private final UploadService uploadService;

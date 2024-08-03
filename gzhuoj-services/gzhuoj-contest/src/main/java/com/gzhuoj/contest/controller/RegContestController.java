@@ -2,17 +2,16 @@ package com.gzhuoj.contest.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gzhuoj.contest.dto.req.*;
-import com.gzhuoj.contest.dto.resp.ContestWaitRespDTO;
-import com.gzhuoj.contest.dto.resp.RegContestGenTeamRespDTO;
-import com.gzhuoj.contest.dto.resp.RegContestProSetRespDTO;
-import com.gzhuoj.contest.dto.resp.RegContestStatusRespDTO;
-import com.gzhuoj.contest.dto.resp.RegContestTeamInfoRespDTO;
+import com.gzhuoj.contest.dto.resp.*;
+import com.gzhuoj.contest.model.entity.ContestProblemDO;
 import com.gzhuoj.contest.service.RegContestService;
 import common.convention.result.Result;
 import common.convention.result.Results;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,7 +19,7 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/regular/contest")
+@RequestMapping("/api/gzhuoj-contest/regular/contest")
 public class RegContestController {
     private final RegContestService regContestService;
 
@@ -39,9 +38,8 @@ public class RegContestController {
      * @param requestParam 队伍登录参数
      */
     @PostMapping("/login")
-    public Result<Void> login(@RequestBody RegContestLoginReqDTO requestParam){
-        regContestService.login(requestParam);
-        return Results.success();
+    public Result<RegContestLoginRespDTO> login(@RequestBody RegContestLoginReqDTO requestParam, HttpServletResponse response){
+        return Results.success(regContestService.login(requestParam, response));
     }
 
     /**
@@ -93,19 +91,33 @@ public class RegContestController {
         return Results.success(regContestService.status(requestParam));
     }
 
+    /**
+     * 根据比赛id查询比赛是否存在
+     * @param cid 比赛id
+     * @return 存在返回 true
+     */
     @GetMapping("/exist")
     public Result<Boolean> exist(Integer cid){
         return Results.success(regContestService.exist(cid));
     }
 
+
+
+    /**
+     * 比赛题目集界面
+     * @param requestParam 比赛题目集界面入参
+     * @return 题目列表展示返回实体
+     */
     @GetMapping("/problemset")
     public Result<List<RegContestProSetRespDTO>>  problemSet(RegContestProSetReqDTO requestParam){
         return Results.success(regContestService.problemSet(requestParam));
     }
+
 
 /*
     @GetMapping("/wait")
     public Result<ContestWaitRespDTO> waitContest(@RequestBody ContestWaitReqDTO requestParam){
 
     }*/
+
 }

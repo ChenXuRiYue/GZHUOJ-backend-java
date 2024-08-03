@@ -16,13 +16,10 @@ import com.gzhuoj.usr.model.entity.UserDO;
 import com.gzhuoj.usr.mapper.UserMapper;
 import com.gzhuoj.usr.service.UserService;
 import com.gzhuoj.usr.utils.JwtTool;
-import common.biz.user.UserContext;
-import common.convention.errorcode.BaseErrorCode;
 import common.exception.ClientException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -61,7 +58,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
             throw new ClientException(USER_PASSWORD_VERIFY_ERROR);
         }
 
-//        response.addHeader("Access-Controler-Expose-headers", "token");
         Integer role = userDO.getRole() == null ? 2 : userDO.getRole();
         String token = jwtTool.createToken(userDO.getUserAccount(), role, jwtProperties.getTokenTTL());
         response.addHeader("token", token);
