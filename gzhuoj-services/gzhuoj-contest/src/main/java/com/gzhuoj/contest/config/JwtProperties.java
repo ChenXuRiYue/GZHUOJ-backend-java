@@ -1,4 +1,4 @@
-package com.gzhuoj.gateway.config;
+package com.gzhuoj.contest.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

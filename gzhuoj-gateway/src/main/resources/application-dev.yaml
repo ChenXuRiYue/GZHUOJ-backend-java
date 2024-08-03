@@ -39,9 +39,14 @@ spring:
         - id: problem
           uri:  lb://gzhuoj-problem-service
           predicates:
-            - Path=/problem/**
+            - Path=/api/gzhuoj-problem/**
           filters:
             - Auth #定义过滤器示例
-
+        - id: contest
+          uri: lb://gzhuoj-contest-service
+          predicates:
+            - Path=/api/gzhuoj-contest/**
+          filters:
+            - Auth #定义过滤器示例
 
 

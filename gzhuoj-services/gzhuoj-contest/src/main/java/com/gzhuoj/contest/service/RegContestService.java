@@ -2,18 +2,15 @@ package com.gzhuoj.contest.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gzhuoj.contest.dto.req.*;
-import com.gzhuoj.contest.dto.resp.ContestWaitRespDTO;
-import com.gzhuoj.contest.dto.resp.RegContestGenTeamRespDTO;
-import com.gzhuoj.contest.dto.resp.RegContestProSetRespDTO;
-import com.gzhuoj.contest.dto.resp.RegContestStatusRespDTO;
-import com.gzhuoj.contest.dto.resp.RegContestTeamInfoRespDTO;
+import com.gzhuoj.contest.dto.resp.*;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.List;
 
 public interface RegContestService {
     List<RegContestGenTeamRespDTO> genTeam(RegContestGenTeamReqDTO requestParam);
 
-    void login(RegContestLoginReqDTO requestParam);
+    RegContestLoginRespDTO login(RegContestLoginReqDTO requestParam, HttpServletResponse response);
 
     void logout(RegContestLogoutReqDTO requestParam);
 
@@ -25,11 +22,9 @@ public interface RegContestService {
 
     IPage<RegContestStatusRespDTO> status(RegContestStatusReqDTO requestParam);
 
-
     ContestWaitRespDTO waitTime(ContestWaitReqDTO requestParam);
 
     List<RegContestProSetRespDTO> problemSet(RegContestProSetReqDTO requestParam);
 
     Boolean exist(Integer cid);
-
 }

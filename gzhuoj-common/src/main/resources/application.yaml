@@ -1,0 +1,7 @@
+# JWT相关配置
+gzhuoj:
+  jwt:
+    location: classpath:gzhuoj.jks
+    alias: gzhuoj
+    password: gzhuoj
+    tokenTTL: 30m
