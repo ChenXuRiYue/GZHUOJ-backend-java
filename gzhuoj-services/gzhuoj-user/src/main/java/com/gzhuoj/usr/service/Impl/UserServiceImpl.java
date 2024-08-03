@@ -61,23 +61,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         Integer role = userDO.getRole() == null ? 2 : userDO.getRole();
         String token = jwtTool.createToken(userDO.getUserAccount(), role, jwtProperties.getTokenTTL());
         response.addHeader("token", token);
-// token 本身就可以包含用户信息；
-//        // 用redis存储用户信息 ->  返回一个token来证明用户已经登录
-//        String KEY = "Login_" + requestParam.getUserAccount();
-//        Map<Object, Object> keyMap = stringRedisTemplate.opsForHash().entries(KEY);
-//        // 使用一套更加完善的校验工具。
-//        if (CollUtil.isNotEmpty(keyMap)) {
-//            String token = keyMap.keySet()
-//                    .stream()
-//                    .findFirst()
-//                    .map(Object::toString)
-//                    .orElseThrow(() -> new ClientException("用户登录失败"));
-//            return new UserLoginRespDTO(token);
-//        }
-//        String uuid = UUID.randomUUID().toString();
-//
-//        stringRedisTemplate.opsForHash().put(KEY, uuid, JSON.toJSONString(userDO));
-//        stringRedisTemplate.expire(KEY, 30L, TimeUnit.DAYS);
         return new UserLoginRespDTO(userDO.getUserAccount(), userDO.getUsername());
     }
 

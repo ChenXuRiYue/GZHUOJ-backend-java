@@ -3,7 +3,6 @@ package com.gzhuoj.contest.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gzhuoj.contest.dto.req.*;
 import com.gzhuoj.contest.dto.resp.*;
-import com.gzhuoj.contest.model.entity.ContestProblemDO;
 import com.gzhuoj.contest.service.RegContestService;
 import common.convention.result.Result;
 import common.convention.result.Results;
@@ -11,7 +10,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -101,8 +99,6 @@ public class RegContestController {
         return Results.success(regContestService.exist(cid));
     }
 
-
-
     /**
      * 比赛题目集界面
      * @param requestParam 比赛题目集界面入参
@@ -113,7 +109,6 @@ public class RegContestController {
         return Results.success(regContestService.problemSet(requestParam));
     }
 
-/*
     @GetMapping("/wait")
     public Result<ContestWaitRespDTO> waitContest(ContestWaitReqDTO requestParam){
         return Results.success(regContestService.waitTime(requestParam));
