@@ -1,37 +1,51 @@
 package com.gzhuoj.contest.service.Impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSON;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson2.JSONWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.gzhuoj.contest.config.JwtProperties;
+import com.gzhuoj.contest.constant.SubmissionStatus;
 import com.gzhuoj.contest.dto.req.*;
-import com.gzhuoj.contest.dto.resp.RegContestGenTeamRespDTO;
-import com.gzhuoj.contest.dto.resp.RegContestProSetRespDTO;
-import com.gzhuoj.contest.dto.resp.RegContestStatusRespDTO;
-import com.gzhuoj.contest.dto.resp.RegContestTeamInfoRespDTO;
+import com.gzhuoj.contest.dto.resp.*;
 import com.gzhuoj.contest.mapper.ContestMapper;
 import com.gzhuoj.contest.mapper.SubmitMapper;
 import com.gzhuoj.contest.mapper.TeamMapper;
 import com.gzhuoj.contest.model.entity.ContestDO;
+import com.gzhuoj.contest.model.entity.ContestProblemDO;
 import com.gzhuoj.contest.model.entity.SubmitDO;
 import com.gzhuoj.contest.model.entity.TeamDO;
+import com.gzhuoj.contest.remote.ProblemRemoteService;
+import com.gzhuoj.contest.remote.Resp.ProblemRespDTO;
+import com.gzhuoj.contest.service.ContestProblemService;
 import com.gzhuoj.contest.service.ContestService;
 import com.gzhuoj.contest.service.RegContestService;
-import common.convention.errorcode.BaseErrorCode;
+import com.gzhuoj.contest.utils.JwtTool;
+import com.gzhuoj.contest.utils.RedisUtil;
+import common.biz.user.UserContext;
 import common.exception.ClientException;
+import common.exception.ServiceException;
 import common.toolkit.GenerateRandStrUtil;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
+import static com.gzhuoj.contest.constant.RedisKey.REGULAR_CONTEST_PROBLEM_SET;
 import static common.convention.errorcode.BaseErrorCode.*;
 
 @Service
@@ -42,7 +56,12 @@ public class RegContestServiceImpl implements RegContestService {
     private final ContestService contestService;
     private final SubmitMapper submitMapper;
     private final ContestMapper contestMapper;
-
+    private final ProblemRemoteService problemRemoteService;
+    private final ContestProblemService contestProblemService;
+    private final JwtTool jwtTool;
+    private final JwtProperties jwtProperties;
+    private final StringRedisTemplate stringRedisTemplate;
+    private final RedisUtil redisUtil;
     @Value("${RegContest.max-gen-team}")
     private Integer MAX_GEN_TEAM;
 
@@ -169,8 +188,7 @@ public class RegContestServiceImpl implements RegContestService {
     }
 
     @Override
-    public void login(RegContestLoginReqDTO requestParam) {
-        // TODO 权限判断
+    public RegContestLoginRespDTO login(RegContestLoginReqDTO requestParam, HttpServletResponse response) {
         LambdaQueryWrapper<TeamDO> queryWrapper = Wrappers.lambdaQuery(TeamDO.class)
                 .eq(TeamDO::getTeamAccount, requestParam.getTeamAccount());
         TeamDO teamDO = teamMapper.selectOne(queryWrapper);
@@ -180,6 +198,12 @@ public class RegContestServiceImpl implements RegContestService {
         if(!Objects.equals(teamDO.getPassword(), requestParam.getPassword())){
             throw new ClientException(TEAM_LOGIN_PASSWORD_ERROR);
         }
+
+        if(!Objects.equals(UserContext.getRole(), "admin")){
+            String token = jwtTool.createToken(requestParam.getTeamAccount(), 3, jwtProperties.getTokenTTL());
+            response.addHeader("token", token);
+        }
+        return new RegContestLoginRespDTO(teamDO.getTeamAccount(), teamDO.getTeamName());
     }
 
     @Override
@@ -197,6 +221,7 @@ public class RegContestServiceImpl implements RegContestService {
 
     @Override
     public void updateTeam(RegContestUpdateTeamReqDTO requestParam) {
+        // TODO 抽取查询队伍是否存在
         LambdaQueryWrapper<TeamDO> queryWrapper = Wrappers.lambdaQuery(TeamDO.class)
                 .eq(TeamDO::getContestId, requestParam.getCid())
                 .eq(TeamDO::getTeamAccount, requestParam.getTeamAccount());
@@ -271,21 +296,88 @@ public class RegContestServiceImpl implements RegContestService {
 
     @Override
     public List<RegContestProSetRespDTO> problemSet(RegContestProSetReqDTO requestParam) {
-        if(!exist(requestParam.getCid())){
+        RedisUtil redisUtil = new RedisUtil(stringRedisTemplate);
+        String key = REGULAR_CONTEST_PROBLEM_SET + UserContext.getUserId();
+        Object jsonStr = stringRedisTemplate.opsForHash().get(key, requestParam.getCid().toString());
+        List<RegContestProSetRespDTO> listFromHash = redisUtil.getListFromHash(jsonStr, key, RegContestProSetRespDTO.class);
+        if(CollUtil.isNotEmpty(listFromHash)){
+            return listFromHash;
+        }
+        ContestDO contestDO = contestService.queryByNum(requestParam.getCid());
+        if(contestDO == null){
             throw new ClientException(CONTEST_NOT_FOUND_ERROR);
         }
+
         // 获取题目列表和颜色
         // 题目在比赛中实际的位置 多表查询
+        List<ContestProblemDO> allProblem = contestProblemService.getAllProblem(requestParam.getCid());
+        ArrayList<RegContestProSetRespDTO> result = new ArrayList<>();
+        for(ContestProblemDO cpDO : allProblem){
+            ProblemRespDTO problemRespDTO = problemRemoteService.queryProByNum(cpDO.getProblemId());
+            if(problemRespDTO == null){
+                throw new ServiceException(SERVICE_PROBLEM_NOT_FOUND_ERROR);
+            }
+            RegContestProSetRespDTO regContestProSetRespDTO = RegContestProSetRespDTO.builder()
+                    .color(cpDO.getProblemColor())
+                    .problemNum(cpDO.getProblemId())
+                    .actualNum(cpDO.getActualNum())
+                    .memoryLimit(problemRespDTO.getMemoryLimit())
+                    .timeLimit(problemRespDTO.getTimeLimit())
+                    .problemName(problemRespDTO.getProblemName())
+                    .build();
+            result.add(regContestProSetRespDTO);
+        }
+        // 设计submit状态对应表
 
+        Date startTime = contestDO.getStartTime();
+        Date endTime = contestDO.getEndTime();
+        // TODO 测试加入用户上下文之后的结果
+        if(!Objects.equals(UserContext.getRole(), "3")){
+            // 管理员 -> 不封榜
+            // sql -> 区间时间 -> groupBy teamName -> teamId -> contestId ----> 个数
+            // 非管理员 -> 封榜
+            endTime = addTime(endTime, -(contestDO.getFrozenMinute()));
+            // TODO 创建比赛时封榜开始的时间不能早于比赛开始时间
+            if(endTime.before(startTime)){
+                endTime = startTime;
+            }
+        }
 
-        // 获取每道题的ac数 -> 每个队只算一次
+        for(RegContestProSetRespDTO respDTO : result){
+            // 该用户是否AC 无提交则无颜色变化 WA -> 红  AC -> 绿
+            boolean AC = false;
+            LambdaQueryWrapper<SubmitDO> queryWrapper = Wrappers.lambdaQuery(SubmitDO.class)
+                    .eq(SubmitDO::getContestId, requestParam.getCid())
+                    .eq(SubmitDO::getProblemId, respDTO.getProblemNum())
+                    .eq(SubmitDO::getTeamAccount, UserContext.getUserId())
+                    .eq(SubmitDO::getStatus, SubmissionStatus.ACCEPTED);
+            SubmitDO submitDO = submitMapper.selectOne(queryWrapper);
+            if(submitDO != null){
+                AC = true;
+            }
+            LambdaQueryWrapper<SubmitDO> submitDOLambdaQueryWrapper = Wrappers.lambdaQuery(SubmitDO.class)
+                    .select(SubmitDO::getTeamAccount)
+                    .eq(SubmitDO::getContestId, requestParam.getCid())
+                    .eq(SubmitDO::getProblemId, respDTO.getProblemNum())
+                    .between(SubmitDO::getSubmitTime, startTime, endTime)
+                    .groupBy(SubmitDO::getTeamAccount);
+            List<SubmitDO> submitDOS = submitMapper.selectList(submitDOLambdaQueryWrapper);
+            respDTO.setAccepted(submitDOS.size());
+            respDTO.setAC(AC);
+        }
+        result.sort(Comparator.comparingInt(RegContestProSetRespDTO::getActualNum));
+        // 查询到结果后将结果缓存10s 缓解查询压力
+        redisUtil.saveListToHash(key, requestParam.getCid().toString(), result, 10L, TimeUnit.SECONDS);
+        return result;
 
-        // 该用户是否AC 无提交则无颜色变化 WA -> 红  AC -> 绿
-
-        // 查询到结果后将结果缓存15s 查询压力
-        return null;
     }
 
+    public Date addTime(Date current, Integer addMinute){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(current);
+        calendar.add(Calendar.MINUTE, addMinute);
+        return calendar.getTime();
+    }
     @Override
     public Boolean exist(Integer cid) {
         LambdaQueryWrapper<ContestDO> queryWrapper = Wrappers.lambdaQuery(ContestDO.class)
@@ -302,5 +394,9 @@ public class RegContestServiceImpl implements RegContestService {
             sBuilder.insert(0, "0");
         }
         return sBuilder.toString();
+    }
+
+    public static void main(String[] args) {
+//        JSON.toJSONString(list);
     }
 }

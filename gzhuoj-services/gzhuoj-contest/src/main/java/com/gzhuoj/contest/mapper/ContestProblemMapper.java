@@ -10,5 +10,4 @@ import java.util.List;
 
 @Mapper
 public interface ContestProblemMapper extends BaseMapper<ContestProblemDO> {
-    List<RegContestProSetRespDTO> getProblemSet(@Param("cid") Integer cid);
 }

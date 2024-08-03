@@ -27,7 +27,7 @@ import static common.convention.errorcode.BaseErrorCode.ADMIN_UPLOAD_ILLEGAL_PRO
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/gzhuoj/contest")
+@RequestMapping("/api/gzhuoj-contest/contest")
 public class ContestController {
     private final ContestService contestService;
     private final UploadService uploadService;
@@ -86,12 +86,13 @@ public class ContestController {
     }
 
     /**
-     *
+     * 更改比赛开放状态
      */
     @GetMapping("/status")
     public Result<Void> changeStatus(ContestStatusReqDTO requestParam){
         contestService.changeStatus(requestParam);
         return Results.success();
     }
+
 
 }

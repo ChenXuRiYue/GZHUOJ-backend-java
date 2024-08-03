@@ -23,7 +23,7 @@ import static common.convention.errorcode.BaseErrorCode.ADMIN_UPLOAD_ILLEGAL_PRO
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/gzhuoj/problem")
+@RequestMapping("/api/gzhuoj-problem/problem")
 public class ProblemController {
     private final ProblemService problemService;
     private final UploadService uploadService;
