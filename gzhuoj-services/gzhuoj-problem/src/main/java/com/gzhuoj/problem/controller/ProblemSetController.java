@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/gzhuoj/problemset")
+@RequestMapping("/api/gzhuoj-problem/problemset")
 public class ProblemSetController {
     private final ProblemSetService problemSetService;
     @GetMapping("")

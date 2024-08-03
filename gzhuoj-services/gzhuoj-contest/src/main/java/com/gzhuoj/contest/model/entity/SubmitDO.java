@@ -1,10 +1,18 @@
 package com.gzhuoj.contest.model.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Date;
 
 @Data
+@RequiredArgsConstructor
+@AllArgsConstructor
+@Builder
+@TableName("submit")
 public class SubmitDO {
     /**
      * 提交编号
