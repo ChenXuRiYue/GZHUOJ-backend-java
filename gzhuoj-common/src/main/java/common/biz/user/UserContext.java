@@ -26,7 +26,6 @@ public final class UserContext {
     public static String getRole() {
         return threadLocal.get().getRole();
     }
-
     /**
      * 移除当前登录用户信息
      */

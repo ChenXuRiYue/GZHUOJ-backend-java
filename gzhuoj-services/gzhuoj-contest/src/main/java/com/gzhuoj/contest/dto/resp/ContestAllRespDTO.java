@@ -1,5 +1,6 @@
 package com.gzhuoj.contest.dto.resp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -19,11 +20,13 @@ public class ContestAllRespDTO {
     /**
      * 开始时间
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date startTime;
 
     /**
      * 结束时间
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;
 
     /**
