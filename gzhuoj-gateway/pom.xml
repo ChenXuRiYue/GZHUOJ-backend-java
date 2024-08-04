@@ -52,8 +52,6 @@
             <scope>runtime</scope>
         </dependency>
 
-
-
         <!--consul服务发现-->
         <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-consul-discovery -->
         <dependency>

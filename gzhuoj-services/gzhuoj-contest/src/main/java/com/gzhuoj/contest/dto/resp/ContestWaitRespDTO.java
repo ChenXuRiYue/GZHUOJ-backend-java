@@ -1,9 +1,5 @@
 package com.gzhuoj.contest.dto.resp;
 
-import lombok.Data;
-
-import java.sql.Time;
-
 public class ContestWaitRespDTO {
     public String teamName;
     public String contestName;
