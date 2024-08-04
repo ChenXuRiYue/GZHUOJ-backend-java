@@ -6,10 +6,6 @@ import lombok.Data;
 
 @Data
 public class RegContestStatusReqDTO extends Page<SubmitDO> {
-    /**
-     * 提交编号
-     */
-    private Integer submitId;
 
     /**
      * 题目编号
@@ -22,14 +18,19 @@ public class RegContestStatusReqDTO extends Page<SubmitDO> {
     private String teamAccount;
 
     /**
+     * 队伍名
+     */
+    private String teamName;
+
+    /**
+     * 学校
+     */
+    private String school;
+
+    /**
      * 比赛编号
      */
     private Integer contestId;
-
-    /**
-     * 提交语言
-     */
-    private Integer language;
 
     /**
      * 评测结果
