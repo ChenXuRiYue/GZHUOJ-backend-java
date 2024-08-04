@@ -10,6 +10,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Builder
 public class UserLoginRespDTO {
-    String userAccount;
-    String userName;
+    /**
+     * 用户账号
+     */
+    private String userAccount;
+
+    /**
+     * 用户名
+     */
+    private String username;
 }

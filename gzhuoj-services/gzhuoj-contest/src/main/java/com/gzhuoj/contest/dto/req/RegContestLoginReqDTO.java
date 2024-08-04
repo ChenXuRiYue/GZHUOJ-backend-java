@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class RegContestLoginReqDTO {
+
     /**
      * 队伍编号
      */
