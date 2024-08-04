@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 @TableName(value = "contest_problem")
 public class ContestProblemDO {
 
+    private Integer id;
     /**
      * 比赛编号
      */
