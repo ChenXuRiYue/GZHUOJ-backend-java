@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gzhuoj.contest.mapper.ContestProblemMapper">
+    <select id="selectForContest"
+            parameterType="com.gzhuoj.contest.pojo.SFC" resultType="int">
+        SELECT count(*) from gzhuoj_contest.submit
+        <where>
+            contest_id=#{contestId} and
+            problem_id=#{problemId}
+            <if test="beginTime !=null">
+                and submit_time between #{beginTime} and #{endTime}
+            </if>
+            <if test="language !=null">
+                and language=#{language}
+            </if>
+            <if test="status !=null">
+                and status=#{status}
+            </if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,28 @@
+#server:
+#  port: 8009
+spring:
+  application:
+    name: gzhuoj-user-service
+  profiles:
+    active: dev
+  data:
+    redis:
+      host: 47.120.53.127
+      port: 6379
+      password: gzhuoj
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:**/mapper/*.xml
+
+batchImport:
+  max_users: 100
+
+# JWT相关配置
+gzhuoj:
+  jwt:
+    location: classpath:gzhuoj.jks
+    alias: gzhuoj
+    password: gzhuoj
+    tokenTTL: 30m
+#  auth:
