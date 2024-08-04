@@ -1,5 +1,6 @@
 package com.gzhuoj.contest.dto.resp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -55,5 +56,6 @@ public class RegContestStatusRespDTO {
     /**
      * 提交时间
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date submitTime;
 }
