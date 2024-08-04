@@ -36,7 +36,6 @@ import common.exception.ClientException;
 import common.exception.ServiceException;
 import common.toolkit.GenerateRandStrUtil;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -63,7 +62,6 @@ public class RegContestServiceImpl implements RegContestService {
     private final JwtTool jwtTool;
     private final JwtProperties jwtProperties;
     private final StringRedisTemplate stringRedisTemplate;
-    private final RedisUtil redisUtil;
     @Value("${RegContest.max-gen-team}")
     private Integer MAX_GEN_TEAM;
 
@@ -194,8 +192,9 @@ public class RegContestServiceImpl implements RegContestService {
         LambdaQueryWrapper<TeamDO> queryWrapper = Wrappers.lambdaQuery(TeamDO.class)
                 .eq(TeamDO::getTeamAccount, requestParam.getTeamAccount());
         TeamDO teamDO = teamMapper.selectOne(queryWrapper);
-        if(teamDO == null){
-            throw new ClientException(TEAM_LOGIN_ACCOUNT_ERROR);
+        ContestDO contestDO = contestService.queryByNum(teamDO.getContestId());
+        if(contestDO == null){
+            throw new ClientException(CONTEST_NOT_FOUND_ERROR);
         }
         if(!Objects.equals(teamDO.getPassword(), requestParam.getPassword())){
             throw new ClientException(TEAM_LOGIN_PASSWORD_ERROR);
@@ -210,7 +209,7 @@ public class RegContestServiceImpl implements RegContestService {
 
     @Override
     public void logout(RegContestLogoutReqDTO requestParam) {
-        // TODO
+
     }
 
     @Override
@@ -223,7 +222,6 @@ public class RegContestServiceImpl implements RegContestService {
 
     @Override
     public void updateTeam(RegContestUpdateTeamReqDTO requestParam) {
-        // TODO 抽取查询队伍是否存在
         LambdaQueryWrapper<TeamDO> queryWrapper = Wrappers.lambdaQuery(TeamDO.class)
                 .eq(TeamDO::getContestId, requestParam.getCid())
                 .eq(TeamDO::getTeamAccount, requestParam.getTeamAccount());
@@ -275,15 +273,13 @@ public class RegContestServiceImpl implements RegContestService {
 
     @Override
     public IPage<RegContestStatusRespDTO> status(RegContestStatusReqDTO requestParam) {
-        // TODO 要判断当前team的比赛编号是否和传入的比赛编号相同
-        // TODO 要判断当前线程team的编号是否和传入的team编号相同
         LambdaQueryWrapper<SubmitDO> queryWrapper = Wrappers.lambdaQuery(SubmitDO.class)
                 .eq(SubmitDO::getContestId, requestParam.getContestId());
         if(requestParam.getProblemId() != null){
             queryWrapper.eq(SubmitDO::getProblemId, requestParam.getProblemId());
         }
-        if(requestParam.getLanguage() != null){
-            queryWrapper.eq(SubmitDO::getLanguage, requestParam.getLanguage());
+        if(requestParam.getSchool() != null){
+            queryWrapper.eq(SubmitDO::getLanguage, requestParam.getSchool());
         }
         if(requestParam.getStatus() != null){
             queryWrapper.eq(SubmitDO::getStatus, requestParam.getStatus());
@@ -291,8 +287,16 @@ public class RegContestServiceImpl implements RegContestService {
         if(!StrUtil.isEmpty(requestParam.getTeamAccount())){
             queryWrapper.like(SubmitDO::getTeamAccount, requestParam.getTeamAccount());
         }
+        ContestDO contestDO = contestService.queryByNum(requestParam.getContestId());
+        // team看不到封榜后的提交
+        if(Objects.equals(UserContext.getRole(), "3")){
+            Date endTime = contestDO.getEndTime();
+            endTime = addTime(endTime, -(contestDO.getFrozenMinute()));
+            queryWrapper.between(SubmitDO::getSubmitTime, contestDO.getStartTime(), endTime);
+        }
         queryWrapper.orderBy(true, true, SubmitDO::getSubmitTime);
         IPage<SubmitDO> result = submitMapper.selectPage(requestParam, queryWrapper);
+
         return result.convert(each -> BeanUtil.toBean(each, RegContestStatusRespDTO.class));
     }
 
@@ -334,7 +338,7 @@ public class RegContestServiceImpl implements RegContestService {
         Date startTime = contestDO.getStartTime();
         Date endTime = contestDO.getEndTime();
         // TODO 测试加入用户上下文之后的结果
-        if(!Objects.equals(UserContext.getRole(), "3")){
+        if(Objects.equals(UserContext.getRole(), "3")){
             // 管理员 -> 不封榜
             // sql -> 区间时间 -> groupBy teamName -> teamId -> contestId ----> 个数
             // 非管理员 -> 封榜
@@ -374,12 +378,19 @@ public class RegContestServiceImpl implements RegContestService {
 
     }
 
+    /**
+     * 给当前时间加若干分钟
+     * @param current 基准时间
+      * @param addMinute 增加的时间 -- 可以为负数
+     * @return 最终时间
+     */
     public Date addTime(Date current, Integer addMinute){
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(current);
         calendar.add(Calendar.MINUTE, addMinute);
         return calendar.getTime();
     }
+
     @Override
     public Boolean exist(Integer cid) {
         LambdaQueryWrapper<ContestDO> queryWrapper = Wrappers.lambdaQuery(ContestDO.class)
@@ -417,7 +428,6 @@ public class RegContestServiceImpl implements RegContestService {
         result.teamTotal=teamMapper.teamTotalByContestId(contestId);
         return result;
     }
-
 
     private String leadZero(String s, int len) {
         StringBuilder sBuilder = new StringBuilder(s);
