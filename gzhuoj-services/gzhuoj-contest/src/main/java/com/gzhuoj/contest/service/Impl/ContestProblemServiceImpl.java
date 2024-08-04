@@ -14,18 +14,23 @@ import com.gzhuoj.contest.pojo.SFC;
 import com.gzhuoj.contest.service.ContestProblemService;
 import common.biz.user.UserContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+import com.alibaba.fastjson2.JSONObject;
 @Service
 public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper, ContestProblemDO> implements ContestProblemService {
     @Autowired
     ContestProblemMapper contestProblemMapper;
     @Autowired
     ContestMapper contestMapper;
+    @Autowired
+    private StringRedisTemplate redis;
     @Override
     public List<ContestProblemDO> getAllProblem(Integer cid) {
         LambdaQueryWrapper<ContestProblemDO> queryWrapper = Wrappers.lambdaQuery(ContestProblemDO.class)
@@ -74,12 +79,27 @@ public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper,
 
     @Override
     public ContestResultRespDTO getResult(Integer contestId) {
-        //String role = UserContext.getRole();
-
+        String role;
+        //role= UserContext.getRole();
+        role="3";
+        if (role.equals("3"))role="user";
+        else                 role="admin";
+        System.out.println("当前用户为："+role);
+        if (Boolean.TRUE.equals(redis.hasKey(contestId + '_' + role))){
+            String s = redis.opsForValue().get(contestId + '_' + role);
+            ContestResultRespDTO resultRespDTO = JSONObject.parseObject(s, ContestResultRespDTO.class);
+            System.out.println("成功命中缓存");
+            return resultRespDTO;
+        }
         ContestDO CDO = contestMapper.selectByContestId(contestId);
         Date startTime = CDO.getStartTime();
         Date endTime = CDO.getEndTime();
 
+        if(role.equals("user")){
+            long time = endTime.getTime();
+            time-=3600;
+            endTime.setTime(time);
+        }
 
         ContestResultRespDTO contestResultRespDTO = new ContestResultRespDTO();
         contestResultRespDTO.problem=new ArrayList<>();
@@ -107,6 +127,9 @@ public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper,
             total.go+=problemResult.go;
         }
         contestResultRespDTO.problem.add(total);
+
+        redis.opsForValue().set(contestId + '_' + role, JSONObject.toJSONString(contestResultRespDTO), Duration.ofSeconds(50));
+
         return contestResultRespDTO;
     }
 
