@@ -1,9 +1,6 @@
-package com.gzhuoj.gateway.utils;
+package com.gzhuoj.contest.utils;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.exceptions.ValidateException;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONObject;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTValidator;
 import cn.hutool.jwt.signers.JWTSigner;
@@ -41,13 +38,14 @@ public class JwtTool {
                 .setSigner(jwtSigner)
                 .sign();
     }
+
     /**
      * 解析token
      *
      * @param token token
      * @return 解析刷新token得到的用户信息
      */
-    public Map<String, Object> parseToken(String token) {
+    public Long parseToken(String token) {
         // 1.校验token是否为空
         if (token == null) {
             throw new UnauthorizedException("未登录");
@@ -71,15 +69,15 @@ public class JwtTool {
             throw new UnauthorizedException("token已经过期");
         }
         // 4.数据格式校验
-        Map<String, Object> userPayloads = jwt.getPayloads();
-        if (CollUtil.isEmpty(userPayloads)) {
+        Object userPayload = jwt.getPayload("userId");
+        if (userPayload == null) {
             // 数据为空
             throw new UnauthorizedException("无效的token");
         }
 
         // 5.数据解析
         try {
-            return userPayloads;
+            return Long.valueOf(userPayload.toString());
         } catch (RuntimeException e) {
             // 数据格式有误
             throw new UnauthorizedException("无效的token");
