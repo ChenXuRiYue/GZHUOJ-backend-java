@@ -1,5 +1,7 @@
 package com.gzhuoj.contest.controller;
 
+import com.gzhuoj.contest.dto.req.ContestResultReqDTO;
+import com.gzhuoj.contest.dto.resp.ContestResultRespDTO;
 import com.gzhuoj.contest.model.entity.ContestProblemDO;
 import com.gzhuoj.contest.service.ContestProblemService;
 import common.convention.result.Result;
@@ -19,5 +21,10 @@ public class ContestProblemController {
     @GetMapping("/problem")
     public Result<List<ContestProblemDO>> getAllProblem(Integer cid){
         return Results.success(contestProblemService.getAllProblem(cid));
+    }
+
+    @GetMapping("/getresult")
+    public Result<ContestResultRespDTO> getAllResult(Integer cid){
+        return Results.success(contestProblemService.getResult(cid));
     }
 }
