@@ -16,6 +16,9 @@ CREATE TABLE `contest`
     `award_ratio`    int                                                           NOT NULL DEFAULT '20015010' COMMENT '获奖比例',
     `frozen_minute`  int                                                           NOT NULL DEFAULT '-1' COMMENT '封榜分钟数',
     `frozen_after`   int                                                           NOT NULL DEFAULT '-1' COMMENT '结束后持续封榜分钟数',
+    `create_time`    datetime                                                               DEFAULT NULL COMMENT '创建时间',
+    `update_time`    datetime                                                               DEFAULT NULL COMMENT '更新时间',
+    `delete_flag`    tinyint(1) DEFAULT NULL COMMENT '标记账号是否已经被删除 0 -> 未删除， 1 -> 已删除',
     PRIMARY KEY (`contest_id` DESC)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -49,22 +52,6 @@ CREATE TABLE `contest_problem`
     `problem_color` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '题目对应气球颜色rgb十六进制编号',
     `actual_num`    int                                                           NOT NULL DEFAULT '0' COMMENT '题目在比赛中的编号',
     KEY             `Index_contest_id` (`contest_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-CREATE TABLE `team`
-(
-    `team_account`   varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '队伍编号',
-    `contest_id`     int                                                           NOT NULL COMMENT '比赛编号',
-    `team_status`    tinyint(1) NOT NULL COMMENT '队伍参赛情况 0 -> 参赛 1 -> 不参赛',
-    `password`       varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci          DEFAULT NULL COMMENT '密码',
-    `team_name`      varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci          DEFAULT NULL COMMENT '队伍名',
-    `team_member`    varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci          DEFAULT NULL COMMENT '队伍成员组成',
-    `team_type`      tinyint                                                       NOT NULL DEFAULT '0' COMMENT '“常规”（0）、“女队”（1）、“打星”（2） ',
-    `coach`          varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci          DEFAULT NULL COMMENT '教练',
-    `school`         varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci          DEFAULT NULL COMMENT '学校',
-    `room`           varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci          DEFAULT NULL COMMENT '比赛场地',
-    `team_privilege` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci           DEFAULT NULL COMMENT '账号权限',
-    PRIMARY KEY (`team_account`, `contest_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
