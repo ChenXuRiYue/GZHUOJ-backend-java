@@ -1,2 +1,15 @@
 # 忽略target目录
-**/target
+**/target/
+### Example user template template
+### Example user template
+
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+#!/gzhuoj-gateway/target/
+#!/gzhuoj-services/gzhuoj-contest/target/
+#!/gzhuoj-services/gzhuoj-problem/target/
+#!/gzhuoj-services/gzhuoj-user/target/
+#!/gzhuoj-common/target/

@@ -67,6 +67,7 @@ public class ProblemDO extends BaseDO {
     /**
      * 是否启用spj 0 -> 不启用， 1 -> 启用
      */
+    // TODO problemType 和 spj 冲突
     private Integer spj;
 
     /**
@@ -74,4 +75,5 @@ public class ProblemDO extends BaseDO {
      * 格式：yyyy-MM-dd_16位随机字符串
      */
     private String attach;
+
 }
