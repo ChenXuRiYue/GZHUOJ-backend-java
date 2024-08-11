@@ -1,14 +1,12 @@
 package com.gzhuoj.contest.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.gzhuoj.contest.dto.resp.RegContestProSetRespDTO;
 import com.gzhuoj.contest.model.entity.ContestProblemDO;
-import com.gzhuoj.contest.pojo.SFC;
+import com.gzhuoj.contest.model.pojo.SFC;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import java.util.Date;
 import java.util.List;
 
 @Mapper

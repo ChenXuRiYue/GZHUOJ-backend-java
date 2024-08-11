@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.beans.Encoder;
-
+/**
+ * problem远程调用接口层
+ */
 @FeignClient(name = "gzhuoj-problem-service",
         configuration = {ProblemRemoteService.MultipartSupportConfig.class})
 public interface ProblemRemoteService {

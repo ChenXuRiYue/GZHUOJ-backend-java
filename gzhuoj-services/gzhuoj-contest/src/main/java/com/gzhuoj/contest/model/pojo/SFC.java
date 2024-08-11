@@ -1,4 +1,4 @@
-package com.gzhuoj.contest.pojo;
+package com.gzhuoj.contest.model.pojo;
 
 import java.util.Date;
 import java.sql.Time;

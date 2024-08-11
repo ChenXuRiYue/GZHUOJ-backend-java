@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.gzhuoj.contest.config.JwtProperties;
-import com.gzhuoj.contest.constant.SubmissionStatus;
+import com.gzhuoj.contest.constant.enums.SubmissionStatus;
 import com.gzhuoj.contest.dto.req.*;
 import com.gzhuoj.contest.dto.resp.ContestWaitRespDTO;
 import com.gzhuoj.contest.dto.resp.RegContestGenTeamRespDTO;
@@ -29,8 +29,8 @@ import com.gzhuoj.contest.remote.Resp.ProblemRespDTO;
 import com.gzhuoj.contest.service.ContestProblemService;
 import com.gzhuoj.contest.service.ContestService;
 import com.gzhuoj.contest.service.RegContestService;
-import com.gzhuoj.contest.utils.JwtTool;
-import com.gzhuoj.contest.utils.RedisUtil;
+import com.gzhuoj.contest.util.JwtTool;
+import com.gzhuoj.contest.util.RedisUtil;
 import common.biz.user.UserContext;
 import common.exception.ClientException;
 import common.exception.ServiceException;
@@ -392,12 +392,11 @@ public class RegContestServiceImpl implements RegContestService {
     }
 
     @Override
-    public Boolean exist(Integer cid) {
+    public ContestDO getContest(Integer cid) {
         LambdaQueryWrapper<ContestDO> queryWrapper = Wrappers.lambdaQuery(ContestDO.class)
                 .eq(ContestDO::getContestId, cid)
                 .eq(ContestDO::getDeleteFlag, 0);
-        ContestDO contestDO = contestMapper.selectOne(queryWrapper);
-        return contestDO != null;
+        return contestMapper.selectOne(queryWrapper);
     }
 
 

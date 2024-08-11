@@ -28,6 +28,7 @@ import common.toolkit.GenerateRandStrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -44,6 +45,7 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, ContestDO> im
     private final ContestProblemMapper contestProblemMapper;
     private static final String DATE_FORMAT = "%s-%s-%s %s:%s";
     @Override
+    @Transactional
     public void create(ContestCreateReqDTO requestParam) {
         LambdaQueryWrapper<ContestDO> queryWrapper = Wrappers.lambdaQuery(ContestDO.class)
                 .eq(ContestDO::getContestId, requestParam.getContestId())
