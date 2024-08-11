@@ -29,11 +29,6 @@ public class TestExampleDO extends BaseDO {
     private String output;
 
     /**
-     * 样例说明
-     */
-    private String explanation;
-
-    /**
      * 题目编号
      */
     private Integer problemId;

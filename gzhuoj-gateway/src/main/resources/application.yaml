@@ -19,5 +19,5 @@ gzhuoj:
     tokenTTL: 30m
   auth:
     exclude-paths:
-      - /gzhuoj/user/login
+      - /api/gzhuoj-user/user/login
       - /api/gzhuoj-contest/regular/contest/login
