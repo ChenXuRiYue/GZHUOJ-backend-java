@@ -3,6 +3,7 @@ package com.gzhuoj.contest.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gzhuoj.contest.dto.req.*;
 import com.gzhuoj.contest.dto.resp.*;
+import com.gzhuoj.contest.model.entity.ContestDO;
 import com.gzhuoj.contest.service.RegContestService;
 import common.convention.result.Result;
 import common.convention.result.Results;
@@ -23,94 +24,103 @@ public class RegContestController {
 
     /**
      * 批量生成比赛队伍
+     *
      * @param requestParam 生成队伍参数
      * @return 队伍实体集合
      */
     @PostMapping("/admin/genteam")
-    public Result<List<RegContestGenTeamRespDTO>> genTeam(@RequestBody RegContestGenTeamReqDTO requestParam){
+    public Result<List<RegContestGenTeamRespDTO>> genTeam(@RequestBody RegContestGenTeamReqDTO requestParam) {
         return Results.success(regContestService.genTeam(requestParam));
     }
 
     /**
      * 队伍登录
+     *
      * @param requestParam 队伍登录参数
      */
     @PostMapping("/login")
-    public Result<RegContestLoginRespDTO> login(@RequestBody RegContestLoginReqDTO requestParam, HttpServletResponse response){
+    public Result<RegContestLoginRespDTO> login(@RequestBody RegContestLoginReqDTO requestParam, HttpServletResponse response) {
         return Results.success(regContestService.login(requestParam, response));
     }
 
     /**
      * 队伍登出
+     *
      * @param requestParam 队伍登出参数
      */
     @GetMapping("/logout")
-    public Result<Void> logout(RegContestLogoutReqDTO requestParam){
+    public Result<Void> logout(RegContestLogoutReqDTO requestParam) {
         regContestService.logout(requestParam);
         return Results.success();
     }
 
     /**
      * 队伍删除
+     *
      * @param requestParam 队伍删除参数
      */
     @GetMapping("/deleteteam")
-    public Result<Void> deleteTeam(RegContestDelTeamReqDTO requestParam){
+    public Result<Void> deleteTeam(RegContestDelTeamReqDTO requestParam) {
         regContestService.deleteTeam(requestParam);
         return Results.success();
     }
 
     /**
      * 队伍更新
+     *
      * @param requestParam 队伍更新参数
      */
     @PutMapping("/updateteam")
-    public Result<Void> updateTeam(@RequestBody RegContestUpdateTeamReqDTO requestParam){
+    public Result<Void> updateTeam(@RequestBody RegContestUpdateTeamReqDTO requestParam) {
         regContestService.updateTeam(requestParam);
         return Results.success();
     }
 
     /**
      * 队伍信息查询
+     *
      * @param requestParam 查询参数
      */
     @GetMapping("/teaminfo")
-    public Result<RegContestTeamInfoRespDTO> teamInfo(RegContestTeamInfoReqDTO requestParam){
+    public Result<RegContestTeamInfoRespDTO> teamInfo(RegContestTeamInfoReqDTO requestParam) {
         return Results.success(regContestService.teamInfo(requestParam));
     }
 
     /**
      * 评测结果展示
+     *
      * @param requestParam 评测结果查询参数
      * @return 评测结果分页查询
      */
     @GetMapping("/status")
-    public Result<IPage<RegContestStatusRespDTO>> status(RegContestStatusReqDTO requestParam){
+    public Result<IPage<RegContestStatusRespDTO>> status(RegContestStatusReqDTO requestParam) {
         return Results.success(regContestService.status(requestParam));
     }
 
     /**
      * 根据比赛id查询比赛是否存在
+     *
      * @param cid 比赛id
      * @return 存在返回 true
      */
     @GetMapping("/exist")
-    public Result<Boolean> exist(Integer cid){
-        return Results.success(regContestService.exist(cid));
+    public Result<ContestDO> getContest(Integer cid) {
+        return Results.success(regContestService.getContest(cid));
     }
 
     /**
      * 比赛题目集界面
+     *
      * @param requestParam 比赛题目集界面入参
      * @return 题目列表展示返回实体
      */
     @GetMapping("/problemset")
-    public Result<List<RegContestProSetRespDTO>>  problemSet(RegContestProSetReqDTO requestParam){
+    public Result<List<RegContestProSetRespDTO>> problemSet(RegContestProSetReqDTO requestParam) {
         return Results.success(regContestService.problemSet(requestParam));
     }
 
     @GetMapping("/wait")
-    public Result<ContestWaitRespDTO> waitContest(ContestWaitReqDTO requestParam){
+    public Result<ContestWaitRespDTO> waitContest(ContestWaitReqDTO requestParam) {
         return Results.success(regContestService.waitTime(requestParam));
     }
 }

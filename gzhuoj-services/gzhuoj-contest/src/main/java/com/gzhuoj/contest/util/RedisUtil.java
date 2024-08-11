@@ -1,7 +1,6 @@
-package com.gzhuoj.contest.utils;
+package com.gzhuoj.contest.util;
 
 import cn.hutool.json.JSONUtil;
-import com.alibaba.fastjson2.JSON;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -27,5 +26,42 @@ public class RedisUtil {
     // 从Redis哈希表中读取List
     public <T> List<T> getListFromHash(Object jsonStr, String hashKey, Class<T> clazz) {
         return JSONUtil.parseArray(jsonStr).toList(clazz);
+    }
+
+    /**
+     * 将value放入list的左侧
+     */
+    public boolean lPush(String key, String value) {
+        try {
+            stringRedisTemplate.opsForList().leftPush(key, value);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * 将value从list的右侧取出
+     */
+    public Object rPop(String key) {
+        try {
+            return stringRedisTemplate.opsForList().rightPop(key);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * 获取list集合大小
+     */
+    public long getListSize(String key) {
+        try {
+            return stringRedisTemplate.opsForList().size(key);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 }
