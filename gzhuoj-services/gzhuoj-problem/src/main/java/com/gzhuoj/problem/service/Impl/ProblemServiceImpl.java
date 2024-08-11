@@ -27,6 +27,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -41,10 +43,14 @@ import static common.convention.errorcode.BaseErrorCode.PROBLEM_ID_EXISTED;
 
 @Service
 @RequiredArgsConstructor
+// 开启事务
+@Transactional(propagation= Propagation.REQUIRED)
 public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> implements ProblemService {
 
     private final TestExampleMapper testExampleMapper;
     private final ProblemDescrMapper problemDescrMapper;
+
+    // TODO 注意对象加了字段，逻辑可能发生改变
     @Override
     public void createProblem(CreateProblemReqDTO requestParam) {
         // 处理更新时间，创建时间？
@@ -52,10 +58,10 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
                 .eq(ProblemDO::getProblemNum, requestParam.getProblemNum())
                 .eq(ProblemDO::getDeleteFlag, 0);
         ProblemDO hasProblemDO = baseMapper.selectOne(queryWrapper);
-        if(ObjectUtils.isNotEmpty(hasProblemDO)){
-            throw new ClientException("录题失败: 题目序号已存在");
+        if (ObjectUtils.isNotEmpty(hasProblemDO)) {
+            throw new ClientException("录题失败: 题目序号已存在", PROBLEM_ID_EXISTED);
         }
-        try{
+        try {
             // updateTime, createTime 这两个字段的更新方式是mybatisPlus ———— MetaObjectHandler 自动插入。
             ProblemDO problemDO = ProblemDO.builder()
                     .problemNum(requestParam.getProblemNum())
@@ -71,12 +77,21 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
                     .problemStatus(0) // 默认设置为不公开
                     .build();
 
-            ProblemDescrDO problemDescrDO = new ProblemDescrDO(requestParam.getProblemNum(), requestParam.getDescription());
+            ProblemDescrDO problemDescrDO = new ProblemDescrDO(
+                    requestParam.getProblemNum(),
+                    requestParam.getDescription(),
+                    requestParam.getDescriptionHtml(),
+                    requestParam.getInputDescription(),
+                    requestParam.getInputDescriptionHtml(),
+                    requestParam.getOutputDescription(),
+                    requestParam.getOutputDescriptionHtml(),
+                    requestParam.getExplanation()
+            );
             problemDescrMapper.insert(problemDescrDO);
 
             List<TestExampleDO> testExampleList = requestParam.getTestExampleList();
             // 由于样例一般很小，直接用数据库存
-            if(CollUtil.isNotEmpty(testExampleList)) {
+            if (CollUtil.isNotEmpty(testExampleList)) {
                 testExampleList
                         .stream()
                         .peek(each -> each.setProblemId(requestParam.getProblemNum()))
@@ -89,15 +104,14 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
             String identify = createUniqueDir();
             problemDO.setAttach(identify);
             baseMapper.insert(problemDO);
-        } catch (Exception e){
-            e.printStackTrace();
-            throw new ClientException("录入失败: 插入数据库失败");
+        } catch (Exception e) {
+            throw new ClientException("插入数据库过程出现错误", BaseErrorCode.SERVICE_ERROR);
         }
     }
 
     private String createUniqueDir() throws IOException {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String identify = String.format((LocalDate.now().format(dateTimeFormatter))+ "_%s", GenerateRandStrUtil.getRandStr(16));
+        String identify = String.format((LocalDate.now().format(dateTimeFormatter)) + "_%s", GenerateRandStrUtil.getRandStr(16));
         Path path = Paths.get("");
         Path testCase = path.resolve(String.format(PathConstant.PROBLEM_TESTCASE_PATH, identify));
         Path upload = path.resolve(String.format(PathConstant.PROBLEM_UPLOAD_PATH, identify));
@@ -110,11 +124,11 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
     public IPage<ListProblemRespDTO> listProblem(ListProblemReqDTO requestParam) {
         LambdaQueryWrapper<ProblemDO> queryWrapper = Wrappers.lambdaQuery(ProblemDO.class)
                 .eq(ProblemDO::getDeleteFlag, 0);
-        if(!StrUtil.isEmpty(requestParam.getSearch())){
+        if (!StrUtil.isEmpty(requestParam.getSearch())) {
             queryWrapper.like(ProblemDO::getProblemNum, requestParam.getSearch())
                     .or().like(ProblemDO::getProblemName, requestParam.getSearch());
         }
-        if(requestParam.getOrder() == null){
+        if (requestParam.getOrder() == null) {
             throw new ClientException("排序默认应为正序");
         }
         boolean flag = requestParam.getOrder().equals("asc");
@@ -129,16 +143,16 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
                 .eq(ProblemDO::getProblemNum, requestParam.getProblemNum())
                 .eq(ProblemDO::getDeleteFlag, 0);
         ProblemDO hasProblemDO = baseMapper.selectOne(queryWrapper);
-        if(hasProblemDO == null){
+        if (hasProblemDO == null) {
             throw new ClientException("题目不存在");
         }
         Integer problemNum = requestParam.getNewProblemNum() != null ? requestParam.getNewProblemNum() : requestParam.getProblemNum();
-        if(!Objects.equals(problemNum, requestParam.getProblemNum())){
+        if (!Objects.equals(problemNum, requestParam.getProblemNum())) {
             LambdaQueryWrapper<ProblemDO> hsaQueryWrapper = Wrappers.lambdaQuery(ProblemDO.class)
                     .eq(ProblemDO::getProblemNum, problemNum)
                     .eq(ProblemDO::getDeleteFlag, 0);
             ProblemDO problemDO = baseMapper.selectOne(hsaQueryWrapper);
-            if(problemDO != null){
+            if (problemDO != null) {
                 throw new ClientException(PROBLEM_ID_EXISTED);
             }
         }
@@ -156,7 +170,17 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
         LambdaQueryWrapper<ProblemDescrDO> problemDescrDO = Wrappers.lambdaQuery(ProblemDescrDO.class)
                 .eq(ProblemDescrDO::getProblemNum, requestParam.getProblemNum());
         problemDescrMapper.delete(problemDescrDO);
-        ProblemDescrDO newProblemDescrDO = new ProblemDescrDO(problemNum, requestParam.getDescription());
+        ProblemDescrDO newProblemDescrDO = ProblemDescrDO.builder()
+                .problemNum(requestParam.getProblemNum())
+                .description(requestParam.getDescription())
+                .descriptionHtml(requestParam.getDescriptionHtml())
+                .inputDescription(requestParam.getInputDescrition())
+                .inputDescriptionHtml(requestParam.getInputDescriptionHtml())
+                .outputDescription(requestParam.getOutputDescription())
+                .outputDescriptionHtml(requestParam.getOutputDescriptionHtml())
+                .explanation(requestParam.getExplanation())
+                .build();
+//        ProblemDescrDO newProblemDescrDO = new ProblemDescrDO();
         problemDescrMapper.insert(newProblemDescrDO);
 
         LambdaUpdateWrapper<ProblemDO> updateWrapper = Wrappers.lambdaUpdate(ProblemDO.class)
@@ -165,7 +189,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
         baseMapper.update(problemDO, updateWrapper);
 
         List<TestExampleDO> testExampleList = requestParam.getTestExampleList();
-        if(CollUtil.isNotEmpty(testExampleList)){
+        if (CollUtil.isNotEmpty(testExampleList)) {
             LambdaQueryWrapper<TestExampleDO> testExampleDOWrapper = Wrappers.lambdaQuery(TestExampleDO.class)
                     .eq(TestExampleDO::getProblemId, requestParam.getProblemNum())
                     .eq(TestExampleDO::getDeleteFlag, 0);

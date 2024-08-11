@@ -35,10 +35,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     private final StringRedisTemplate stringRedisTemplate;
     private final JwtTool jwtTool;
     private final JwtProperties jwtProperties;
-    @Override
-    public String test() {
-        return "fuck";
-    }
 
     /**
      * @param requestParam

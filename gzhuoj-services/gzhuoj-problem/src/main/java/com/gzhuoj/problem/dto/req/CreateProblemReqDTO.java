@@ -32,12 +32,48 @@ public class CreateProblemReqDTO {
     /**
      *题目类型： 0 -> 普通题目， 1 -> special judge, 2 -> 交互题
      */
-    private Integer ProblemType;
+    private Integer problemType;
 
     /**
      * 题目题面
      */
     private String description;
+
+    /**
+     * 题目体面Html
+     */
+    private String descriptionHtml;
+
+    /**
+     * 输入描述
+     */
+    private String inputDescription;
+
+    /**
+     * 输入描述Html
+     */
+    private String inputDescriptionHtml;
+
+
+    /**
+     * 输出描述
+     */
+    private String outputDescription;
+
+    /**
+     * 输出描述Html
+     */
+    private String outputDescriptionHtml;
+
+    /**
+     * 样例描述
+     */
+    private String explanation;
+
+    /**
+     * 样例描述Html
+     */
+    private String explanationHtml;
 
     /**
      * author
