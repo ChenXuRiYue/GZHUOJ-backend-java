@@ -1,11 +1,9 @@
 package com.gzhuoj.contest.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.gzhuoj.contest.dto.req.ContestResultReqDTO;
 import com.gzhuoj.contest.dto.resp.ContestResultRespDTO;
 import com.gzhuoj.contest.model.entity.ContestProblemDO;
-import com.gzhuoj.contest.pojo.CPResult;
-import lombok.Data;
+import com.gzhuoj.contest.model.pojo.CPResult;
 
 
 import java.util.Date;

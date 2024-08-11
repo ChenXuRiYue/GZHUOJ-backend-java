@@ -1,6 +1,6 @@
 package com.gzhuoj.contest.dto.resp;
 
-import com.gzhuoj.contest.pojo.CPResult;
+import com.gzhuoj.contest.model.pojo.CPResult;
 
 import java.util.List;
 
