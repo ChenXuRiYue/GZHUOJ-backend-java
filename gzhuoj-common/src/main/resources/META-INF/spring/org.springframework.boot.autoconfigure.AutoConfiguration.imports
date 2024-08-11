@@ -2,3 +2,4 @@ common.config.GatewayConfig
 common.database.config.MybatisPlusAutoConfiguration
 common.config.GlobalCorsConfig
 common.config.MvcConfig
+common.web.GlobalExceptionHandler

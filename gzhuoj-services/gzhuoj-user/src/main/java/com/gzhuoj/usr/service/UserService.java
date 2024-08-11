@@ -11,8 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 
 public interface UserService extends IService<UserDO> {
-    String test();
-
     UserLoginRespDTO login(UserLoginReqDTO requestParam,  HttpServletResponse response);
 
     UserInfoUpdateRespDTO updateInfo(UserInfoUpdateReqDTO requestParam);
