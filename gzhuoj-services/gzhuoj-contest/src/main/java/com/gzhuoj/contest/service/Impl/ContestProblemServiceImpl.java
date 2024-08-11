@@ -3,16 +3,14 @@ package com.gzhuoj.contest.service.Impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gzhuoj.contest.dto.req.ContestResultReqDTO;
 import com.gzhuoj.contest.dto.resp.ContestResultRespDTO;
 import com.gzhuoj.contest.mapper.ContestMapper;
 import com.gzhuoj.contest.mapper.ContestProblemMapper;
 import com.gzhuoj.contest.model.entity.ContestDO;
 import com.gzhuoj.contest.model.entity.ContestProblemDO;
-import com.gzhuoj.contest.pojo.CPResult;
-import com.gzhuoj.contest.pojo.SFC;
+import com.gzhuoj.contest.model.pojo.CPResult;
+import com.gzhuoj.contest.model.pojo.SFC;
 import com.gzhuoj.contest.service.ContestProblemService;
-import common.biz.user.UserContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

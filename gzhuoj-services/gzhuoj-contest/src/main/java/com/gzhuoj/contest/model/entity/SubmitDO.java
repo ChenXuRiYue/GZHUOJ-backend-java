@@ -1,5 +1,7 @@
 package com.gzhuoj.contest.model.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,8 +17,9 @@ import java.util.Date;
 @TableName("submit")
 public class SubmitDO {
     /**
-     * 提交编号
+     * 主键 ID, @TableId 注解定义字段为表的主键，type 表示主键类型，IdType.AUTO 表示随着数据库 ID 自增
      */
+    @TableId(type = IdType.AUTO)
     private Integer submitId;
 
     /**

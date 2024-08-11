@@ -3,6 +3,7 @@ package com.gzhuoj.contest.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gzhuoj.contest.dto.req.*;
 import com.gzhuoj.contest.dto.resp.*;
+import com.gzhuoj.contest.model.entity.ContestDO;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.List;
@@ -26,5 +27,5 @@ public interface RegContestService {
 
     List<RegContestProSetRespDTO> problemSet(RegContestProSetReqDTO requestParam);
 
-    Boolean exist(Integer cid);
+    ContestDO getContest(Integer cid);
 }

@@ -23,12 +23,21 @@ public enum BaseErrorCode implements IErrorCode {
     TEAM_INFO_NOT_FOUND_ERROR("A000205", "队伍不存在"),
     TEAM_UPDATE_LOW_PASSWORD_ERROR("A000206", "密码长度至少为六位"),
 
-    CONTEST_HAVE_BEGIN("A000207","比赛已经开始了"),
 
     PROBLEM_ID_EXISTED("A000301", "新设题目编号已存在"),
+    PROBLEM_NOT_FOUND("A000302", "题目不存在"),
 
     CONTEST_NOT_FOUND_ERROR("A000401", "比赛不存在"),
+    CONTEST_PROBLEM_FOUND_NOT_ERROR("A000402", "比赛题目不存在"),
+    CONTEST_HAVE_BEGIN("A000403","比赛已经开始了"),
+    CONTEST_NOT_START("A000404","比赛还未开始"),
+    CONTEST_TEAM_NOT_FOUND("A000404","比赛队伍不存在"),
 
+    JUDGE_SUBMIT_ERROR("A000501", "评测提交错误"),
+    JUDGE_TYPE_ERROR("A000502", "评测方式错误或不存在"),
+
+    SUBMISSION_LANGUAGE_NOT_SUPPORT("A000601", "评测语言不支持"),
+    SUBMISSION_LENGTH_TOO_LONG("A000602", "提交代码长度超出限制"),
 
     // ========== 二级宏观错误码 系统请求缺少幂等Token ==========
     IDEMPOTENT_TOKEN_NULL_ERROR("A000200", "幂等Token为空"),

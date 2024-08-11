@@ -1,4 +1,4 @@
-package com.gzhuoj.contest.constant;
+package com.gzhuoj.contest.constant.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
