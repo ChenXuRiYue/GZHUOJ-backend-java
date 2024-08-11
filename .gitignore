@@ -1,2 +1,4 @@
 # 忽略target目录
 **/target
+/.idea/
+/target/
