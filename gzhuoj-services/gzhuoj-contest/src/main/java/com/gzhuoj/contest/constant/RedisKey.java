@@ -12,4 +12,6 @@ public final class RedisKey {
     public static final String REGULAR_CONTEST_PROBLEM_SET = "index-gzhuoj-contest-service:regular_contest_problem_set:";
 
     public static final String TEAM_LOGIN_KEY = "gzhuoj-team:login:%s";
+
+    public static final String CONTEST_JUDGE_QUEUE = "gzhuoj-contest-judge:queue";
 }

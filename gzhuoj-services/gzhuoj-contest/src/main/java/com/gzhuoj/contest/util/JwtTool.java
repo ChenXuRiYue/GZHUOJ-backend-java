@@ -1,4 +1,4 @@
-package com.gzhuoj.contest.utils;
+package com.gzhuoj.contest.util;
 
 import cn.hutool.core.exceptions.ValidateException;
 import cn.hutool.jwt.JWT;
