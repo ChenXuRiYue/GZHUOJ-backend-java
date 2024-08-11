@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/gzhuoj/admin")
+@RequestMapping("/api/gzhuoj-user/admin")
 public class AdminController {
 
     private final AdminService adminService;

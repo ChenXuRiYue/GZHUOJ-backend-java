@@ -2,11 +2,13 @@ package com.gzhuoj.problem.dto.req;
 
 import com.gzhuoj.problem.model.entity.TestCaseDO;
 import com.gzhuoj.problem.model.entity.TestExampleDO;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
+@AllArgsConstructor
 public class UpdateProblemReqDTO {
     /**
      * 题目标题
@@ -17,6 +19,41 @@ public class UpdateProblemReqDTO {
      * 题目题面
      */
     private String description;
+
+    /**
+     * 题面Html
+     */
+    private String descriptionHtml;
+
+    /**
+     * 输入描述
+     */
+    private String inputDescrition;
+
+    /**
+     * 输入描述HTML
+     */
+    private String inputDescriptionHtml;
+
+    /**
+     * 输出描述
+     */
+    private String outputDescription;
+
+    /**
+     * 输出描述Html
+     */
+    private String outputDescriptionHtml;
+
+    /**
+     * 样例解释
+     */
+    private String explanation;
+
+    /**
+     * 样例解释Html
+     */
+    private String explanationHtml;
 
     /**
      * 时间限制
