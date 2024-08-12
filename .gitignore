@@ -2,3 +2,8 @@
 **/target
 /.idea/
 /target/
+/gzhuoj-common/target/
+/gzhuoj-gateway/target/
+/gzhuoj-services/gzhuoj-contest/target/
+/gzhuoj-services/gzhuoj-problem/target/
+/gzhuoj-services/gzhuoj-user/target/

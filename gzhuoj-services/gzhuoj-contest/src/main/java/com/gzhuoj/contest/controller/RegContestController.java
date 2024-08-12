@@ -1,10 +1,10 @@
 package com.gzhuoj.contest.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.gzhuoj.contest.dto.req.*;
-import com.gzhuoj.contest.dto.resp.*;
+import com.gzhuoj.contest.dto.req.regContest.*;
+import com.gzhuoj.contest.dto.resp.regContest.*;
 import com.gzhuoj.contest.model.entity.ContestDO;
-import com.gzhuoj.contest.service.RegContestService;
+import com.gzhuoj.contest.service.regContest.RegContestService;
 import common.convention.result.Result;
 import common.convention.result.Results;
 import jakarta.servlet.http.HttpServletResponse;

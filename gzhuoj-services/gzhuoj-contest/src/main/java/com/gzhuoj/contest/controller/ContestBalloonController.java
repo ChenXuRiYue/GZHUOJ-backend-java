@@ -1,9 +1,9 @@
 package com.gzhuoj.contest.controller;
 
-import com.gzhuoj.contest.dto.req.ContestBalloonChangeStReqDTO;
-import com.gzhuoj.contest.dto.req.ContestBalloonQueueReqDTO;
-import com.gzhuoj.contest.dto.resp.ContestBalloonQueueRespDTO;
-import com.gzhuoj.contest.service.ContestBalloonService;
+import com.gzhuoj.contest.dto.req.contestBalloon.ContestBalloonChangeStReqDTO;
+import com.gzhuoj.contest.dto.req.contestBalloon.ContestBalloonQueueReqDTO;
+import com.gzhuoj.contest.dto.resp.contestBalloon.ContestBalloonQueueRespDTO;
+import com.gzhuoj.contest.service.contestBalloon.ContestBalloonService;
 import common.convention.result.Result;
 import common.convention.result.Results;
 import lombok.RequiredArgsConstructor;
