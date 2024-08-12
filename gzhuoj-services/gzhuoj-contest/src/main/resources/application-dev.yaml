@@ -1,0 +1,33 @@
+message: This is the development environment
+server:
+  port: 5123
+#  address: 0.0.0.0
+
+spring:
+  application:
+    name: gzhuoj-contest-service
+
+  cloud:
+    ## consul 服务端治理设置
+    consul:
+      host: 47.120.53.127
+      port: 8500
+      discovery:
+        ## 注册到consul的服务名称
+        service-name: gzhuoj-contest-service
+        heartbeat:
+          enabled: true
+
+  ## 数据库配置
+  datasource:
+    username: root
+    password: 3.14PAi#!
+    url: jdbc:mysql://47.120.53.127:3307/gzhuoj-contest?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-test-query: select 1
+      connection-timeout: 20000
+      idle-timeout: 300000
+      maximum-pool-size: 5
+      minimum-idle: 5
+
