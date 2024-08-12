@@ -1,6 +1,6 @@
 package com.gzhuoj.contest.controller;
 
-import com.gzhuoj.contest.dto.resp.ContestResultRespDTO;
+import com.gzhuoj.contest.dto.resp.contestProblem.ContestResultRespDTO;
 import com.gzhuoj.contest.model.entity.ContestProblemDO;
 import com.gzhuoj.contest.service.contestProblem.ContestProblemService;
 import common.convention.result.Result;
