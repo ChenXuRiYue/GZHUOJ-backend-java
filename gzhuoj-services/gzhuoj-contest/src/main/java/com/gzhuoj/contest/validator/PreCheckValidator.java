@@ -11,7 +11,7 @@ import com.gzhuoj.contest.model.entity.SubmitCodeDO;
 import com.gzhuoj.contest.model.entity.SubmitDO;
 import com.gzhuoj.contest.model.entity.TeamDO;
 import com.gzhuoj.contest.remote.ProblemRemoteService;
-import com.gzhuoj.contest.service.RegContestService;
+import com.gzhuoj.contest.service.regContest.RegContestService;
 import common.biz.user.UserContext;
 import common.exception.ClientException;
 import lombok.RequiredArgsConstructor;

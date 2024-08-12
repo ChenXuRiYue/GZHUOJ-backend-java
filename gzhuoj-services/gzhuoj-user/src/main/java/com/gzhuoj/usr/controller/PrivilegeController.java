@@ -3,7 +3,7 @@ package com.gzhuoj.usr.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gzhuoj.usr.dto.req.AdminPrivilegeListReqDTO;
 import com.gzhuoj.usr.dto.resp.AdminPrivilegeListRespDTO;
-import com.gzhuoj.usr.service.PrivilegeService;
+import com.gzhuoj.usr.service.privilege.PrivilegeService;
 import common.convention.result.Result;
 import common.convention.result.Results;
 import lombok.RequiredArgsConstructor;

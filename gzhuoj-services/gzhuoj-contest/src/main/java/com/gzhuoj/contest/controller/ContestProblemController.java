@@ -1,9 +1,8 @@
 package com.gzhuoj.contest.controller;
 
-import com.gzhuoj.contest.dto.req.ContestResultReqDTO;
 import com.gzhuoj.contest.dto.resp.ContestResultRespDTO;
 import com.gzhuoj.contest.model.entity.ContestProblemDO;
-import com.gzhuoj.contest.service.ContestProblemService;
+import com.gzhuoj.contest.service.contestProblem.ContestProblemService;
 import common.convention.result.Result;
 import common.convention.result.Results;
 import lombok.RequiredArgsConstructor;

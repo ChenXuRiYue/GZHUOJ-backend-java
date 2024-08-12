@@ -1,6 +1,5 @@
 package com.gzhuoj.contest.judge;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.gzhuoj.contest.constant.enums.JudgeType;
@@ -9,9 +8,8 @@ import com.gzhuoj.contest.model.entity.JudgeServerDO;
 import com.gzhuoj.contest.model.entity.SubmitDO;
 import com.gzhuoj.contest.model.pojo.ToJudgeDTO;
 import com.gzhuoj.contest.remote.JudgeServerRemoteService;
-import com.gzhuoj.contest.service.JudgeServerService;
-import com.gzhuoj.contest.service.JudgeService;
-import com.gzhuoj.contest.service.SubmitService;
+import com.gzhuoj.contest.service.judge.JudgeServerService;
+import com.gzhuoj.contest.service.judge.SubmitService;
 import com.gzhuoj.contest.util.ChooseInstanceUtils;
 import common.convention.result.Result;
 import common.exception.ClientException;
@@ -20,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.*;
