@@ -26,7 +26,7 @@ import java.util.Map;
 @RequestMapping("/api/gzhuoj-judge-server")
 public class JudgeController {
     @PostMapping("/judge")
-    public Result<Object> judge(@RequestBody ToJudgeReqDTO requestParam){
+    public Result<Void> judge(@RequestBody ToJudgeReqDTO requestParam){
 
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper objectMapper = new ObjectMapper();
@@ -89,6 +89,6 @@ public class JudgeController {
             System.out.println("Request failed: " + responseEntity.getStatusCode());
         }
 
-        return Results.success(responseEntity.getBody());
+        return Results.success();
     }
 }

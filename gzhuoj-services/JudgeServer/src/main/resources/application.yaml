@@ -21,7 +21,7 @@ spring:
   datasource:
     username: root
     password: 3.14PAi#!
-    url: jdbc:mysql://47.120.53.127:3307/gzhuoj-user?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8
+    url: jdbc:mysql://47.120.53.127:3307/gzhuoj-contest?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       connection-test-query: select 1
@@ -36,8 +36,9 @@ mybatis-plus:
 
   mapper-locations: classpath:**/mapper/*.xml
 
+#本地
 gzhuoj-judge-server:
-  ip: 127.0.0.1
-  port: 8086
+  ip: Liang
+  port: 8063
   max-task-num: -1
   name: gzhuoj-judge-1
