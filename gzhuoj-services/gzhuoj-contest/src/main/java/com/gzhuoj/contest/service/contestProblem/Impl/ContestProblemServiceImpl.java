@@ -3,7 +3,7 @@ package com.gzhuoj.contest.service.contestProblem.Impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gzhuoj.contest.dto.resp.ContestResultRespDTO;
+import com.gzhuoj.contest.dto.resp.contestProblem.ContestResultRespDTO;
 import com.gzhuoj.contest.mapper.ContestMapper;
 import com.gzhuoj.contest.mapper.ContestProblemMapper;
 import com.gzhuoj.contest.model.entity.ContestDO;
