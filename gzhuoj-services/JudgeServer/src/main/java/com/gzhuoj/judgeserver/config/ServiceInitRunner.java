@@ -19,6 +19,7 @@ import java.util.HashMap;
 //@Component
 @Slf4j
 @RequiredArgsConstructor
+@Component
 public class ServiceInitRunner implements CommandLineRunner {
     private final JudgeServerService judgeServer;
 
@@ -55,7 +56,7 @@ public class ServiceInitRunner implements CommandLineRunner {
                 .eq(JudgeServerDO::getIp, ip)
                 .eq(JudgeServerDO::getPort, port);
         judgeServer.remove(queryWrapper);
-        JudgeServerDO judgeServerDO = JudgeServerDO.builder()
+         JudgeServerDO judgeServerDO = JudgeServerDO.builder()
                 .cpuCore(cpuNum)
                 .ip(ip)
                 .port(port)

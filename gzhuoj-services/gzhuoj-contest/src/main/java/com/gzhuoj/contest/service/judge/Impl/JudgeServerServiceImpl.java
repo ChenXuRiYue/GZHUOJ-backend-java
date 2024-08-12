@@ -1,9 +1,9 @@
-package com.gzhuoj.contest.service.Impl;
+package com.gzhuoj.contest.service.judge.Impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gzhuoj.contest.mapper.JudgeServerMapper;
 import com.gzhuoj.contest.model.entity.JudgeServerDO;
-import com.gzhuoj.contest.service.JudgeServerService;
+import com.gzhuoj.contest.service.judge.JudgeServerService;
 import org.springframework.stereotype.Service;
 
 @Service

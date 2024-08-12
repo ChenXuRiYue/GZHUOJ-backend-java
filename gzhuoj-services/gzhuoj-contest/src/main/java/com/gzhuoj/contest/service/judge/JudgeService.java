@@ -1,4 +1,4 @@
-package com.gzhuoj.contest.service;
+package com.gzhuoj.contest.service.judge;
 
 import com.gzhuoj.contest.dto.req.Judge.RegContestJudgeSubmitReqDTO;
 import com.gzhuoj.contest.model.entity.SubmitDO;
