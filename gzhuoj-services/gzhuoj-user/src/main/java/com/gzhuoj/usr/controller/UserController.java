@@ -5,14 +5,12 @@ import com.gzhuoj.usr.dto.req.UserLoginReqDTO;
 import com.gzhuoj.usr.dto.resp.UserInfoRespDTO;
 import com.gzhuoj.usr.dto.resp.UserInfoUpdateRespDTO;
 import com.gzhuoj.usr.dto.resp.UserLoginRespDTO;
-import com.gzhuoj.usr.service.UserService;
+import com.gzhuoj.usr.service.user.UserService;
 import common.convention.result.Result;
 import common.convention.result.Results;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor

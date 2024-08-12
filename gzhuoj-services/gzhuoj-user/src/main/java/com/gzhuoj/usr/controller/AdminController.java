@@ -2,14 +2,12 @@ package com.gzhuoj.usr.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gzhuoj.usr.dto.req.*;
-import com.gzhuoj.usr.dto.resp.AdminPrivilegeListRespDTO;
 import com.gzhuoj.usr.dto.resp.AdminUserGenRespDTO;
 import com.gzhuoj.usr.dto.resp.AdminUserListRespDTO;
-import com.gzhuoj.usr.service.AdminService;
+import com.gzhuoj.usr.service.admin.AdminService;
 import common.convention.result.Result;
 import common.convention.result.Results;
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

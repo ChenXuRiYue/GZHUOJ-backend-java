@@ -3,7 +3,7 @@ package com.gzhuoj.problem.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gzhuoj.problem.dto.req.ProblemSetRequestDTO;
 import com.gzhuoj.problem.dto.resp.ProblemSetResponseDTO;
-import com.gzhuoj.problem.service.ProblemSetService;
+import com.gzhuoj.problem.service.problemSet.ProblemSetService;
 import common.convention.result.Result;
 import common.convention.result.Results;
 import lombok.RequiredArgsConstructor;
