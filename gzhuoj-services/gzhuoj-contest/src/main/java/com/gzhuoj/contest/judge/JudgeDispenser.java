@@ -4,7 +4,7 @@ import com.gzhuoj.contest.constant.RedisKey;
 import com.gzhuoj.contest.constant.enums.JudgeType;
 import com.gzhuoj.contest.model.entity.SubmitDO;
 import com.gzhuoj.contest.model.pojo.ToJudgeDTO;
-import com.gzhuoj.contest.service.SubmitService;
+import com.gzhuoj.contest.service.judge.SubmitService;
 import com.gzhuoj.contest.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;

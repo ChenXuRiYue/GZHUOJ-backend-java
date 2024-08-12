@@ -1,7 +1,7 @@
 package com.gzhuoj.contest.controller;
 
 import com.gzhuoj.contest.dto.req.Judge.RegContestJudgeSubmitReqDTO;
-import com.gzhuoj.contest.service.JudgeService;
+import com.gzhuoj.contest.service.judge.JudgeService;
 import common.convention.result.Result;
 import common.convention.result.Results;
 import lombok.RequiredArgsConstructor;
