@@ -1,11 +1,11 @@
 package com.gzhuoj.usr.service.user;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.gzhuoj.usr.dto.req.UserInfoUpdateReqDTO;
-import com.gzhuoj.usr.dto.req.UserLoginReqDTO;
-import com.gzhuoj.usr.dto.resp.UserInfoRespDTO;
-import com.gzhuoj.usr.dto.resp.UserInfoUpdateRespDTO;
-import com.gzhuoj.usr.dto.resp.UserLoginRespDTO;
+import com.gzhuoj.usr.dto.req.user.UserInfoUpdateReqDTO;
+import com.gzhuoj.usr.dto.req.user.UserLoginReqDTO;
+import com.gzhuoj.usr.dto.resp.user.UserInfoRespDTO;
+import com.gzhuoj.usr.dto.resp.user.UserInfoUpdateRespDTO;
+import com.gzhuoj.usr.dto.resp.user.UserLoginRespDTO;
 import com.gzhuoj.usr.model.entity.UserDO;
 import jakarta.servlet.http.HttpServletResponse;
 

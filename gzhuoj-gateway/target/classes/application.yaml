@@ -16,3 +16,4 @@ gzhuoj:
   auth:
     exclude-paths:
       - /gzhuoj/user/login
+      - /api/gzhuoj-contest/regular/contest/login
