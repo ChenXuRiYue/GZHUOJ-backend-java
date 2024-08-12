@@ -2,7 +2,7 @@ package com.gzhuoj.problem.controller;
 
 import com.gzhuoj.problem.constant.PathConstant;
 import com.gzhuoj.problem.constant.PatternConstant;
-import com.gzhuoj.problem.dto.req.ListJudgeDataReqDTO;
+import com.gzhuoj.problem.dto.req.judge.ListJudgeDataReqDTO;
 import com.gzhuoj.problem.service.judge.JudgeService;
 import com.gzhuoj.problem.service.common.UploadService;
 import common.convention.result.Result;
