@@ -1,4 +1,4 @@
-package com.gzhuoj.contest.service.Impl;
+package com.gzhuoj.contest.service.judge.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -7,18 +7,14 @@ import com.gzhuoj.contest.dto.req.Judge.RegContestJudgeSubmitReqDTO;
 import com.gzhuoj.contest.judge.JudgeDispatcher;
 import com.gzhuoj.contest.mapper.SubmitMapper;
 import com.gzhuoj.contest.model.entity.SubmitDO;
-import com.gzhuoj.contest.remote.ProblemRemoteService;
-import com.gzhuoj.contest.service.JudgeService;
+import com.gzhuoj.contest.service.judge.JudgeService;
 import com.gzhuoj.contest.service.RegContestService;
 import com.gzhuoj.contest.validator.JudgeValidator;
 import com.gzhuoj.contest.validator.PreCheckValidator;
-import common.exception.ClientException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-
-import static common.convention.errorcode.BaseErrorCode.CONTEST_NOT_FOUND_ERROR;
 
 @Service
 @RequiredArgsConstructor

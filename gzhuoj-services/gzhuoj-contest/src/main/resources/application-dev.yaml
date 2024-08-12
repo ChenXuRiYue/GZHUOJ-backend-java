@@ -1,8 +1,12 @@
+message: This is the development environment
 server:
-  port: 8063
+  port: 5123
+#  address: 0.0.0.0
+
 spring:
   application:
-    name: gzhuoj-judge-service
+    name: gzhuoj-contest-service
+
   cloud:
     ## consul 服务端治理设置
     consul:
@@ -10,14 +14,11 @@ spring:
       port: 8500
       discovery:
         ## 注册到consul的服务名称
-        service-name: gzhuoj-judge-service
+        service-name: gzhuoj-contest-service
         heartbeat:
           enabled: true
-  data:
-    redis:
-      host: 47.120.53.127
-      port: 6379
-      password: gzhuoj
+
+  ## 数据库配置
   datasource:
     username: root
     password: 3.14PAi#!
@@ -29,16 +30,4 @@ spring:
       idle-timeout: 300000
       maximum-pool-size: 5
       minimum-idle: 5
-mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-
-  mapper-locations: classpath:**/mapper/*.xml
-
-#本地
-gzhuoj-judge-server:
-  ip: Liang
-  port: 8063
-  max-task-num: -1
-  name: gzhuoj-judge-1

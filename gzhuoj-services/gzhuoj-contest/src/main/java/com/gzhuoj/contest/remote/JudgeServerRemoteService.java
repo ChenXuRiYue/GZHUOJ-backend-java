@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.beans.Encoder;
 
@@ -18,7 +20,7 @@ import java.beans.Encoder;
         configuration = {JudgeServerRemoteService.MultipartSupportConfig.class})
 public interface JudgeServerRemoteService {
     @PostMapping("/api/gzhuoj-judge-server/judge")
-    Result<Void> judge(@RequestBody ToJudgeDTO requestParam);
+    Result<Void> judge(@RequestBody ToJudgeDTO toJudgeDTO);
 
     class MultipartSupportConfig {
         @Bean
