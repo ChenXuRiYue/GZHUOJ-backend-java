@@ -5,6 +5,7 @@ import com.gzhuoj.usr.dto.req.admin.AdminChangeStatusReqDTO;
 import com.gzhuoj.usr.dto.req.admin.AdminFileManagerReqDTO;
 import com.gzhuoj.usr.dto.req.admin.AdminUserGenReqDTO;
 import com.gzhuoj.usr.dto.req.admin.AdminUserListReqDTO;
+import com.gzhuoj.usr.dto.req.user.UserReqDTO;
 import com.gzhuoj.usr.dto.resp.admin.AdminUserGenRespDTO;
 import com.gzhuoj.usr.dto.resp.admin.AdminUserListRespDTO;
 import com.gzhuoj.usr.service.admin.AdminService;
@@ -33,12 +34,13 @@ public class AdminController {
     }
 
     /**
-     * 用户删除
-     * @param userAccount 用户账号
+     *
+     * @param userReqDTO
+     * @return
      */
-    @DeleteMapping("/usermanager/delete")
-    public Result<Void> userDelete(@RequestParam String userAccount){
-        adminService.deleteUser(userAccount);
+    @PostMapping("/usermanager/delete")
+    public Result<Void> userDelete(@RequestBody UserReqDTO userReqDTO){
+        adminService.deleteUser(userReqDTO.getUserAccount());
         return Results.success();
     }
 

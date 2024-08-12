@@ -1,5 +1,7 @@
 package com.gzhuoj.contest.judge;
 
+
+
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.gzhuoj.contest.constant.enums.JudgeType;
@@ -9,7 +11,7 @@ import com.gzhuoj.contest.model.entity.SubmitDO;
 import com.gzhuoj.contest.model.pojo.ToJudgeDTO;
 import com.gzhuoj.contest.remote.JudgeServerRemoteService;
 import com.gzhuoj.contest.service.judge.JudgeServerService;
-import com.gzhuoj.contest.service.SubmitService;
+import com.gzhuoj.contest.service.judge.SubmitService;
 import com.gzhuoj.contest.util.ChooseInstanceUtils;
 import common.convention.result.Result;
 import common.exception.ClientException;
@@ -18,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.*;
@@ -47,7 +48,7 @@ public class Dispatcher {
     // 定时调度任务Map集合
     private final static Map<String, Future> futureTaskMap = new ConcurrentHashMap<>(20);
 
-    public void dispatch(JudgeType judgeType,  Object data) {
+    public void dispatch(JudgeType judgeType, Object data) {
         switch (judgeType) {
             case COMMON_JUDGE:
                 defaultJudge((ToJudgeDTO) data, judgeType.getPath());
