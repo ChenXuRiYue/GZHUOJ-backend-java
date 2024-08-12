@@ -25,3 +25,5 @@ gzhuoj:
     alias: gzhuoj
     password: gzhuoj
     tokenTTL: 30m
+  judge:
+    server-name: gzhuoj-judgeserver
