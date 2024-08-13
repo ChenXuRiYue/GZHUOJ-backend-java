@@ -9,6 +9,8 @@ import com.gzhuoj.contest.dto.req.contest.ContestStatusReqDTO;
 import com.gzhuoj.contest.dto.req.contest.ContestUpdateReqDTO;
 import com.gzhuoj.contest.dto.resp.contest.ContestAllRespDTO;
 import com.gzhuoj.contest.model.entity.ContestDO;
+import com.gzhuoj.contest.model.entity.SubmitDO;
+import com.gzhuoj.contest.model.entity.TeamDO;
 import com.gzhuoj.contest.service.contest.ContestService;
 import com.gzhuoj.contest.service.contest.UploadService;
 import common.convention.result.Result;
@@ -94,5 +96,19 @@ public class ContestController {
         return Results.success();
     }
 
+    /**
+     * 滚榜查看提交信息
+     */
+    @GetMapping("/submitData")
+    public Result<List<SubmitDO> > submitData(Integer contestId){
+        return Results.success(contestService.sumbitData(contestId));
+    }
 
+    /**
+     *滚榜查看队伍信息
+     */
+    @GetMapping("/teamData")
+    public Result<List<TeamDO> > teamData(Integer contestId){
+        return Results.success(contestService.teamData(contestId));
+    }
 }
