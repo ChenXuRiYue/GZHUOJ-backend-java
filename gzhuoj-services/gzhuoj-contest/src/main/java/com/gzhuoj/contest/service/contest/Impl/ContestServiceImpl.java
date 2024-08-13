@@ -18,10 +18,7 @@ import com.gzhuoj.contest.dto.resp.contest.ContestAllRespDTO;
 import com.gzhuoj.contest.mapper.ContestDescrMapper;
 import com.gzhuoj.contest.mapper.ContestMapper;
 import com.gzhuoj.contest.mapper.ContestProblemMapper;
-import com.gzhuoj.contest.model.entity.ContestDO;
-import com.gzhuoj.contest.model.entity.ContestDescrDO;
-import com.gzhuoj.contest.model.entity.ContestProblemDO;
-import com.gzhuoj.contest.model.entity.ProblemMapDO;
+import com.gzhuoj.contest.model.entity.*;
 import com.gzhuoj.contest.service.contest.ContestService;
 import common.exception.ClientException;
 import common.toolkit.GenerateRandStrUtil;
@@ -43,6 +40,7 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, ContestDO> im
 
     private final ContestDescrMapper contestDescrMapper;
     private final ContestProblemMapper contestProblemMapper;
+    private final ContestMapper contestMapper;
     private static final String DATE_FORMAT = "%s-%s-%s %s:%s";
     @Override
     @Transactional
@@ -149,6 +147,16 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, ContestDO> im
         ContestDO contestDO = new ContestDO();
         contestDO.setContestStatus(requestParam.getStatus() ^ 1);
         baseMapper.update(contestDO, updateWrapper);
+    }
+
+    @Override
+    public List<SubmitDO> sumbitData(Integer contestId) {
+        return contestMapper.sumbitSelectByContestId(contestId);
+    }
+
+    @Override
+    public List<TeamDO> teamData(Integer contestId) {
+        return contestMapper.teamSelectByContestId(contestId);
     }
 
     @SneakyThrows
