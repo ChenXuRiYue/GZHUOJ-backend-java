@@ -12,6 +12,7 @@ import com.gzhuoj.contest.model.entity.ContestProblemDO;
 import com.gzhuoj.contest.model.pojo.CPResult;
 import com.gzhuoj.contest.model.pojo.SFC;
 import com.gzhuoj.contest.service.contestProblem.ContestProblemService;
+import common.biz.user.UserContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -80,8 +81,8 @@ public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper,
         //String role = UserContext.getRole();
 
         String role;
-        //role= UserContext.getRole();
-        role="3";
+        role= UserContext.getRole();
+        //role="3";
         if (role.equals("3"))role="user";
         else                 role="admin";
         System.out.println("当前用户为："+role);
