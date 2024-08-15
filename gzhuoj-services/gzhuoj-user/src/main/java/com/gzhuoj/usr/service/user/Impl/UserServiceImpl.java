@@ -16,6 +16,7 @@ import com.gzhuoj.usr.model.entity.UserDO;
 import com.gzhuoj.usr.mapper.UserMapper;
 import com.gzhuoj.usr.service.user.UserService;
 import com.gzhuoj.usr.utils.JwtTool;
+import common.convention.errorcode.BaseErrorCode;
 import common.exception.ClientException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +53,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         }
         if(!Objects.equals(userDO.getPassword(), requestParam.getPassword())){
             throw new ClientException(USER_PASSWORD_VERIFY_ERROR);
+
         }
 
         Integer role = userDO.getRole() == null ? 2 : userDO.getRole();

@@ -19,6 +19,7 @@ import com.gzhuoj.contest.model.entity.ContestDO;
 import com.gzhuoj.contest.model.entity.ContestProblemDO;
 import com.gzhuoj.contest.model.entity.SubmitDO;
 import com.gzhuoj.contest.model.entity.TeamDO;
+import com.gzhuoj.contest.model.pojo.PersonSeat;
 import com.gzhuoj.contest.remote.ProblemRemoteService;
 import com.gzhuoj.contest.remote.Resp.ProblemRespDTO;
 import com.gzhuoj.contest.service.contestProblem.ContestProblemService;
@@ -29,6 +30,7 @@ import com.gzhuoj.contest.util.RedisUtil;
 import common.biz.user.UserContext;
 import common.exception.ClientException;
 import common.exception.ServiceException;
+import common.exception.UnauthorizedException;
 import common.toolkit.GenerateRandStrUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -392,6 +394,37 @@ public class RegContestServiceImpl implements RegContestService {
                 .eq(ContestDO::getContestId, cid)
                 .eq(ContestDO::getDeleteFlag, 0);
         return contestMapper.selectOne(queryWrapper);
+    }
+
+    @Override
+    public ContestSeatRespDTO contestSeat(Integer contestId, ContestSeatReqDTO reqDTO) {
+        ContestSeatRespDTO respDTO = new ContestSeatRespDTO();
+        respDTO.personSeats=new ArrayList<>();
+        List<TeamDO> teamDOS = contestMapper.teamSelectByContestId(contestId);
+        Collections.shuffle(teamDOS);
+        int examinationNum = reqDTO.examinationName.size();
+        int eNowId=0,eNowSeat=0;//目前分配到的考场与座位号
+        for (TeamDO teamDO : teamDOS) {
+            String members=teamDO.getTeamMember();
+            String[] member = members.split(",");
+            int length = member.length;
+            while (eNowId<examinationNum && eNowSeat+length>reqDTO.examination.get(eNowId)){
+                eNowId++;eNowSeat=0;
+            }
+            if (eNowId>=examinationNum){
+                throw new UnauthorizedException("考场座位不足！");
+            }
+            for (String s : member) {
+                eNowSeat++;
+                PersonSeat personSeat = new PersonSeat();
+                personSeat.setName(s);
+                personSeat.setSeat(eNowSeat);
+                personSeat.setExamination(reqDTO.examinationName.get(eNowId));
+                personSeat.setTeamName(teamDO.getTeamName());
+                respDTO.personSeats.add(personSeat);
+            }
+        }
+        return respDTO;
     }
 
 

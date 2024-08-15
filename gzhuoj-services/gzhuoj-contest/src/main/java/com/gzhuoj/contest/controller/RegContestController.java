@@ -123,4 +123,9 @@ public class RegContestController {
     public Result<ContestWaitRespDTO> waitContest(ContestWaitReqDTO requestParam) {
         return Results.success(regContestService.waitTime(requestParam));
     }
+
+    @PostMapping("/seat")
+    public Result<ContestSeatRespDTO> contestSeat(Integer contestId,@RequestBody ContestSeatReqDTO reqDTO){
+        return Results.success(regContestService.contestSeat(contestId,reqDTO));
+    }
 }
