@@ -197,7 +197,7 @@ public class RegContestServiceImpl implements RegContestService {
             throw new ClientException(TEAM_LOGIN_PASSWORD_ERROR);
         }
 
-        if(!Objects.equals(UserContext.getRole(), "admin")){
+        if( !Objects.equals(UserContext.getRole(), "3")){
             String token = jwtTool.createToken(requestParam.getTeamAccount(), 3, jwtProperties.getTokenTTL());
             response.addHeader("token", token);
         }

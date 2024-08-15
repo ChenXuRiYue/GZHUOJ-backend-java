@@ -3,6 +3,7 @@ import cn.hutool.core.util.StrUtil;
 import common.biz.user.UserContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 public class UserInfoInterceptor implements HandlerInterceptor {
@@ -11,6 +12,8 @@ public class UserInfoInterceptor implements HandlerInterceptor {
         // 1.获取请求头中的用户信息
         String userId = request.getHeader("userId");
         String role = request.getHeader("role");
+        if(ObjectUtils.isEmpty(userId)) userId = "";
+        if(ObjectUtils.isEmpty(role)) role = "";
         UserInfoDO userInfoDO = new UserInfoDO(userId, role);
         // 2.判断是否为空
         UserContext.setUserInfo(userInfoDO);
