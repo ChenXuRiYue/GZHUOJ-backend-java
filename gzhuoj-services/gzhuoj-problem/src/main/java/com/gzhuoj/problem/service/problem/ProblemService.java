@@ -7,6 +7,9 @@ import com.gzhuoj.problem.dto.req.problem.ListProblemReqDTO;
 import com.gzhuoj.problem.dto.req.problem.UpdateProblemReqDTO;
 import com.gzhuoj.problem.dto.resp.problem.ListProblemRespDTO;
 import com.gzhuoj.problem.model.entity.ProblemDO;
+import com.gzhuoj.problem.model.entity.ProblemDescrDO;
+
+import java.util.List;
 
 public interface ProblemService extends IService<ProblemDO> {
     void createProblem(CreateProblemReqDTO requestParam);
@@ -18,4 +21,8 @@ public interface ProblemService extends IService<ProblemDO> {
     ProblemDO queryProByNum(Integer num);
 
     ProblemDO selectProblemById(Integer id);
+
+    ProblemDescrDO selectProblemDescrById(Integer problemId);
+
+    List<Object> selectTestExampleById(Integer problemId);
 }
