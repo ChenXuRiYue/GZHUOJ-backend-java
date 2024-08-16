@@ -15,10 +15,13 @@ import com.gzhuoj.contest.dto.req.contest.ContestCreateReqDTO;
 import com.gzhuoj.contest.dto.req.contest.ContestStatusReqDTO;
 import com.gzhuoj.contest.dto.req.contest.ContestUpdateReqDTO;
 import com.gzhuoj.contest.dto.resp.contest.ContestAllRespDTO;
+import com.gzhuoj.contest.dto.resp.contest.PrintProblemRespDTO;
 import com.gzhuoj.contest.mapper.ContestDescrMapper;
 import com.gzhuoj.contest.mapper.ContestMapper;
 import com.gzhuoj.contest.mapper.ContestProblemMapper;
 import com.gzhuoj.contest.model.entity.*;
+import com.gzhuoj.contest.model.pojo.ProblemPrint;
+import com.gzhuoj.contest.remote.ProblemRemoteService;
 import com.gzhuoj.contest.service.contest.ContestService;
 import common.exception.ClientException;
 import common.toolkit.GenerateRandStrUtil;
@@ -32,6 +35,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -41,6 +45,7 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, ContestDO> im
     private final ContestDescrMapper contestDescrMapper;
     private final ContestProblemMapper contestProblemMapper;
     private final ContestMapper contestMapper;
+    private final ProblemRemoteService problemRemoteService;
     private static final String DATE_FORMAT = "%s-%s-%s %s:%s";
     @Override
     @Transactional
@@ -157,6 +162,24 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, ContestDO> im
     @Override
     public List<TeamDO> teamData(Integer contestId) {
         return contestMapper.teamSelectByContestId(contestId);
+    }
+
+    @Override
+    public PrintProblemRespDTO printProblem(Integer contestId) {
+        PrintProblemRespDTO respDTO = new PrintProblemRespDTO();
+        ContestDO contestDO = contestMapper.selectByContestId(contestId);
+        respDTO.setContest(contestDO);
+        List<ContestProblemDO> contestProblemDOS = contestProblemMapper.selectByContestId(contestId);
+        respDTO.setProblems(new ArrayList<>());
+        for (ContestProblemDO PDO : contestProblemDOS) {
+            Integer problemId = PDO.getProblemId();
+            ProblemPrint neww=new ProblemPrint();
+            neww.setProblemDO(problemRemoteService.selectProblemById(problemId));
+
+
+            respDTO.getProblems().add(neww);
+        }
+        return respDTO;
     }
 
     @SneakyThrows
