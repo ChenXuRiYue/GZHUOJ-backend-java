@@ -2,6 +2,7 @@ package com.gzhuoj.contest.remote;
 
 
 import com.gzhuoj.contest.remote.Resp.ProblemRespDTO;
+import com.gzhuoj.problem.model.entity.ProblemDO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -18,6 +19,9 @@ import java.beans.Encoder;
 public interface ProblemRemoteService {
     @GetMapping("/api/gzhuoj-problem/problem/query")
     ProblemRespDTO queryProByNum(@RequestParam("num") Integer num);
+
+    @GetMapping("/api/gzhuoj-problem/problem/selectProblemById")
+    ProblemDO selectProblemById(@RequestParam("problemId") Integer problemId);
 
     class MultipartSupportConfig {
         @Bean

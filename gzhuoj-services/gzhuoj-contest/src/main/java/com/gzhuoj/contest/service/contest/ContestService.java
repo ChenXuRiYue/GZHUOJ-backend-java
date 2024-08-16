@@ -7,6 +7,7 @@ import com.gzhuoj.contest.dto.req.contest.ContestCreateReqDTO;
 import com.gzhuoj.contest.dto.req.contest.ContestStatusReqDTO;
 import com.gzhuoj.contest.dto.req.contest.ContestUpdateReqDTO;
 import com.gzhuoj.contest.dto.resp.contest.ContestAllRespDTO;
+import com.gzhuoj.contest.dto.resp.contest.PrintProblemRespDTO;
 import com.gzhuoj.contest.model.entity.ContestDO;
 import com.gzhuoj.contest.model.entity.SubmitDO;
 import com.gzhuoj.contest.model.entity.TeamDO;
@@ -27,4 +28,6 @@ public interface ContestService extends IService<ContestDO> {
     List<SubmitDO> sumbitData(Integer contestId);
 
     List<TeamDO> teamData(Integer contestId);
+
+    PrintProblemRespDTO printProblem(Integer contestId);
 }
