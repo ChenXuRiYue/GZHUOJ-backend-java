@@ -49,6 +49,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
 
     private final TestExampleMapper testExampleMapper;
     private final ProblemDescrMapper problemDescrMapper;
+    private final ProblemMapper problemMapper;
 
     // TODO 注意对象加了字段，逻辑可能发生改变
     @Override
@@ -206,6 +207,11 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
                 .eq(ProblemDO::getProblemNum, num)
                 .eq(ProblemDO::getDeleteFlag, 0);
         return baseMapper.selectOne(queryWrapper);
+    }
+
+    @Override
+    public ProblemDO selectProblemById(Integer id) {
+        return problemMapper.selectProblemById(id);
     }
 
     @SneakyThrows
