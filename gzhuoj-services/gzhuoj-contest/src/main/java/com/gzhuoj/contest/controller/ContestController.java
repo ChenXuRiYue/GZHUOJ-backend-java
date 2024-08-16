@@ -3,6 +3,7 @@ package com.gzhuoj.contest.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gzhuoj.contest.constant.PathConstant;
 import com.gzhuoj.contest.constant.PatternConstant;
+import com.gzhuoj.contest.dto.resp.contest.PrintProblemRespDTO;
 import com.gzhuoj.contest.dto.req.contest.ContestAllReqDTO;
 import com.gzhuoj.contest.dto.req.contest.ContestCreateReqDTO;
 import com.gzhuoj.contest.dto.req.contest.ContestStatusReqDTO;
@@ -110,5 +111,13 @@ public class ContestController {
     @GetMapping("/teamData")
     public Result<List<TeamDO> > teamData(Integer contestId){
         return Results.success(contestService.teamData(contestId));
+    }
+
+    /**
+     * 打印题目的接口
+     */
+    @GetMapping("/printProblem")
+    public Result<PrintProblemRespDTO> printProblem(Integer contestId){
+        return Results.success(contestService.printProblem(contestId));
     }
 }

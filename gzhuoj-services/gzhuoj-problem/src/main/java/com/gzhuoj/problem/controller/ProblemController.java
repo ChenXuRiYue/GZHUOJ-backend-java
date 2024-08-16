@@ -83,4 +83,10 @@ public class ProblemController {
         }
         return Results.success();
     }
+
+    @GetMapping("/selectProblemById")
+    public ProblemDO selectProblemById(Integer problemId){
+        //System.out.printf("调试%d",problemId);
+        return problemService.selectProblemById(problemId);
+    }
 }
