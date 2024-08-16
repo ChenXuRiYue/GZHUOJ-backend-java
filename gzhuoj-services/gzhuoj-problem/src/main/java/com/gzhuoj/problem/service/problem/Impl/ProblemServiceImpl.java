@@ -18,6 +18,7 @@ import com.gzhuoj.problem.mapper.ProblemMapper;
 import com.gzhuoj.problem.mapper.TestExampleMapper;
 import com.gzhuoj.problem.model.entity.ProblemDO;
 import com.gzhuoj.problem.model.entity.ProblemDescrDO;
+import com.gzhuoj.problem.model.entity.TestCaseDO;
 import com.gzhuoj.problem.model.entity.TestExampleDO;
 import com.gzhuoj.problem.service.problem.ProblemService;
 import common.convention.errorcode.BaseErrorCode;
@@ -36,6 +37,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -212,6 +215,21 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
     @Override
     public ProblemDO selectProblemById(Integer id) {
         return problemMapper.selectProblemById(id);
+    }
+
+    @Override
+    public ProblemDescrDO selectProblemDescrById(Integer problemId) {
+        return problemMapper.selectProblemDesceById(problemId);
+    }
+
+    @Override
+    public List<Object> selectTestExampleById(Integer problemId) {
+        List<TestCaseDO> testCaseDOS = problemMapper.selectTestExampleById(problemId);
+        List<Object> testExampleList = new ArrayList<>();
+        for (TestCaseDO testCaseDO : testCaseDOS) {
+            testExampleList.add((Object) testCaseDO);
+        }
+        return testExampleList;
     }
 
     @SneakyThrows
