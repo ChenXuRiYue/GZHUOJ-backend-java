@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
@@ -15,11 +16,12 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @TableName("submit")
-public class SubmitDO {
+public class SubmitDO implements Serializable {
+    private static final long serialVersionUID = 1L;
     /**
      * 主键 ID, @TableId 注解定义字段为表的主键，type 表示主键类型，IdType.AUTO 表示随着数据库 ID 自增
      */
-    @TableId(type = IdType.AUTO)
+    @TableId(value = "submit_id", type = IdType.AUTO)
     private Integer submitId;
 
     /**
