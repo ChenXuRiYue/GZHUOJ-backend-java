@@ -1,8 +1,9 @@
 package com.gzhuoj.contest.remote;
 
 
+import com.gzhuoj.contest.remote.Resp.ProblemContentRespDTO;
 import com.gzhuoj.contest.remote.Resp.ProblemRespDTO;
-import com.gzhuoj.problem.model.entity.ProblemDO;
+import common.convention.result.Result;
 import common.model.pojo.ProblemPrint;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +24,9 @@ public interface ProblemRemoteService {
 
     @GetMapping("/api/gzhuoj-problem/problem/selectProblemById")
     ProblemPrint selectProblemById(@RequestParam("problemId") Integer problemId);
+
+    @GetMapping("/api/gzhuoj-problem/get/problem/content")
+    Result<ProblemContentRespDTO> getProblemContent(Integer problemNum);
 
     class MultipartSupportConfig {
         @Bean

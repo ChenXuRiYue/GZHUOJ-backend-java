@@ -5,8 +5,10 @@ import com.gzhuoj.problem.constant.PathConstant;
 import com.gzhuoj.problem.constant.PatternConstant;
 import com.gzhuoj.problem.dto.req.problem.CreateProblemReqDTO;
 import com.gzhuoj.problem.dto.req.problem.ListProblemReqDTO;
+import com.gzhuoj.problem.dto.req.problem.ProblemReqDTO;
 import com.gzhuoj.problem.dto.req.problem.UpdateProblemReqDTO;
 import com.gzhuoj.problem.dto.resp.problem.ListProblemRespDTO;
+import com.gzhuoj.problem.dto.resp.problem.ProblemContentRespDTO;
 import com.gzhuoj.problem.model.entity.ProblemDO;
 import com.gzhuoj.problem.service.problem.ProblemService;
 import com.gzhuoj.problem.service.common.UploadService;
@@ -68,6 +70,17 @@ public class ProblemController {
     @GetMapping("/query")
     public Result<ProblemDO> queryProByNum(Integer num){
         return Results.success(problemService.queryProByNum(num));
+    }
+
+    /**
+     * 查出题目的所有内容： 面向题面展示的一次性所有信息查询
+     * @return
+     */
+
+    // TODO 远程调用命名可能不一致。注意排查
+    @PostMapping("/get/contents")
+    public Result<ProblemContentRespDTO> getProblemContent(@RequestBody ProblemReqDTO request){
+        return Results.success(problemService.getProblemContent(request.getProblemNum()));
     }
 
     /**
