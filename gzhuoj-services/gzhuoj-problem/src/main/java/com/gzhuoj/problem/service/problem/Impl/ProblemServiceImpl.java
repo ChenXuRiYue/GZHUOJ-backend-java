@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -13,20 +14,23 @@ import com.gzhuoj.problem.dto.req.problem.CreateProblemReqDTO;
 import com.gzhuoj.problem.dto.req.problem.ListProblemReqDTO;
 import com.gzhuoj.problem.dto.req.problem.UpdateProblemReqDTO;
 import com.gzhuoj.problem.dto.resp.problem.ListProblemRespDTO;
+import com.gzhuoj.problem.dto.resp.problem.ProblemContentRespDTO;
 import com.gzhuoj.problem.mapper.ProblemDescrMapper;
 import com.gzhuoj.problem.mapper.ProblemMapper;
 import com.gzhuoj.problem.mapper.TestExampleMapper;
 import com.gzhuoj.problem.model.entity.ProblemDO;
 import com.gzhuoj.problem.model.entity.ProblemDescrDO;
-import com.gzhuoj.problem.model.entity.TestCaseDO;
 import com.gzhuoj.problem.model.entity.TestExampleDO;
 import com.gzhuoj.problem.service.problem.ProblemService;
 import common.convention.errorcode.BaseErrorCode;
 import common.exception.ClientException;
+import common.exception.ServiceException;
 import common.toolkit.GenerateRandStrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.poi.ss.formula.functions.T;
+import org.springframework.beans.factory.parsing.Problem;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,8 +42,8 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static common.convention.errorcode.BaseErrorCode.PROBLEM_ID_EXISTED;
@@ -89,7 +93,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
                     requestParam.getInputDescriptionHtml(),
                     requestParam.getOutputDescription(),
                     requestParam.getOutputDescriptionHtml(),
-                    requestParam.getExplanation()
+                    requestParam.getExplanation(),
+                    requestParam.getExplanationHtml()
             );
             problemDescrMapper.insert(problemDescrDO);
 
@@ -98,7 +103,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
             if (CollUtil.isNotEmpty(testExampleList)) {
                 testExampleList
                         .stream()
-                        .peek(each -> each.setProblemId(requestParam.getProblemNum()))
+                        .peek(each -> each.setProblemNum(requestParam.getProblemNum()))
                         .forEach(testExampleMapper::insert);
             }
             // 创建题目时，在本地 data/public/problem 目录下创建可唯一标识的文件夹用于分别存储test_case和upload文件
@@ -195,11 +200,11 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
         List<TestExampleDO> testExampleList = requestParam.getTestExampleList();
         if (CollUtil.isNotEmpty(testExampleList)) {
             LambdaQueryWrapper<TestExampleDO> testExampleDOWrapper = Wrappers.lambdaQuery(TestExampleDO.class)
-                    .eq(TestExampleDO::getProblemId, requestParam.getProblemNum())
+                    .eq(TestExampleDO::getProblemNum, requestParam.getProblemNum())
                     .eq(TestExampleDO::getDeleteFlag, 0);
             testExampleMapper.delete(testExampleDOWrapper);
             testExampleList.stream()
-                    .peek(each -> each.setProblemId(problemNum))
+                    .peek(each -> each.setProblemNum(problemNum))
                     .forEach(testExampleMapper::insert);
         }
     }
@@ -211,6 +216,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
                 .eq(ProblemDO::getDeleteFlag, 0);
         return baseMapper.selectOne(queryWrapper);
     }
+
 
     @Override
     public ProblemDO selectProblemById(Integer id) {
@@ -224,12 +230,51 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
 
     @Override
     public List<Object> selectTestExampleById(Integer problemId) {
-        List<TestCaseDO> testCaseDOS = problemMapper.selectTestExampleById(problemId);
+        List<TestExampleDO> testCaseDOS = problemMapper.selectTestExampleById(problemId);
         List<Object> testExampleList = new ArrayList<>();
-        for (TestCaseDO testCaseDO : testCaseDOS) {
-            testExampleList.add((Object) testCaseDO);
+        for (TestExampleDO testExampleDO : testCaseDOS) {
+            testExampleList.add((Object) testExampleDO);
         }
         return testExampleList;
+    }
+
+    @Override
+    public ProblemContentRespDTO getProblemContent(Integer problemNum) {
+        // 获取题目完整的内容，面向用户展示 一整个页面。
+        // 获取题目页面
+        QueryWrapper<ProblemDescrDO> problemDescrDOQueryWrapper = new QueryWrapper<>();
+        problemDescrDOQueryWrapper.eq("problem_num" , problemNum);
+        QueryWrapper<ProblemDO> problemDOQueryWrapper = new QueryWrapper<>();
+        problemDOQueryWrapper.eq("problem_num", problemNum);
+        QueryWrapper<TestExampleDO> testExampleDOQueryWrapper = new QueryWrapper<>();
+        testExampleDOQueryWrapper.eq("problem_num", problemNum);
+
+        ProblemDescrDO problemDescrDO = problemDescrMapper.selectOne(problemDescrDOQueryWrapper);
+        ProblemDO problemDO = problemMapper.selectOne(problemDOQueryWrapper);
+        List<TestExampleDO> testExampleDOs = testExampleMapper.selectList(testExampleDOQueryWrapper);
+
+        // 题目信息缺失
+        if(ObjectUtils.anyNull(problemDO, problemDescrDO)){
+            throw new ServiceException(PROBLEM_ID_EXISTED);
+        }
+        return  ProblemContentRespDTO.builder()
+                    .problemNum(problemNum)
+                    .problemName(problemDO.getProblemName())
+                    .author(problemDO.getAuthor())
+                    .timeLimit(problemDO.getTimeLimit())
+                    .memoryLimit(problemDO.getMemoryLimit())
+                    .description(problemDescrDO.getDescription())
+                    .descriptionHtml(problemDescrDO.getDescriptionHtml())
+                    .inputDescription(problemDescrDO.getInputDescription())
+                    .inputDescriptionHtml(problemDescrDO.getInputDescriptionHtml())
+                    .outputDescription(problemDescrDO.getOutputDescription())
+                    .outputDescriptionHtml(problemDescrDO.getDescriptionHtml())
+                    .explanation(problemDescrDO.getExplanation())
+                    .explanationHtml(problemDescrDO.getExplanationHtml())
+                    .ProblemType(problemDO.getProblemType())
+                    .problemStatus(problemDO.getProblemStatus())
+                    .testExamples(testExampleDOs)
+                    .build();
     }
 
     @SneakyThrows
