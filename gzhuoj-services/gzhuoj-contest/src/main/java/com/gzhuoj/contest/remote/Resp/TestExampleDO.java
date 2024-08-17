@@ -1,4 +1,4 @@
-package com.gzhuoj.problem.model.entity;
+package com.gzhuoj.contest.remote.Resp;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import common.database.Base.BaseDO;
@@ -8,15 +8,14 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @Data
-@TableName(value = "test_case")
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TestCaseDO extends BaseDO {
+public class TestExampleDO extends BaseDO {
     /**
-     * 数据在对应数据集中的相对序号
+     * 题目样例集中的序号
      */
-    private Integer testCaseNum;
+    private Integer testExampleNum;
 
     /**
      * 输入
@@ -31,5 +30,5 @@ public class TestCaseDO extends BaseDO {
     /**
      * 题目编号
      */
-    private Integer problemId;
+    private Integer problemNum;
 }

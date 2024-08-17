@@ -1,7 +1,9 @@
 package com.gzhuoj.contest.service.contestProblem.Impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gzhuoj.contest.dto.resp.contestProblem.ContestResultRespDTO;
@@ -11,9 +13,13 @@ import com.gzhuoj.contest.model.entity.ContestDO;
 import com.gzhuoj.contest.model.entity.ContestProblemDO;
 import com.gzhuoj.contest.model.pojo.CPResult;
 import com.gzhuoj.contest.model.pojo.SFC;
+import com.gzhuoj.contest.remote.ProblemRemoteService;
+import com.gzhuoj.contest.remote.Resp.ProblemContentRespDTO;
 import com.gzhuoj.contest.service.contestProblem.ContestProblemService;
 import common.biz.user.UserContext;
-import org.springframework.beans.factory.annotation.Autowired;
+import common.exception.ServiceException;
+import jakarta.annotation.Resource;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -21,15 +27,21 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+import static common.convention.errorcode.BaseErrorCode.PROBLEM_MESSAGE_LOST;
 
 @Service
 public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper, ContestProblemDO> implements ContestProblemService {
-    @Autowired
+    @Resource
     ContestProblemMapper contestProblemMapper;
-    @Autowired
+    @Resource
     ContestMapper contestMapper;
-    @Autowired
+    @Resource
     StringRedisTemplate redis;
+    @Resource
+    ProblemRemoteService problemRemoteService;
+
     @Override
     public List<ContestProblemDO> getAllProblem(Integer cid) {
         LambdaQueryWrapper<ContestProblemDO> queryWrapper = Wrappers.lambdaQuery(ContestProblemDO.class)
@@ -134,5 +146,21 @@ public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper,
         return contestResultRespDTO;
     }
 
-
+    /**
+     * 加一道关卡有利于题目校验
+     * @param
+     * @return
+     */
+    @Override
+    public ProblemContentRespDTO getContestProblem(Integer contestId, Integer contestProblemNum) {
+        // 找到题目在的实际编号
+        QueryWrapper<ContestProblemDO> queryWrapper = new QueryWrapper<>();
+//        queryWrapper.eq("contest_id", contestId);
+        queryWrapper.allEq(Map.of("contest_id", contestId, "problem_id" , contestProblemNum));
+        ContestProblemDO contestProblemDO = contestProblemMapper.selectOne(queryWrapper);
+        if(ObjectUtils.isEmpty(contestProblemDO)){
+            throw new  ServiceException(PROBLEM_MESSAGE_LOST);
+        }
+        return problemRemoteService.getProblemContent(contestProblemDO.getActualNum()).getData();
+    }
 }

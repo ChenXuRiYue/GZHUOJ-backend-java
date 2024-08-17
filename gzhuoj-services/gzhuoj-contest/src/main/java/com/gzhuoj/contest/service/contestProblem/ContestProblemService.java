@@ -1,9 +1,11 @@
 package com.gzhuoj.contest.service.contestProblem;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.gzhuoj.contest.dto.resp.contestProblem.ContestProblemDescRespDTO;
 import com.gzhuoj.contest.dto.resp.contestProblem.ContestResultRespDTO;
 import com.gzhuoj.contest.model.entity.ContestProblemDO;
 import com.gzhuoj.contest.model.pojo.CPResult;
+import com.gzhuoj.contest.remote.Resp.ProblemContentRespDTO;
 
 
 import java.util.Date;
@@ -15,4 +17,6 @@ public interface ContestProblemService extends IService<ContestProblemDO> {
     CPResult getProblemResult(Integer contestId, Integer problemId, Date beginTime, Date endTime);
 
     ContestResultRespDTO getResult(Integer ContestId);
+
+    ProblemContentRespDTO getContestProblem(Integer contestId, Integer contestProblemNum);
 }
