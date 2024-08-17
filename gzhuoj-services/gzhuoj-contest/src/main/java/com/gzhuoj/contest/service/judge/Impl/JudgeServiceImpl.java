@@ -3,7 +3,6 @@ package com.gzhuoj.contest.service.judge.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.gzhuoj.contest.constant.enums.SubmissionStatus;
 import com.gzhuoj.contest.dto.req.Judge.RegContestJudgeSubmitReqDTO;
 import com.gzhuoj.contest.judge.JudgeDispatcher;
 import com.gzhuoj.contest.mapper.SubmitMapper;
@@ -12,6 +11,7 @@ import com.gzhuoj.contest.service.judge.JudgeService;
 import com.gzhuoj.contest.service.regContest.RegContestService;
 import com.gzhuoj.contest.validator.JudgeValidator;
 import com.gzhuoj.contest.validator.PreCheckValidator;
+import common.enums.SubmissionStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

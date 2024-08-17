@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
         return Results.failure();
     }
     private String getUrl(HttpServletRequest request) {
-        if (StringUtils.isEmpty(request.getQueryString())) {
+        if (StrUtil.isEmpty(request.getQueryString())) {
             return request.getRequestURL().toString();
         }
         return request.getRequestURL().toString() + "?" + request.getQueryString();
