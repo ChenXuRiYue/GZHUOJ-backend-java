@@ -16,7 +16,6 @@ import java.util.HashMap;
 /**
  * 启动时将JudgeServer实例存入数据库
  */
-//@Component
 @Slf4j
 @RequiredArgsConstructor
 @Component

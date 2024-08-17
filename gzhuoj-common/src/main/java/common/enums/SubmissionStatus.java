@@ -1,7 +1,6 @@
-package com.gzhuoj.contest.constant.enums;
+package common.enums;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
 public enum SubmissionStatus {
@@ -27,7 +26,18 @@ public enum SubmissionStatus {
 
     STATUS_SYSTEM_ERROR(10, "Status System Error"),
 
-    STATUS_CANCELLED(11, "Status Cancelled");
+    STATUS_CANCELLED(11, "Status Cancelled"),
+
+    STATUS_COMPILING(12, "Status Compiling"),
+
+    NONZERO_EXIT_STATUS(13, "Nonzero Exit Status"),
+
+    INTERNAL_ERROR(14, "Internal Error"),
+
+    FILE_ERROR(15, "File Error"),
+
+    SIGNALLED(16, "Signalled");
+
 
     /**
      * 提交状态编号

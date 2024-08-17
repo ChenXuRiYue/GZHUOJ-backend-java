@@ -1,7 +1,7 @@
 package com.gzhuoj.contest.validator;
 
-import com.gzhuoj.contest.constant.enums.SubmissionLanguage;
 import com.gzhuoj.contest.dto.req.Judge.RegContestJudgeSubmitReqDTO;
+import common.enums.SubmissionLanguage;
 import common.exception.ClientException;
 import org.springframework.stereotype.Component;
 

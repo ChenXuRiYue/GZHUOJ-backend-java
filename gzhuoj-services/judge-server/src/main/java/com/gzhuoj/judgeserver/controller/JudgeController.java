@@ -1,8 +1,12 @@
 package com.gzhuoj.judgeserver.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gzhuoj.judgeserver.model.entity.SubmitDO;
+import com.gzhuoj.judgeserver.service.JudgeServerService;
+import com.gzhuoj.judgeserver.service.WebSocketService;
 import common.convention.result.Result;
 import common.convention.result.Results;
+import common.enums.SubmissionStatus;
 import lombok.RequiredArgsConstructor;
 import com.gzhuoj.judgeserver.dto.req.ToJudgeReqDTO;
 import org.springframework.http.HttpEntity;
@@ -14,19 +18,30 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+
+import static common.convention.errorcode.BaseErrorCode.JUDGE_PARAM_NOT_FOUND_ERROR;
 
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/gzhuoj-judge-server")
 public class JudgeController {
-    @PostMapping("/judge")
-    public Result<Void> judge(@RequestBody ToJudgeReqDTO requestParam){
+    private final JudgeServerService judgeServerService;
+
+    private final WebSocketService webSocketService;
+    private Map<String, CountDownLatch> latchMap = new ConcurrentHashMap<>();
+    private Map<String, String> responseMap = new ConcurrentHashMap<>();
+    @PostMapping("/test")
+    public Result<Void> test(@RequestBody ToJudgeReqDTO requestParam){
 
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper objectMapper = new ObjectMapper();
@@ -90,5 +105,42 @@ public class JudgeController {
         }
 
         return Results.success();
+    }
+
+    @PostMapping("judge")
+    public Result<Void> judge(@RequestBody ToJudgeReqDTO requestParam){
+        SubmitDO submitDO = requestParam.getSubmitDO();
+        if(submitDO == null || requestParam.getJudgeServerIp() == null || requestParam.getJudgeServerPort() == null){
+            // 应该告诉contest这边再次检测到参数不符合
+            return Results.failure(JUDGE_PARAM_NOT_FOUND_ERROR.code(), JUDGE_PARAM_NOT_FOUND_ERROR.message());
+        }
+        judgeServerService.judge(submitDO);
+        return Results.success().setMessage("成功发送！");
+    }
+    public String sendMessageAndWait(WebSocketSession session, String messageId, String message) throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+        latchMap.put(messageId, latch);
+
+        try {
+            // Send the message
+            webSocketService.sendMessage(message.getBytes());
+
+            // Wait for the response
+            latch.await();
+
+            // Get the response
+            return responseMap.get(messageId);
+        } finally {
+            // Clean up
+            latchMap.remove(messageId);
+            responseMap.remove(messageId);
+        }
+    }
+    public void handleResponse(String messageId, String response) {
+        CountDownLatch latch = latchMap.get(messageId);
+        if (latch != null) {
+            responseMap.put(messageId, response);
+            latch.countDown(); // Signal that the response has been received
+        }
     }
 }
