@@ -31,5 +31,5 @@ public class TestExampleDO extends BaseDO {
     /**
      * 题目编号
      */
-    private Integer problemId;
+    private Integer problemNum;
 }
