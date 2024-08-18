@@ -1,4 +1,4 @@
-package com.gzhuoj.contest.util;
+package common.redis;
 
 import cn.hutool.json.JSONUtil;
 import org.springframework.data.redis.core.StringRedisTemplate;

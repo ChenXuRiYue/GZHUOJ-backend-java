@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.gzhuoj.contest.constant.RedisKey;
 import com.gzhuoj.contest.mapper.SubmitMapper;
 import com.gzhuoj.contest.model.entity.SubmitDO;
-import com.gzhuoj.contest.util.RedisUtil;
+import common.redis.RedisUtil;
 import common.enums.SubmissionStatus;
 import common.exception.ClientException;
 import lombok.RequiredArgsConstructor;
