@@ -37,6 +37,8 @@ public enum BaseErrorCode implements IErrorCode {
     JUDGE_TYPE_ERROR("A000502", "评测方式错误或不存在"),
     JUDGE_PARAM_NOT_FOUND_ERROR("A000503", "评测入参不存在"),
     JUDGE_COMPILE_PARAM_ERROR("A000504", "编译参数错误"),
+    JUDGE_TESTCASE_NOT_EXIST_ERROR("A000505", "题目输入或输出测试数据不存在"),
+    JUDGE_TESTCASE_NUMBER_NOT_SAME_ERROR("A000505", "题目输入或输出测试数据数目不一致"),
 
     SUBMISSION_LANGUAGE_NOT_SUPPORT("A000601", "评测语言不支持"),
     SUBMISSION_LENGTH_TOO_LONG("A000602", "提交代码长度超出限制"),

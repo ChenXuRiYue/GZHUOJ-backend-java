@@ -73,7 +73,7 @@ language: C++ 17 With O2
 #src_path: main.cpp
 src_path: main.cpp
 #exe_path: main
-exe_path: main.exe
+exe_path: main
 compile:
   env: default
 #  command: /usr/bin/g++ -DONLINE_JUDGE -O2 -w -fmax-errors=1 -std=c++17 {src_path} -lm -o {exe_path}
@@ -83,7 +83,7 @@ compile:
   maxMemory: 512mb
 run:
   env: default
-  command: /w/{exe_path}
+  command: "{exe_path}"
 
 ---
 language: C++ 20
