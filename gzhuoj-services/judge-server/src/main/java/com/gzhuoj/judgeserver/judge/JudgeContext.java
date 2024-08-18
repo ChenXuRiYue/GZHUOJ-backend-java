@@ -31,6 +31,11 @@ public class JudgeContext {
 
         // judge结果用于判断错误信息
         Map<String, Object> judgeResult = judgeStrategy.judge(problemRespDTO, submitDO);
-        return null;
+        return SubmitDO.builder()
+                .submitId(submitDO.getSubmitId())
+                .status((Integer) judgeResult.get("code"))
+                .memory((Integer) judgeResult.get("maxMemory"))
+                .execTime((Integer) judgeResult.get("maxTime"))
+                .build();
     }
 }
