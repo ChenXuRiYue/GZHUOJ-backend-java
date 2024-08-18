@@ -25,7 +25,7 @@ import com.gzhuoj.contest.service.contestProblem.ContestProblemService;
 import com.gzhuoj.contest.service.contest.ContestService;
 import com.gzhuoj.contest.service.regContest.RegContestService;
 import com.gzhuoj.contest.util.JwtTool;
-import com.gzhuoj.contest.util.RedisUtil;
+import common.redis.RedisUtil;
 import common.biz.user.UserContext;
 import common.enums.SubmissionStatus;
 import common.exception.ClientException;
