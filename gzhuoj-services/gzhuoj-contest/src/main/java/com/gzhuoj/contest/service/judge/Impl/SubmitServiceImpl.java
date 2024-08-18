@@ -1,5 +1,6 @@
 package com.gzhuoj.contest.service.judge.Impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -30,11 +31,10 @@ public class SubmitServiceImpl extends ServiceImpl<SubmitMapper, SubmitDO> imple
     @Override
     public boolean updateSubmitDO(SubmitRemoteDTO requestParam) {
         LambdaUpdateWrapper<SubmitDO> updateWrapper = Wrappers.lambdaUpdate(SubmitDO.class)
-                .set(SubmitDO::getJudger, requestParam.getJudger())
-                .set(SubmitDO::getStatus, requestParam.getStatus())
                 .eq(SubmitDO::getSubmitId, requestParam.getSubmitId())
                 .ne(SubmitDO::getStatus, SubmissionStatus.STATUS_CANCELLED.getCode());
-        return this.update(updateWrapper);
+        int update = baseMapper.update(BeanUtil.toBean(requestParam, SubmitDO.class), updateWrapper);
+        return update != 0;
     }
 
     @Override

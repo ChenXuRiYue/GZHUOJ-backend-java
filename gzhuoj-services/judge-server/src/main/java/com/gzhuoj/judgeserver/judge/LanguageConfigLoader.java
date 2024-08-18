@@ -29,7 +29,10 @@ public class LanguageConfigLoader implements InitializingBean {
             "HOME=/w");
 
     private static List<String> localEnv = Arrays.asList(
-        "PATH=C:\\mingw64\\bin"
+            "PATH=C:\\mingw64\\bin"
+    );
+    private static List<String> localRunEnv = Arrays.asList(
+            "PATH=C:\\mingw64\\bin", "LANG=en_US.UTF-8", "LC_ALL=en_US.UTF-8", "LANGUAGE=en_US:en"
     );
 
     private static List<String> python3Env = Arrays.asList("LANG=en_US.UTF-8",
@@ -52,7 +55,7 @@ public class LanguageConfigLoader implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         // 单例
-        if(instance.compareAndSet(false, true)) {
+        if (instance.compareAndSet(false, true)) {
             // 从编译语言配置文件中获取参数
             Iterable<Object> languageConfigIter = loadYml("language.yml");
             for (Object configObj : languageConfigIter) {
@@ -86,7 +89,7 @@ public class LanguageConfigLoader implements InitializingBean {
                 .build();
         // 获取编译语句和编译参数
         JSONObject compileJson = configJson.getJSONObject("compile");
-        if(compileJson != null) {
+        if (compileJson != null) {
             String command = compileJson.getStr("command");
             command = command.replace("{src_path}", languageConfig.getSrcName())
                     .replace("{exe_path}", languageConfig.getExeName());
@@ -126,7 +129,8 @@ public class LanguageConfigLoader implements InitializingBean {
                     languageConfig.setRunEnvs(golangRunEnv);
                     break;
                 default:
-                    languageConfig.setRunEnvs(defaultEnv);
+//                    languageConfig.setRunEnvs(defaultEnv);
+                    languageConfig.setRunEnvs(localRunEnv);
             }
         }
         return languageConfig;

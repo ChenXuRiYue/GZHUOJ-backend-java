@@ -1,5 +1,6 @@
 package com.gzhuoj.judgeserver.service.Impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -40,7 +41,7 @@ public class JudgeServerServiceImpl extends ServiceImpl<JudgeServerMapper, Judge
         // 判断进入编译阶段
         SubmitRemoteDTO submitRemoteDTO = SubmitRemoteDTO.builder()
                 .judger(name)
-                .SubmitId(submitDO.getSubmitId())
+                .submitId(submitDO.getSubmitId())
                 .status(SubmissionStatus.STATUS_COMPILING.getCode())
                 .build();
         Result<Boolean> booleanResult = contestRemoteService.submitUpdate(submitRemoteDTO);
@@ -49,5 +50,6 @@ public class JudgeServerServiceImpl extends ServiceImpl<JudgeServerMapper, Judge
         }
         Result<ProblemRespDTO> problemRespDTO = problemRemoteService.queryProByNum(submitDO.getProblemId());
         SubmitDO submitResult = judgeContext.judge(problemRespDTO.getData(), submitDO);
+        contestRemoteService.submitUpdate(BeanUtil.toBean(submitResult, SubmitRemoteDTO.class));
     }
 }
