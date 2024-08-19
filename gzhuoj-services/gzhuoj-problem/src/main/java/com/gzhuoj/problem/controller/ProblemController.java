@@ -14,7 +14,7 @@ import com.gzhuoj.problem.service.problem.ProblemService;
 import com.gzhuoj.problem.service.common.UploadService;
 import common.convention.result.Result;
 import common.convention.result.Results;
-import common.model.pojo.ProblemPrint;
+import common.model.pojo.ProblemPrintDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -99,9 +99,9 @@ public class ProblemController {
     }
 
     @GetMapping("/selectProblemById")
-    public ProblemPrint selectProblemById(Integer problemId){
+    public ProblemPrintDTO selectProblemById(Integer problemId){
         //System.out.printf("调试%d",problemId);
-        ProblemPrint result=new ProblemPrint();
+        ProblemPrintDTO result=new ProblemPrintDTO();
         result.setProblemDO(problemService.selectProblemById(problemId));
         result.setProblemDescrDO(problemService.selectProblemDescrById(problemId));
         result.setTestExampleDO(problemService.selectTestExampleById(problemId));
