@@ -4,3 +4,4 @@ common.config.GlobalCorsConfig
 common.config.MvcConfig
 common.web.GlobalExceptionHandler
 common.redis.RedisConfig
+common.bloom.BloomConfig
