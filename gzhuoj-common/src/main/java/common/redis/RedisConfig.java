@@ -16,6 +16,8 @@ import org.springframework.data.redis.serializer.GenericToStringSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import java.util.BitSet;
+
 
 @Configuration
 public class RedisConfig {
@@ -59,7 +61,16 @@ public class RedisConfig {
         redisTemplate.setHashValueSerializer(new GenericToStringSerializer<>(String.class));
         return redisTemplate;
     }
-
+    @Bean
+    public RedisTemplate<String, BitSet> redisTemplateBitSet(RedisConnectionFactory redisConnectionFactory){
+        RedisTemplate<String, BitSet> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericToStringSerializer<>(BitSet.class));
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(new GenericToStringSerializer<>(BitSet.class));
+        return redisTemplate;
+    }
     //  Z set 维护榜单
     @Bean
     public ZSetOperations<String, String> zSetOperations(RedisTemplate<String, String> redisTemplateString) {
