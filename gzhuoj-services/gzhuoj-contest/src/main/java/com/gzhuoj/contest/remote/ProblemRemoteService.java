@@ -4,7 +4,7 @@ package com.gzhuoj.contest.remote;
 import com.gzhuoj.contest.remote.Resp.ProblemContentRespDTO;
 import com.gzhuoj.contest.remote.Resp.ProblemRespDTO;
 import common.convention.result.Result;
-import common.model.pojo.ProblemPrint;
+import common.model.pojo.ProblemPrintDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -23,7 +23,7 @@ public interface ProblemRemoteService {
     ProblemRespDTO queryProByNum(@RequestParam("num") Integer num);
 
     @GetMapping("/api/gzhuoj-problem/problem/selectProblemById")
-    ProblemPrint selectProblemById(@RequestParam("problemId") Integer problemId);
+    ProblemPrintDTO selectProblemById(@RequestParam("problemId") Integer problemId);
 
     @GetMapping("/api/gzhuoj-problem/get/problem/content")
     Result<ProblemContentRespDTO> getProblemContent(Integer problemNum);
