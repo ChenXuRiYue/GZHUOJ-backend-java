@@ -20,7 +20,7 @@ import com.gzhuoj.contest.mapper.ContestDescrMapper;
 import com.gzhuoj.contest.mapper.ContestMapper;
 import com.gzhuoj.contest.mapper.ContestProblemMapper;
 import com.gzhuoj.contest.model.entity.*;
-import common.model.pojo.ProblemPrint;
+import common.model.pojo.ProblemPrintDTO;
 import com.gzhuoj.contest.remote.ProblemRemoteService;
 import com.gzhuoj.contest.service.contest.ContestService;
 import common.exception.ClientException;
@@ -173,7 +173,7 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, ContestDO> im
         respDTO.setProblems(new ArrayList<>());
         for (ContestProblemDO PDO : contestProblemDOS) {
             Integer problemId = PDO.getProblemId();
-            ProblemPrint neww=problemRemoteService.selectProblemById(problemId);
+            ProblemPrintDTO neww=problemRemoteService.selectProblemById(problemId);
 
             respDTO.getProblems().add(neww);
         }
