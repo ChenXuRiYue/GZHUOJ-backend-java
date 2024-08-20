@@ -48,11 +48,13 @@ public class Bloom {
         }
 
         BitSet bloom = (BitSet)redisTemplate.opsForValue().get(b);
+
         for (MyHash hash : myHash) {
             int hashZhi = hash.hash(a);
             bloom.set(hashZhi,true);
         }
         redisTemplate.opsForValue().set(b,bloom);
+        //这种更改方式效率较低，以后需要更新为直接更改redis里bitset的数据
     }
     class MyHash {
         private int mos;
