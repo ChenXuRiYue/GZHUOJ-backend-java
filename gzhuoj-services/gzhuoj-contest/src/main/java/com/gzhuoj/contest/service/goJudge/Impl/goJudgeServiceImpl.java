@@ -12,7 +12,6 @@ import com.gzhuoj.contest.service.goJudge.goJudgeService;
 
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
-
 import kong.unirest.Unirest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

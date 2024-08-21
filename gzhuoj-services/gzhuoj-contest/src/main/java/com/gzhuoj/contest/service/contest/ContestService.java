@@ -21,8 +21,6 @@ public interface ContestService extends IService<ContestDO> {
 
     ContestDO queryByNum(Integer num);
 
-    IPage<ContestAllRespDTO> all(ContestAllReqDTO requestParam);
-
     void changeStatus(ContestStatusReqDTO requestParam);
 
     List<SubmitDO> sumbitData(Integer contestId);
@@ -30,4 +28,7 @@ public interface ContestService extends IService<ContestDO> {
     List<TeamDO> teamData(Integer contestId);
 
     PrintProblemRespDTO printProblem(Integer contestId);
+
+
+    IPage<ContestAllRespDTO> contestsView(ContestAllReqDTO requestParam);
 }

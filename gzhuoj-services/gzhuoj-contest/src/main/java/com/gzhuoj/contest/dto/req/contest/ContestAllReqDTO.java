@@ -1,8 +1,10 @@
 package com.gzhuoj.contest.dto.req.contest;
 
+import cn.hutool.core.lang.Pair;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gzhuoj.contest.model.entity.ContestDO;
 import lombok.Data;
+
 
 @Data
 public class ContestAllReqDTO extends Page<ContestDO>{
@@ -12,7 +14,9 @@ public class ContestAllReqDTO extends Page<ContestDO>{
     private String search;
 
     /**
-     * 排序方式 -> 顺序 / 倒序
+     * 查询类型 0. 公共视图， 管理员视图。
      */
-    private String order;
+    private Integer type;
+
+    private Pair<String, String> order;
 }
