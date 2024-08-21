@@ -3,8 +3,10 @@ package com.gzhuoj.contest.service.contest.Impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Pair;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -20,6 +22,7 @@ import com.gzhuoj.contest.mapper.ContestDescrMapper;
 import com.gzhuoj.contest.mapper.ContestMapper;
 import com.gzhuoj.contest.mapper.ContestProblemMapper;
 import com.gzhuoj.contest.model.entity.*;
+import common.biz.user.UserContext;
 import common.model.pojo.ProblemPrint;
 import com.gzhuoj.contest.remote.ProblemRemoteService;
 import com.gzhuoj.contest.service.contest.ContestService;
@@ -27,6 +30,8 @@ import common.exception.ClientException;
 import common.toolkit.GenerateRandStrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +41,9 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -120,22 +127,6 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, ContestDO> im
         return baseMapper.selectOne(queryWrapper);
     }
 
-    @Override
-    public IPage<ContestAllRespDTO> all(ContestAllReqDTO requestParam) {
-        LambdaQueryWrapper<ContestDO> queryWrapper = Wrappers.lambdaQuery(ContestDO.class)
-                .eq(ContestDO::getDeleteFlag, 0);
-        if(!StrUtil.isEmpty(requestParam.getSearch())){
-            queryWrapper.like(ContestDO::getTitle, requestParam.getSearch())
-                    .or().like(ContestDO::getContestId, requestParam.getSearch());
-        }
-        if(requestParam.getOrder() == null){
-            throw new ClientException("排序默认应为正序");
-        }
-        boolean flag = requestParam.getOrder().equals("asc");
-        queryWrapper.orderBy(true, flag, ContestDO::getContestId);
-        IPage<ContestDO> result = baseMapper.selectPage(requestParam, queryWrapper);
-        return result.convert(each -> BeanUtil.toBean(each, ContestAllRespDTO.class));
-    }
 
     @Override
     public void changeStatus(ContestStatusReqDTO requestParam) {
@@ -178,6 +169,30 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, ContestDO> im
             respDTO.getProblems().add(neww);
         }
         return respDTO;
+    }
+
+    @Override
+    public IPage<ContestAllRespDTO> contestsView(ContestAllReqDTO requestParam) {
+
+
+        QueryWrapper<ContestDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("delete_flag", 0);
+        if(!StrUtil.isEmpty(requestParam.getSearch())){
+            queryWrapper.like("title", requestParam.getSearch())
+                    .or().like("contest_id", requestParam.getSearch());
+        }
+        Pair<String, String> order = requestParam.getOrder();
+        if(ObjectUtils.isEmpty(order)){
+            order = new Pair<>("contest_id", "asc");
+        }
+        queryWrapper.orderByAsc(StringUtils.equals("asc", order.getValue()), Collections.singletonList(order.getKey()));
+        // 公开视图。 TODO userInFO
+        if(!(requestParam.getType() == 1 && Objects.equals("1" , UserContext.getRole()))){
+            queryWrapper.eq("contest_status", 0);
+        }
+
+        IPage<ContestDO> result = baseMapper.selectPage(requestParam, queryWrapper);
+        return result.convert(each -> BeanUtil.toBean(each, ContestAllRespDTO.class));
     }
 
     @SneakyThrows
