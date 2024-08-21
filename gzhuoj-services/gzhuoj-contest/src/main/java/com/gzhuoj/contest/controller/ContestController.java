@@ -83,9 +83,9 @@ public class ContestController {
      * @param requestParam 分页查询参数
      * @return 分页查询返回集合
      */
-    @GetMapping("/admin/all")
-    public Result<IPage<ContestAllRespDTO>> all(ContestAllReqDTO requestParam){
-        return Results.success(contestService.all(requestParam));
+    @PostMapping("/list")
+    public Result<IPage<ContestAllRespDTO>> contestsView(@RequestBody ContestAllReqDTO requestParam){
+        return Results.success(contestService.contestsView(requestParam));
     }
 
     /**
