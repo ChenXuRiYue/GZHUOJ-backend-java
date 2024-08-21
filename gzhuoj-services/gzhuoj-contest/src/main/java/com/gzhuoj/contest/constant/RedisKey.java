@@ -13,5 +13,11 @@ public final class RedisKey {
 
     public static final String TEAM_LOGIN_KEY = "gzhuoj-team:login:%s";
 
+    // 比赛评测队列
     public static final String CONTEST_JUDGE_QUEUE = "gzhuoj-contest-judge:queue";
+    // 非比赛评测队列
+    public static final String COMMON_JUDGE_QUEUE = "gzhuoj-common-judge:queue";
+    // 在线自测
+    public static final String ONLINE_TEST_JUDGE_QUEUE = "gzhuoj-online-test-judge:queue";
+
 }

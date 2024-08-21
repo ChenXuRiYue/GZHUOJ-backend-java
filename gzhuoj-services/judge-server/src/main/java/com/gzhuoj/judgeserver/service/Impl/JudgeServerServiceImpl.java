@@ -50,6 +50,7 @@ public class JudgeServerServiceImpl extends ServiceImpl<JudgeServerMapper, Judge
         }
         Result<ProblemRespDTO> problemRespDTO = problemRemoteService.queryProByNum(submitDO.getProblemId());
         SubmitDO submitResult = judgeContext.judge(problemRespDTO.getData(), submitDO);
+        // 将评测后的结果写入数据库
         contestRemoteService.submitUpdate(BeanUtil.toBean(submitResult, SubmitRemoteDTO.class));
     }
 }

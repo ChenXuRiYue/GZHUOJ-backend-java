@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -41,9 +40,7 @@ public class JudgeStrategy {
         String userFileId = null;
         try{
             LanguageConfig languageConfig = languageConfigLoader
-//                    .getLanguageConfigByName(SubmissionLanguage.getLangById(submitDO.getLanguage()));
-                    // 指定编译语言的版本
-                    .getLanguageConfigByName("C++ 17 With O2");
+                    .getLanguageConfigByName(SubmissionLanguage.getLangById(submitDO.getLanguage()));
             if(languageConfig.getCompileCommand() != null){
                 // 通过沙箱编译后返回全局唯一的编译后文件的唯一标识
                 userFileId = Compiler.compiler(languageConfig,
@@ -82,7 +79,7 @@ public class JudgeStrategy {
             int time = jsonObject.getLong("time").intValue();
             int memory = jsonObject.getLong("memory").intValue();
             Integer status = jsonObject.getInt("status");
-            if(status == -1 && status != SubmissionStatus.ACCEPTED.getCode()){
+            if(resStatus == -1 && status != SubmissionStatus.ACCEPTED.getCode()){
                 resStatus = status;
                 errorMsg = jsonObject.getStr("errMsg");
             }

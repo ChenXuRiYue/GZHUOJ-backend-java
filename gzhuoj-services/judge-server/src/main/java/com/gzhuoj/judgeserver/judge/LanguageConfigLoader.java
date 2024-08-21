@@ -28,13 +28,19 @@ public class LanguageConfigLoader implements InitializingBean {
             "LANGUAGE=en_US:en",
             "HOME=/w");
 
-    private static List<String> localEnv = Arrays.asList(
+    private static List<String> localEnvCplus = Arrays.asList(
             "PATH=C:\\mingw64\\bin"
     );
-    private static List<String> localRunEnv = Arrays.asList(
+    private static List<String> localRunEnvCplus = Arrays.asList(
             "PATH=C:\\mingw64\\bin", "LANG=en_US.UTF-8", "LC_ALL=en_US.UTF-8", "LANGUAGE=en_US:en"
     );
 
+    private static List<String> localEnv = Arrays.asList(
+            "PATH=C:\\Program Files\\Java\\jdk-17\\bin"
+    );
+    private static List<String> localRunEnv = Arrays.asList(
+            "PATH=C:\\Program Files\\Java\\jdk-17\\bin", "LANG=en_US.UTF-8", "LC_ALL=en_US.UTF-8", "LANGUAGE=en_US:en"
+    );
     private static List<String> python3Env = Arrays.asList("LANG=en_US.UTF-8",
             "LANGUAGE=en_US:en", "LC_ALL=en_US.UTF-8", "PYTHONIOENCODING=utf-8");
 

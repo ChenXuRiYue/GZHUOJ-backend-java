@@ -26,7 +26,6 @@ public class test {
         sfc.endTime = sdf.parse(dateString);
         */
         sfc.status=1;
-        //System.out.println("结果："+contestProblemMapper.selectForContest(sfc));
         System.out.println(contestProblemMapper.selectByProblemId(18,13));
     }
 

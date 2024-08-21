@@ -55,10 +55,10 @@ public class JudgeRun {
                 .maxStack(1024)
                 .build();
         // 顺序测, 一个点错就返回
-        return orderJudge(judgeParam, testCaseInputList, testCaseOutputList);
+        return defaultJudge(judgeParam, testCaseInputList, testCaseOutputList);
     }
 
-    private List<JSONObject> orderJudge(JudgeParam judgeParam, List<String> testCaseInputList, List<String> testCaseOutputList) throws ExecutionException, InterruptedException {
+    private List<JSONObject> defaultJudge(JudgeParam judgeParam, List<String> testCaseInputList, List<String> testCaseOutputList) throws ExecutionException, InterruptedException {
         List<FutureTask<JSONObject>> futureTaskList = new ArrayList<>();
         for(int i = 0; i < testCaseInputList.size(); i++) {
             TestCaseParam testCaseParam = TestCaseParam.builder()
@@ -83,10 +83,10 @@ public class JudgeRun {
         List<JSONObject> result = new LinkedList<>();
         while (!futureTaskList.isEmpty()) {
             Iterator<FutureTask<JSONObject>> iterable = futureTaskList.iterator();
-            //遍历一遍
 //            ExecutorService executorService = ThreadPoolUtils.getInstance().getThreadPool();
 //            ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) executorService;
 //            System.out.println(threadPoolExecutor.getActiveCount());
+            // 循环监听获取线程评测结果
             while (iterable.hasNext()) {
                 FutureTask<JSONObject> future = iterable.next();
                 if (future.isDone() && !future.isCancelled()) {

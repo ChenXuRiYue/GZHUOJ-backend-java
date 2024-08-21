@@ -73,6 +73,8 @@ public class Dispatcher {
             // 获取评测服务
             JudgeServerDO judgeServerDO = chooseInstanceUtils.chooseServer();
             if(judgeServerDO != null){ // 有评测机能提供服务
+                data.setJudgeServerIp(judgeServerDO.getIp());
+                data.setJudgeServerPort(judgeServerDO.getPort());
                 Result<Void> judgeResult = null;
                 try{
                     judgeResult = judgeServerRemoteService.judge(data);

@@ -26,4 +26,4 @@ gzhuoj:
     password: gzhuoj
     tokenTTL: 30m
   judge:
-    server-name: gzhuoj-judge-service
+    server-name: 'gzhuoj-judge-service'
