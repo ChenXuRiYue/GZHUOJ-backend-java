@@ -4,7 +4,7 @@
 <mapper namespace="com.gzhuoj.contest.mapper.ContestProblemMapper">
     <select id="selectForContest"
             parameterType="com.gzhuoj.contest.model.pojo.SFC" resultType="int">
-        SELECT count(*) from gzhuoj_contest.submit
+        SELECT count(submit_time) from gzhuoj_contest.submit
         <where>
             contest_id=#{contestId} and
             problem_id=#{problemId}
