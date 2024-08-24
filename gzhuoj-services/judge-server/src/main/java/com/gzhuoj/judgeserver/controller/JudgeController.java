@@ -107,7 +107,7 @@ public class JudgeController {
         SubmitDO submitDO = requestParam.getSubmitDO();
         if(submitDO == null || requestParam.getJudgeServerIp() == null || requestParam.getJudgeServerPort() == null){
             // 应该告诉contest这边再次检测到参数不符合
-            return Results.failure(JUDGE_PARAM_NOT_FOUND_ERROR.code(), JUDGE_PARAM_NOT_FOUND_ERROR.message());
+            throw new IllegalArgumentException("JudgeServer 入参不存在或");
         }
         judgeServerService.judge(submitDO);
         return Results.success().setMessage("成功发送！");
