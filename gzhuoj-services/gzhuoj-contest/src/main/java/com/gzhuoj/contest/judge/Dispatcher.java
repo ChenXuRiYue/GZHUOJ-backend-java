@@ -77,6 +77,8 @@ public class Dispatcher {
             if(judgeServerDO != null){ // 有评测机能提供服务
                 Result<Void> judgeResult = null;
                 try{
+                    data.setJudgeServerIp(judgeServerDO.getIp());
+                    data.setJudgeServerPort(judgeServerDO.getPort());
                     judgeResult = judgeServerRemoteService.judge(data);
                 } catch (Exception e){
                     log.error("[Self Judge] Request the judge server [" + judgeServerDO.getUrl() + "] error -------------->", e);

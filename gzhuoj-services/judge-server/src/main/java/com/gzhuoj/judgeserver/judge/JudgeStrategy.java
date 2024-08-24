@@ -82,7 +82,7 @@ public class JudgeStrategy {
             int time = jsonObject.getLong("time").intValue();
             int memory = jsonObject.getLong("memory").intValue();
             Integer status = jsonObject.getInt("status");
-            if(status == -1 && status != SubmissionStatus.ACCEPTED.getCode()){
+            if(resStatus == -1 && status != SubmissionStatus.ACCEPTED.getCode()){
                 resStatus = status;
                 errorMsg = jsonObject.getStr("errMsg");
             }
