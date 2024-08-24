@@ -1,5 +1,8 @@
 package common.toolkit;
 
+import common.convention.errorcode.BaseErrorCode;
+import common.exception.ClientException;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,6 +12,8 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import static common.convention.errorcode.BaseErrorCode.PROBLEM_TEST_CASE_UPLOAD_PATH_ERROR;
+
 public class ZipUtils {
     /**
      * 解压zip文件
@@ -17,6 +22,7 @@ public class ZipUtils {
      * @param filenamePattern 正则表达式
      */
     public static boolean decompressZip(String zipFilePath, String destDir, Pattern filenamePattern) throws IOException {
+        destDir = underTestCase(destDir);
         Path destDirPath = Paths.get(destDir);
         if (Files.notExists(destDirPath)) {
             Files.createDirectories(destDirPath);
@@ -58,6 +64,15 @@ public class ZipUtils {
             zis.closeEntry();
         }
         return fail;
+    }
+
+    private static String underTestCase(String destDir) {
+        String testCase = "test_case";
+        int idx = destDir.lastIndexOf(testCase);
+        if (idx == -1){
+            throw new ClientException(PROBLEM_TEST_CASE_UPLOAD_PATH_ERROR);
+        }
+        return destDir.substring(0, idx + testCase.length());
     }
 
     private static Path zipSlipProtect(ZipEntry zipEntry, Path destDir) throws IOException {
