@@ -1,7 +1,7 @@
 package com.gzhuoj.contest.judge;
 
 import com.gzhuacm.sdk.contest.model.dto.SubmitDTO;
-import com.gzhuoj.contest.constant.RedisKey;
+import common.constant.RedisKey;
 import com.gzhuoj.contest.constant.enums.JudgeType;
 import com.gzhuoj.contest.model.entity.SubmitDO;
 import com.gzhuacm.sdk.contest.model.dto.ToJudgeDTO;

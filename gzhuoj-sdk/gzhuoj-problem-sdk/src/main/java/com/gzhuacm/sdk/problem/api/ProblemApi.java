@@ -17,7 +17,7 @@ import java.beans.Encoder;
         configuration = {ProblemApi.MultipartSupportConfig.class})
 public interface ProblemApi {
     @GetMapping("/api/gzhuoj-problem/problem/query")
-    ProblemRespDTO queryProByNum(@RequestParam("num") Integer num);
+    Result<ProblemRespDTO> queryProByNum(@RequestParam("num") Integer num);
 
     @GetMapping("/api/gzhuoj-problem/problem/selectProblemById")
     ProblemPrintDTO selectProblemById(@RequestParam("problemId") Integer problemId);

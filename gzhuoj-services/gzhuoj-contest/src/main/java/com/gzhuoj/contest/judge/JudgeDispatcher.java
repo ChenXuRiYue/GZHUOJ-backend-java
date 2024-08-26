@@ -2,7 +2,7 @@ package com.gzhuoj.contest.judge;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.gzhuoj.contest.constant.RedisKey;
+import common.constant.RedisKey;
 import com.gzhuoj.contest.mapper.SubmitMapper;
 import com.gzhuoj.contest.model.entity.SubmitDO;
 import common.redis.RedisUtil;

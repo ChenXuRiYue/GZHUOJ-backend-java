@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gzhuacm.sdk.problem.model.dto.ProblemContentRespDTO;
+import com.gzhuacm.sdk.problem.model.dto.ProblemRespDTO;
 import com.gzhuacm.sdk.problem.model.dto.TestExampleDTO;
 import com.gzhuoj.problem.constant.PathConstant;
 import com.gzhuoj.problem.dto.req.problem.CreateProblemReqDTO;
@@ -209,13 +210,13 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
     }
 
     @Override
-    public ProblemDO queryProByNum(Integer num) {
+    public ProblemRespDTO queryProByNum(Integer num) {
         LambdaQueryWrapper<ProblemDO> queryWrapper = Wrappers.lambdaQuery(ProblemDO.class)
                 .eq(ProblemDO::getProblemNum, num)
                 .eq(ProblemDO::getDeleteFlag, 0);
-        return baseMapper.selectOne(queryWrapper);
+        ProblemDO problemDO =  baseMapper.selectOne(queryWrapper);
+        return BeanUtil.toBean(problemDO, ProblemRespDTO.class);
     }
-
 
     @Override
     public ProblemDO selectProblemById(Integer id) {

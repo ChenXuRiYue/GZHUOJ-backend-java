@@ -25,6 +25,7 @@ import com.gzhuoj.contest.service.contestProblem.ContestProblemService;
 import com.gzhuoj.contest.service.contest.ContestService;
 import com.gzhuoj.contest.service.regContest.RegContestService;
 import com.gzhuoj.contest.util.JwtTool;
+import common.constant.RedisKey;
 import common.redis.RedisUtil;
 import common.biz.user.UserContext;
 import common.enums.SubmissionStatus;
@@ -43,7 +44,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 
-import static com.gzhuoj.contest.constant.RedisKey.REGULAR_CONTEST_PROBLEM_SET;
+import static common.constant.RedisKey.*;
 import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.*;
 
 @Service
@@ -300,8 +301,8 @@ public class RegContestServiceImpl implements RegContestService {
     @Override
     public List<RegContestProSetRespDTO> problemSet(RegContestProSetReqDTO requestParam) {
         RedisUtil redisUtil = new RedisUtil(stringRedisTemplate);
-        String key = REGULAR_CONTEST_PROBLEM_SET + UserContext.getUserId();
-        Object jsonStr = stringRedisTemplate.opsForHash().get(key, requestParam.getCid().toString());
+        String key = REGULAR_CONTEST + UserContext.getUserId() + requestParam.getCid();
+        Object jsonStr = stringRedisTemplate.opsForHash().get(key, REGULAR_CONTEST_PROBLEM_SET_HASH_KEY);
         List<RegContestProSetRespDTO> listFromHash = redisUtil.getListFromHash(jsonStr, key, RegContestProSetRespDTO.class);
         if(CollUtil.isNotEmpty(listFromHash)){
             return listFromHash;
@@ -316,7 +317,7 @@ public class RegContestServiceImpl implements RegContestService {
         List<ContestProblemDO> allProblem = contestProblemService.getAllProblem(requestParam.getCid());
         ArrayList<RegContestProSetRespDTO> result = new ArrayList<>();
         for(ContestProblemDO cpDO : allProblem){
-            ProblemRespDTO problemRespDTO = problemApi.queryProByNum(cpDO.getProblemId());
+            ProblemRespDTO problemRespDTO = problemApi.queryProByNum(cpDO.getProblemId()).getData();
             if(problemRespDTO == null){
                 throw new ServiceException(SERVICE_PROBLEM_NOT_FOUND_ERROR);
             }
@@ -369,8 +370,8 @@ public class RegContestServiceImpl implements RegContestService {
             respDTO.setAC(AC);
         }
         result.sort(Comparator.comparingInt(RegContestProSetRespDTO::getActualNum));
-        // 查询到结果后将结果缓存10s 缓解查询压力
-        redisUtil.saveListToHash(key, requestParam.getCid().toString(), result, 10L, TimeUnit.SECONDS);
+        // 查询到结果后将结果缓存5s 缓解查询压力
+        redisUtil.saveListToHash(key, REGULAR_CONTEST_PROBLEM_SET_HASH_KEY, result, 5L, TimeUnit.SECONDS);
         return result;
 
     }

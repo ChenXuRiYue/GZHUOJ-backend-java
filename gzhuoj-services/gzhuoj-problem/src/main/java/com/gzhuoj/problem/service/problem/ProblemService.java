@@ -3,6 +3,7 @@ package com.gzhuoj.problem.service.problem;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gzhuacm.sdk.problem.model.dto.ProblemContentRespDTO;
+import com.gzhuacm.sdk.problem.model.dto.ProblemRespDTO;
 import com.gzhuoj.problem.dto.req.problem.CreateProblemReqDTO;
 import com.gzhuoj.problem.dto.req.problem.ListProblemReqDTO;
 import com.gzhuoj.problem.dto.req.problem.UpdateProblemReqDTO;
@@ -19,7 +20,7 @@ public interface ProblemService extends IService<ProblemDO> {
 
     void updateProblem(UpdateProblemReqDTO requestParam);
 
-    ProblemDO queryProByNum(Integer num);
+    ProblemRespDTO queryProByNum(Integer num);
 
     ProblemDO selectProblemById(Integer id);
 

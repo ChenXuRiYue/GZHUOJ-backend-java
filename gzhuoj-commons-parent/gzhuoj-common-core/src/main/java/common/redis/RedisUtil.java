@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static common.constant.RedisKey.REGULAR_CONTEST;
+
 @Component
 public class RedisUtil {
 
@@ -16,11 +18,17 @@ public class RedisUtil {
         this.stringRedisTemplate = stringRedisTemplate;
     }
 
+    // 生成相关的key
+    // 1. 生成排行榜存储的key
+    public String genKeyWhenProblemSet(Integer contestId, String role){
+        return REGULAR_CONTEST + contestId.toString() + ":" + role;
+    }
+
     // 存储List到Redis哈希表
     public <T> void saveListToHash(String key, String hashKey, List<T> list, long timeout, TimeUnit timeUnit) {
         String jsonStr = JSONUtil.toJsonStr(list);
         stringRedisTemplate.opsForHash().put(key, hashKey, jsonStr);
-        stringRedisTemplate.expire(hashKey, timeout, timeUnit);
+        stringRedisTemplate.expire(key, timeout, timeUnit);
     }
 
     // 从Redis哈希表中读取List
