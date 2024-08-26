@@ -2,6 +2,7 @@ package com.gzhuoj.contest.validator;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.gzhuacm.sdk.problem.api.ProblemApi;
 import com.gzhuoj.contest.dto.req.Judge.RegContestJudgeSubmitReqDTO;
 import com.gzhuoj.contest.mapper.SubmitCodeMapper;
 import com.gzhuoj.contest.mapper.SubmitMapper;
@@ -10,7 +11,6 @@ import com.gzhuoj.contest.model.entity.ContestDO;
 import com.gzhuoj.contest.model.entity.SubmitCodeDO;
 import com.gzhuoj.contest.model.entity.SubmitDO;
 import com.gzhuoj.contest.model.entity.TeamDO;
-import com.gzhuoj.contest.remote.ProblemRemoteService;
 import com.gzhuoj.contest.service.regContest.RegContestService;
 import common.biz.user.UserContext;
 import common.exception.ClientException;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.Objects;
 
-import static common.convention.errorcode.BaseErrorCode.*;
+import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.*;
 
 /**
  * 操作前置校验
@@ -29,7 +29,7 @@ import static common.convention.errorcode.BaseErrorCode.*;
 @RequiredArgsConstructor
 public class PreCheckValidator {
     private final RegContestService regContestService;
-    private final ProblemRemoteService problemRemoteService;
+    private final ProblemApi problemApi;
     private final TeamMapper teamMapper;
     private final SubmitMapper submitMapper;
     private final SubmitCodeMapper submitCodeMapper;
@@ -57,7 +57,7 @@ public class PreCheckValidator {
             }
         }
 
-        if(problemRemoteService.queryProByNum(requestParam.getProblemId()) == null){
+        if(problemApi.queryProByNum(requestParam.getProblemId()) == null){
             // 题目是否存在
             throw new ClientException(PROBLEM_NOT_FOUND);
         }

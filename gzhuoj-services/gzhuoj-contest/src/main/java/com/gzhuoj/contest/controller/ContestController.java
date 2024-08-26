@@ -14,8 +14,8 @@ import com.gzhuoj.contest.model.entity.SubmitDO;
 import com.gzhuoj.contest.model.entity.TeamDO;
 import com.gzhuoj.contest.service.contest.ContestService;
 import com.gzhuoj.contest.service.contest.UploadService;
-import common.convention.result.Result;
-import common.convention.result.Results;
+import org.gzhuoj.common.sdk.convention.result.Result;
+import org.gzhuoj.common.sdk.convention.result.Results;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static common.convention.errorcode.BaseErrorCode.ADMIN_UPLOAD_ILLEGAL_PROBLEM_DESCRIPTION_ERROR;
+import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.ADMIN_UPLOAD_ILLEGAL_PROBLEM_DESCRIPTION_ERROR;
 
 /**
  * 比赛后端管理控制层

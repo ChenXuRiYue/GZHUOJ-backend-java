@@ -1,14 +1,13 @@
 package com.gzhuoj.judgeserver.util;
 
 import cn.hutool.core.util.StrUtil;
-import common.convention.errorcode.BaseErrorCode;
 import common.exception.ServiceException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import static common.convention.errorcode.BaseErrorCode.JUDGE_COMPILE_PARAM_ERROR;
+import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.JUDGE_COMPILE_PARAM_ERROR;
 
 public class JudgeUtils {
     /**

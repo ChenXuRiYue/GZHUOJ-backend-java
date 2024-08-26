@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @MapperScan("com.gzhuoj.contest.mapper")
 @EnableDiscoveryClient
 @EnableTransactionManagement
-@EnableFeignClients("com.gzhuoj.contest.remote")
+@EnableFeignClients("com.gzhuacm.sdk.*.api")
 @EnableScheduling
 public class ContestApplication {
     public static void main(String[] args) {

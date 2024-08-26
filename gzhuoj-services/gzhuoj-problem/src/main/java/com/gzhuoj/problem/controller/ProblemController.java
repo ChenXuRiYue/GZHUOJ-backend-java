@@ -1,6 +1,8 @@
 package com.gzhuoj.problem.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.gzhuacm.sdk.problem.model.dto.ProblemContentRespDTO;
+import com.gzhuacm.sdk.problem.model.dto.ProblemPrintDTO;
 import com.gzhuoj.problem.constant.PathConstant;
 import com.gzhuoj.problem.constant.PatternConstant;
 import com.gzhuoj.problem.dto.req.problem.CreateProblemReqDTO;
@@ -8,13 +10,11 @@ import com.gzhuoj.problem.dto.req.problem.ListProblemReqDTO;
 import com.gzhuoj.problem.dto.req.problem.ProblemReqDTO;
 import com.gzhuoj.problem.dto.req.problem.UpdateProblemReqDTO;
 import com.gzhuoj.problem.dto.resp.problem.ListProblemRespDTO;
-import com.gzhuoj.problem.dto.resp.problem.ProblemContentRespDTO;
 import com.gzhuoj.problem.model.entity.ProblemDO;
 import com.gzhuoj.problem.service.problem.ProblemService;
 import com.gzhuoj.problem.service.common.UploadService;
-import common.convention.result.Result;
-import common.convention.result.Results;
-import common.model.pojo.ProblemPrintDTO;
+import org.gzhuoj.common.sdk.convention.result.Result;
+import org.gzhuoj.common.sdk.convention.result.Results;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static common.convention.errorcode.BaseErrorCode.ADMIN_UPLOAD_ILLEGAL_PROBLEM_DESCRIPTION_ERROR;
+import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.ADMIN_UPLOAD_ILLEGAL_PROBLEM_DESCRIPTION_ERROR;
 
 @RestController
 @RequiredArgsConstructor

@@ -3,8 +3,8 @@ package com.gzhuoj.judgeserver.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gzhuoj.judgeserver.model.entity.SubmitDO;
 import com.gzhuoj.judgeserver.service.JudgeServerService;
-import common.convention.result.Result;
-import common.convention.result.Results;
+import org.gzhuoj.common.sdk.convention.result.Result;
+import org.gzhuoj.common.sdk.convention.result.Results;
 import lombok.RequiredArgsConstructor;
 import com.gzhuoj.judgeserver.dto.req.ToJudgeReqDTO;
 import org.springframework.http.HttpEntity;
@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
-
-import static common.convention.errorcode.BaseErrorCode.JUDGE_PARAM_NOT_FOUND_ERROR;
 
 
 @RestController

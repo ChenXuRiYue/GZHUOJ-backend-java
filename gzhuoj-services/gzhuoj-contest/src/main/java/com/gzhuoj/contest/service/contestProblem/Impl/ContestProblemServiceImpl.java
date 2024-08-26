@@ -1,11 +1,12 @@
 package com.gzhuoj.contest.service.contestProblem.Impl;
 
-import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.gzhuacm.sdk.problem.api.ProblemApi;
+import com.gzhuacm.sdk.problem.model.dto.ProblemContentRespDTO;
 import com.gzhuoj.contest.dto.resp.contestProblem.ContestResultRespDTO;
 import com.gzhuoj.contest.mapper.ContestMapper;
 import com.gzhuoj.contest.mapper.ContestProblemMapper;
@@ -13,8 +14,6 @@ import com.gzhuoj.contest.model.entity.ContestDO;
 import com.gzhuoj.contest.model.entity.ContestProblemDO;
 import com.gzhuoj.contest.model.pojo.CPResult;
 import com.gzhuoj.contest.model.pojo.SFC;
-import com.gzhuoj.contest.remote.ProblemRemoteService;
-import com.gzhuoj.contest.remote.Resp.ProblemContentRespDTO;
 import com.gzhuoj.contest.service.contestProblem.ContestProblemService;
 import common.biz.user.UserContext;
 import common.exception.ServiceException;
@@ -29,7 +28,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static common.convention.errorcode.BaseErrorCode.PROBLEM_MESSAGE_LOST;
+import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.PROBLEM_MESSAGE_LOST;
 
 @Service
 public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper, ContestProblemDO> implements ContestProblemService {
@@ -40,7 +39,7 @@ public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper,
     @Resource
     StringRedisTemplate redis;
     @Resource
-    ProblemRemoteService problemRemoteService;
+    ProblemApi problemApi;
 
     @Override
     public List<ContestProblemDO> getAllProblem(Integer cid) {
@@ -148,6 +147,7 @@ public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper,
 
     /**
      * 加一道关卡有利于题目校验
+     *
      * @param
      * @return
      */
@@ -161,6 +161,6 @@ public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper,
         if(ObjectUtils.isEmpty(contestProblemDO)){
             throw new  ServiceException(PROBLEM_MESSAGE_LOST);
         }
-        return problemRemoteService.getProblemContent(contestProblemDO.getActualNum()).getData();
+        return problemApi.getProblemContent(contestProblemDO.getActualNum()).getData();
     }
 }

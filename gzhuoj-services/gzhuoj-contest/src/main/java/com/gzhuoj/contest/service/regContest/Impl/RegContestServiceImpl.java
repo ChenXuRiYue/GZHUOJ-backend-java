@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.gzhuacm.sdk.problem.api.ProblemApi;
+import com.gzhuacm.sdk.problem.model.dto.ProblemRespDTO;
 import com.gzhuoj.contest.config.JwtProperties;
 import com.gzhuoj.contest.dto.req.regContest.*;
 import com.gzhuoj.contest.dto.resp.regContest.*;
@@ -19,8 +21,6 @@ import com.gzhuoj.contest.model.entity.ContestProblemDO;
 import com.gzhuoj.contest.model.entity.SubmitDO;
 import com.gzhuoj.contest.model.entity.TeamDO;
 import com.gzhuoj.contest.model.pojo.PersonSeat;
-import com.gzhuoj.contest.remote.ProblemRemoteService;
-import com.gzhuoj.contest.remote.Resp.ProblemRespDTO;
 import com.gzhuoj.contest.service.contestProblem.ContestProblemService;
 import com.gzhuoj.contest.service.contest.ContestService;
 import com.gzhuoj.contest.service.regContest.RegContestService;
@@ -44,7 +44,7 @@ import java.util.concurrent.TimeUnit;
 
 
 import static com.gzhuoj.contest.constant.RedisKey.REGULAR_CONTEST_PROBLEM_SET;
-import static common.convention.errorcode.BaseErrorCode.*;
+import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -54,7 +54,7 @@ public class RegContestServiceImpl implements RegContestService {
     private final ContestService contestService;
     private final SubmitMapper submitMapper;
     private final ContestMapper contestMapper;
-    private final ProblemRemoteService problemRemoteService;
+    private final ProblemApi problemApi;
     private final ContestProblemService contestProblemService;
     private final JwtTool jwtTool;
     private final JwtProperties jwtProperties;
@@ -316,7 +316,7 @@ public class RegContestServiceImpl implements RegContestService {
         List<ContestProblemDO> allProblem = contestProblemService.getAllProblem(requestParam.getCid());
         ArrayList<RegContestProSetRespDTO> result = new ArrayList<>();
         for(ContestProblemDO cpDO : allProblem){
-            ProblemRespDTO problemRespDTO = problemRemoteService.queryProByNum(cpDO.getProblemId());
+            ProblemRespDTO problemRespDTO = problemApi.queryProByNum(cpDO.getProblemId());
             if(problemRespDTO == null){
                 throw new ServiceException(SERVICE_PROBLEM_NOT_FOUND_ERROR);
             }

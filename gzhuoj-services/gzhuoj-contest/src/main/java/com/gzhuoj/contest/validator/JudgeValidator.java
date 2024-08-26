@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.List;
 
-import static common.convention.errorcode.BaseErrorCode.SUBMISSION_LANGUAGE_NOT_SUPPORT;
-import static common.convention.errorcode.BaseErrorCode.SUBMISSION_LENGTH_TOO_LONG;
+import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.SUBMISSION_LANGUAGE_NOT_SUPPORT;
+import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.SUBMISSION_LENGTH_TOO_LONG;
 
 @Component
 public class JudgeValidator {

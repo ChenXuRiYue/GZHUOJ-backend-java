@@ -2,7 +2,7 @@ package com.gzhuoj.judgeserver.remote.DTO;
 
 
 import com.gzhuoj.judgeserver.remote.DTO.req.SubmitRemoteDTO;
-import common.convention.result.Result;
+import org.gzhuoj.common.sdk.convention.result.Result;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;

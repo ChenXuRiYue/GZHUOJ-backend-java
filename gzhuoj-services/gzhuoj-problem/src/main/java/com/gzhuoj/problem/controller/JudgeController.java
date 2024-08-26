@@ -5,8 +5,8 @@ import com.gzhuoj.problem.constant.PatternConstant;
 import com.gzhuoj.problem.dto.req.judge.ListJudgeDataReqDTO;
 import com.gzhuoj.problem.service.judge.JudgeService;
 import com.gzhuoj.problem.service.common.UploadService;
-import common.convention.result.Result;
-import common.convention.result.Results;
+import org.gzhuoj.common.sdk.convention.result.Result;
+import org.gzhuoj.common.sdk.convention.result.Results;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static common.convention.errorcode.BaseErrorCode.ADMIN_UPLOAD_ILLEGAL_FILE_ERROR;
+import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.ADMIN_UPLOAD_ILLEGAL_FILE_ERROR;
 
 
 @RestController

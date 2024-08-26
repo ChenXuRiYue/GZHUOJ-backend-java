@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static common.convention.errorcode.BaseErrorCode.CONTEST_NOT_FOUND_ERROR;
+import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.CONTEST_NOT_FOUND_ERROR;
 
 @Service
 @RequiredArgsConstructor

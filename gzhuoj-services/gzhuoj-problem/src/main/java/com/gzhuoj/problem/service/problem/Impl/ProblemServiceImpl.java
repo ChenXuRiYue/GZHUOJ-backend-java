@@ -9,12 +9,13 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.gzhuacm.sdk.problem.model.dto.ProblemContentRespDTO;
+import com.gzhuacm.sdk.problem.model.dto.TestExampleDTO;
 import com.gzhuoj.problem.constant.PathConstant;
 import com.gzhuoj.problem.dto.req.problem.CreateProblemReqDTO;
 import com.gzhuoj.problem.dto.req.problem.ListProblemReqDTO;
 import com.gzhuoj.problem.dto.req.problem.UpdateProblemReqDTO;
 import com.gzhuoj.problem.dto.resp.problem.ListProblemRespDTO;
-import com.gzhuoj.problem.dto.resp.problem.ProblemContentRespDTO;
 import com.gzhuoj.problem.mapper.ProblemDescrMapper;
 import com.gzhuoj.problem.mapper.ProblemMapper;
 import com.gzhuoj.problem.mapper.TestExampleMapper;
@@ -22,15 +23,13 @@ import com.gzhuoj.problem.model.entity.ProblemDO;
 import com.gzhuoj.problem.model.entity.ProblemDescrDO;
 import com.gzhuoj.problem.model.entity.TestExampleDO;
 import com.gzhuoj.problem.service.problem.ProblemService;
-import common.convention.errorcode.BaseErrorCode;
+import org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode;
 import common.exception.ClientException;
 import common.exception.ServiceException;
 import common.toolkit.GenerateRandStrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.poi.ss.formula.functions.T;
-import org.springframework.beans.factory.parsing.Problem;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,10 +42,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
-import static common.convention.errorcode.BaseErrorCode.PROBLEM_ID_EXISTED;
+import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.PROBLEM_ID_EXISTED;
 
 @Service
 @RequiredArgsConstructor
@@ -252,7 +251,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
         ProblemDescrDO problemDescrDO = problemDescrMapper.selectOne(problemDescrDOQueryWrapper);
         ProblemDO problemDO = problemMapper.selectOne(problemDOQueryWrapper);
         List<TestExampleDO> testExampleDOs = testExampleMapper.selectList(testExampleDOQueryWrapper);
-
+        List<TestExampleDTO> testExampleDTOS = testExampleDOs.stream().map(x -> new TestExampleDTO(x.getTestExampleNum(), x.getInput(), x.getOutput(), x.getProblemNum())).collect(Collectors.toList());
         // 题目信息缺失
         if(ObjectUtils.anyNull(problemDO, problemDescrDO)){
             throw new ServiceException(PROBLEM_ID_EXISTED);
@@ -273,7 +272,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
                     .explanationHtml(problemDescrDO.getExplanationHtml())
                     .ProblemType(problemDO.getProblemType())
                     .problemStatus(problemDO.getProblemStatus())
-                    .testExamples(testExampleDOs)
+                    .testExamples(testExampleDTOS)
                     .build();
     }
 

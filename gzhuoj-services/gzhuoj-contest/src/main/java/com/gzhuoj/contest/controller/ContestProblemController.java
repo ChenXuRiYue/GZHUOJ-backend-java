@@ -1,11 +1,11 @@
 package com.gzhuoj.contest.controller;
 
+import com.gzhuacm.sdk.problem.model.dto.ProblemContentRespDTO;
 import com.gzhuoj.contest.dto.resp.contestProblem.ContestResultRespDTO;
 import com.gzhuoj.contest.model.entity.ContestProblemDO;
-import com.gzhuoj.contest.remote.Resp.ProblemContentRespDTO;
 import com.gzhuoj.contest.service.contestProblem.ContestProblemService;
-import common.convention.result.Result;
-import common.convention.result.Results;
+import org.gzhuoj.common.sdk.convention.result.Result;
+import org.gzhuoj.common.sdk.convention.result.Results;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +29,8 @@ public class ContestProblemController {
 
     /**
      * 传入比赛Id , 以及题目在比赛中的相对序号，获取到题目的内容。
-     * @param contestId  比赛序号
+     *
+     * @param contestId        比赛序号
      * @param contestProblemId 题目在比赛中的相对序号
      * @return 返回一个涵盖题目大多数内容的信息。
      */
