@@ -3,6 +3,7 @@ package com.gzhuoj.problem.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gzhuacm.sdk.problem.model.dto.ProblemContentRespDTO;
 import com.gzhuacm.sdk.problem.model.dto.ProblemPrintDTO;
+import com.gzhuacm.sdk.problem.model.dto.ProblemRespDTO;
 import com.gzhuoj.problem.constant.PathConstant;
 import com.gzhuoj.problem.constant.PatternConstant;
 import com.gzhuoj.problem.dto.req.problem.CreateProblemReqDTO;
@@ -10,7 +11,6 @@ import com.gzhuoj.problem.dto.req.problem.ListProblemReqDTO;
 import com.gzhuoj.problem.dto.req.problem.ProblemReqDTO;
 import com.gzhuoj.problem.dto.req.problem.UpdateProblemReqDTO;
 import com.gzhuoj.problem.dto.resp.problem.ListProblemRespDTO;
-import com.gzhuoj.problem.model.entity.ProblemDO;
 import com.gzhuoj.problem.service.problem.ProblemService;
 import com.gzhuoj.problem.service.common.UploadService;
 import org.gzhuoj.common.sdk.convention.result.Result;
@@ -68,7 +68,7 @@ public class ProblemController {
      * @return 题目信息实体
      */
     @GetMapping("/query")
-    public Result<ProblemDO> queryProByNum(Integer num){
+    public Result<ProblemRespDTO> queryProByNum(Integer num){
         return Results.success(problemService.queryProByNum(num));
     }
 

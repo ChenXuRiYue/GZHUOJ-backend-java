@@ -1,5 +1,6 @@
 package com.gzhuoj.problem.service.common.Impl;
 
+import com.gzhuacm.sdk.problem.model.dto.ProblemRespDTO;
 import com.gzhuoj.problem.model.entity.ProblemDO;
 import com.gzhuoj.problem.service.problem.ProblemService;
 import com.gzhuoj.problem.service.common.UploadService;
@@ -38,12 +39,12 @@ public class UploadServiceImpl implements UploadService {
             if(!pattern.matcher(fileName).matches()){
                 throw new ClientException("文件名不合法");
             }
-            ProblemDO problemDO = problemService.queryProByNum(problemNum);
-            if(problemDO == null){
+            ProblemRespDTO problemRespDTO = problemService.queryProByNum(problemNum);
+            if(problemRespDTO == null){
                 throw new ClientException("题目不存在");
             }
             String fileExt = getExt(fileName).toLowerCase();
-            File targetFile = new File(String.format(path, problemDO.getAttach()), fileName);
+            File targetFile = new File(String.format(path, problemRespDTO.getAttach()), fileName);
             // 将文件传输到对应文件夹
             file.transferTo(targetFile.toPath());
             // 解压zip
