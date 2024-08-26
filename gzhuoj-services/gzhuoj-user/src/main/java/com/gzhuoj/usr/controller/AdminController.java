@@ -9,8 +9,8 @@ import com.gzhuoj.usr.dto.req.user.UserReqDTO;
 import com.gzhuoj.usr.dto.resp.admin.AdminUserGenRespDTO;
 import com.gzhuoj.usr.dto.resp.admin.AdminUserListRespDTO;
 import com.gzhuoj.usr.service.admin.AdminService;
-import common.convention.result.Result;
-import common.convention.result.Results;
+import org.gzhuoj.common.sdk.convention.result.Result;
+import org.gzhuoj.common.sdk.convention.result.Results;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

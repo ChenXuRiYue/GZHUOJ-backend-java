@@ -1,9 +1,10 @@
 package com.gzhuoj.contest.judge;
 
+import com.gzhuacm.sdk.contest.model.dto.SubmitDTO;
 import com.gzhuoj.contest.constant.RedisKey;
 import com.gzhuoj.contest.constant.enums.JudgeType;
 import com.gzhuoj.contest.model.entity.SubmitDO;
-import com.gzhuoj.contest.model.pojo.ToJudgeDTO;
+import com.gzhuacm.sdk.contest.model.dto.ToJudgeDTO;
 import com.gzhuoj.contest.service.judge.SubmitService;
 import common.redis.RedisUtil;
 import lombok.RequiredArgsConstructor;
@@ -35,10 +36,28 @@ public class JudgeDispenser extends AbstractDispenser {
             // 对提交进行派送调度
             // 当前默认只有比赛评测
             ToJudgeDTO toJudgeDTO = new ToJudgeDTO();
-            toJudgeDTO.setSubmitDO(submitDO);
+            SubmitDTO submitDTO = getSubmitDTO(submitDO);
+            toJudgeDTO.setSubmitDTO(submitDTO);
             // 根据JudgeType 指定评测类型
             dispatcher.dispatch(JudgeType.COMMON_JUDGE, toJudgeDTO);
         }
+    }
+
+    private static SubmitDTO getSubmitDTO(SubmitDO submitDO) {
+        SubmitDTO submitDTO = new SubmitDTO();
+        submitDTO.setCodeSize(submitDO.getCodeSize());
+        submitDTO.setMemory(submitDO.getMemory());
+        submitDTO.setJudger(submitDO.getJudger());
+        submitDTO.setLanguage(submitDO.getLanguage());
+        submitDTO.setStatus(submitDO.getStatus());
+        submitDTO.setSubmitTime(submitDO.getSubmitTime());
+        submitDTO.setContestId(submitDO.getSubmitId());
+        submitDTO.setExecTime(submitDO.getExecTime());
+        submitDTO.setTeamAccount(submitDO.getTeamAccount());
+        submitDTO.setJudger(submitDO.getJudger());
+        submitDTO.setSubmitId(submitDO.getSubmitId());
+        submitDTO.setProblemId(submitDO.getProblemId());
+        return submitDTO;
     }
 
     @Override

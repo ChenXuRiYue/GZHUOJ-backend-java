@@ -6,7 +6,7 @@ import com.gzhuoj.judgeserver.model.entity.SubmitDO;
 import com.gzhuoj.judgeserver.model.pojo.LanguageConfig;
 import com.gzhuoj.judgeserver.remote.DTO.ContestRemoteService;
 import com.gzhuoj.judgeserver.remote.DTO.resp.ProblemRespDTO;
-import common.convention.errorcode.BaseErrorCode;
+import org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode;
 import common.enums.SubmissionLanguage;
 import common.enums.SubmissionStatus;
 import common.exception.ServiceException;
@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;

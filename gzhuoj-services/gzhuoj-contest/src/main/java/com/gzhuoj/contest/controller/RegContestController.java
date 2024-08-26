@@ -5,8 +5,8 @@ import com.gzhuoj.contest.dto.req.regContest.*;
 import com.gzhuoj.contest.dto.resp.regContest.*;
 import com.gzhuoj.contest.model.entity.ContestDO;
 import com.gzhuoj.contest.service.regContest.RegContestService;
-import common.convention.result.Result;
-import common.convention.result.Results;
+import org.gzhuoj.common.sdk.convention.result.Result;
+import org.gzhuoj.common.sdk.convention.result.Results;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -114,8 +114,8 @@ public class RegContestController {
      * @param requestParam 比赛题目集界面入参
      * @return 题目列表展示返回实体
      */
-    @GetMapping("/problemset")
-    public Result<List<RegContestProSetRespDTO>> problemSet(RegContestProSetReqDTO requestParam) {
+    @PostMapping("/problems")
+    public Result<List<RegContestProSetRespDTO>> problemSet(@RequestBody RegContestProSetReqDTO requestParam) {
         return Results.success(regContestService.problemSet(requestParam));
     }
 

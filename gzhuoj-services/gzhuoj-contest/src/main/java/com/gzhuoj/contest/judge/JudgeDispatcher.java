@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
-import static common.convention.errorcode.BaseErrorCode.JUDGE_SUBMIT_ERROR;
+import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.JUDGE_SUBMIT_ERROR;
 
 /**
  * 评测调度

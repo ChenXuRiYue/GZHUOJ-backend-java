@@ -7,12 +7,12 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.gzhuoj.contest.constant.enums.JudgeType;
 import com.gzhuoj.contest.model.entity.JudgeServerDO;
 import com.gzhuoj.contest.model.entity.SubmitDO;
-import com.gzhuoj.contest.model.pojo.ToJudgeDTO;
-import com.gzhuoj.contest.remote.JudgeServerRemoteService;
+import com.gzhuacm.sdk.contest.model.dto.ToJudgeDTO;
+import com.gzhuacm.sdk.contest.api.JudgeServerApi;
 import com.gzhuoj.contest.service.judge.JudgeServerService;
 import com.gzhuoj.contest.service.judge.SubmitService;
 import com.gzhuoj.contest.util.ChooseInstanceUtils;
-import common.convention.result.Result;
+import org.gzhuoj.common.sdk.convention.result.Result;
 import common.enums.SubmissionStatus;
 import common.exception.ClientException;
 import common.toolkit.GenerateRandStrUtil;
@@ -25,7 +25,7 @@ import java.util.Objects;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static common.convention.errorcode.BaseErrorCode.JUDGE_TYPE_ERROR;
+import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.JUDGE_TYPE_ERROR;
 
 /**
  * 任务调度
@@ -37,7 +37,7 @@ public class Dispatcher {
     private final ChooseInstanceUtils chooseInstanceUtils;
     private final SubmitService submitService;
     private final JudgeServerService judgeServerService;
-    private final JudgeServerRemoteService judgeServerRemoteService;
+    private final JudgeServerApi judgeServerApi;
 
     private final static Integer MAX_TRY_NUM = 300;
     private final static Integer MAX_TRY_AGAIN_NUM = 10;
@@ -61,7 +61,7 @@ public class Dispatcher {
     }
 
     private void defaultJudge(ToJudgeDTO data, String path) {
-        Integer submitId = data.getSubmitDO().getSubmitId();
+        Integer submitId = data.getSubmitDTO().getSubmitId();
         // 原子类防止多线程混乱(似乎不需要
         AtomicInteger count = new AtomicInteger(0);
         // 任务ConcurrentHashMap中的key
@@ -79,7 +79,7 @@ public class Dispatcher {
                 try{
                     data.setJudgeServerIp(judgeServerDO.getIp());
                     data.setJudgeServerPort(judgeServerDO.getPort());
-                    judgeResult = judgeServerRemoteService.judge(data);
+                    judgeResult = judgeServerApi.judge(data);
                 } catch (Exception e){
                     log.error("[Self Judge] Request the judge server [" + judgeServerDO.getUrl() + "] error -------------->", e);
                 } finally {

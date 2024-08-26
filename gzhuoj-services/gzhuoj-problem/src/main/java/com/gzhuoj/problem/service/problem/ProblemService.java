@@ -2,11 +2,11 @@ package com.gzhuoj.problem.service.problem;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.gzhuacm.sdk.problem.model.dto.ProblemContentRespDTO;
 import com.gzhuoj.problem.dto.req.problem.CreateProblemReqDTO;
 import com.gzhuoj.problem.dto.req.problem.ListProblemReqDTO;
 import com.gzhuoj.problem.dto.req.problem.UpdateProblemReqDTO;
 import com.gzhuoj.problem.dto.resp.problem.ListProblemRespDTO;
-import com.gzhuoj.problem.dto.resp.problem.ProblemContentRespDTO;
 import com.gzhuoj.problem.model.entity.ProblemDO;
 import com.gzhuoj.problem.model.entity.ProblemDescrDO;
 

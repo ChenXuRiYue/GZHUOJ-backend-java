@@ -52,6 +52,7 @@ public class RegContestProSetRespDTO implements Serializable {
 
     /**
      * 自己team是否AC
+     * TODO 未尝试， 尝试未通过， 通过
      */
     private boolean AC;
 }

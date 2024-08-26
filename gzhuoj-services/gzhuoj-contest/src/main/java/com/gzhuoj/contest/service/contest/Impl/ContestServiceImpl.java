@@ -11,6 +11,8 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.gzhuacm.sdk.problem.api.ProblemApi;
+import com.gzhuacm.sdk.problem.model.dto.ProblemPrintDTO;
 import com.gzhuoj.contest.constant.PathConstant;
 import com.gzhuoj.contest.dto.req.contest.ContestAllReqDTO;
 import com.gzhuoj.contest.dto.req.contest.ContestCreateReqDTO;
@@ -22,9 +24,7 @@ import com.gzhuoj.contest.mapper.ContestDescrMapper;
 import com.gzhuoj.contest.mapper.ContestMapper;
 import com.gzhuoj.contest.mapper.ContestProblemMapper;
 import com.gzhuoj.contest.model.entity.*;
-import common.model.pojo.ProblemPrintDTO;
 import common.biz.user.UserContext;
-import com.gzhuoj.contest.remote.ProblemRemoteService;
 import com.gzhuoj.contest.service.contest.ContestService;
 import common.exception.ClientException;
 import common.toolkit.GenerateRandStrUtil;
@@ -52,7 +52,7 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, ContestDO> im
     private final ContestDescrMapper contestDescrMapper;
     private final ContestProblemMapper contestProblemMapper;
     private final ContestMapper contestMapper;
-    private final ProblemRemoteService problemRemoteService;
+    private final ProblemApi problemApi;
     private static final String DATE_FORMAT = "%s-%s-%s %s:%s";
     @Override
     @Transactional
@@ -164,7 +164,7 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, ContestDO> im
         respDTO.setProblems(new ArrayList<>());
         for (ContestProblemDO PDO : contestProblemDOS) {
             Integer problemId = PDO.getProblemId();
-            ProblemPrintDTO neww=problemRemoteService.selectProblemById(problemId);
+            ProblemPrintDTO neww= problemApi.selectProblemById(problemId);
 
             respDTO.getProblems().add(neww);
         }

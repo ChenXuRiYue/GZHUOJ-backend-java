@@ -17,6 +17,11 @@ spring:
       idle-timeout: 300000
       maximum-pool-size: 5
       minimum-idle: 5
+  data:
+    redis:
+      host: 47.120.53.127
+      port: 6379
+      password: gzhuoj
 
   application:
     name: gzhuoj-gateway
@@ -28,6 +33,8 @@ spring:
         service-name: gzhuoj-gateway
         heartbeat:
           enabled: true
+
+
     gateway:
       routes:
         - id: user                #路由规则id

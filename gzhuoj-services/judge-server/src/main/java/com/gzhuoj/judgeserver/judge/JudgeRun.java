@@ -9,18 +9,16 @@ import com.gzhuoj.judgeserver.model.pojo.TestCaseParam;
 import com.gzhuoj.judgeserver.remote.DTO.resp.ProblemRespDTO;
 import com.gzhuoj.judgeserver.util.ThreadPoolUtils;
 import common.enums.SubmissionLanguage;
-import common.enums.SubmissionStatus;
 import common.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
-import java.util.concurrent.ThreadPoolExecutor;
 
-import static common.convention.errorcode.BaseErrorCode.*;
+import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.JUDGE_TESTCASE_NOT_EXIST_ERROR;
+import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.JUDGE_TESTCASE_NUMBER_NOT_SAME_ERROR;
 
 @Component
 @RequiredArgsConstructor

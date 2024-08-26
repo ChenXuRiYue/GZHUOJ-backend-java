@@ -16,7 +16,6 @@ import com.gzhuoj.usr.model.entity.UserDO;
 import com.gzhuoj.usr.mapper.UserMapper;
 import com.gzhuoj.usr.service.user.UserService;
 import com.gzhuoj.usr.utils.JwtTool;
-import common.convention.errorcode.BaseErrorCode;
 import common.exception.ClientException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +25,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
-import static common.convention.errorcode.BaseErrorCode.USER_ACCOUNT_VERIFY_ERROR;
-import static common.convention.errorcode.BaseErrorCode.USER_PASSWORD_VERIFY_ERROR;
+import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.USER_ACCOUNT_VERIFY_ERROR;
+import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.USER_PASSWORD_VERIFY_ERROR;
 
 @Service
 @Slf4j

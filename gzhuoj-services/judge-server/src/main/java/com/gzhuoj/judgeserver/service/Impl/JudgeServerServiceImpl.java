@@ -1,8 +1,6 @@
 package com.gzhuoj.judgeserver.service.Impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gzhuoj.judgeserver.judge.JudgeContext;
 import com.gzhuoj.judgeserver.mapper.JudgeServerMapper;
@@ -13,7 +11,7 @@ import com.gzhuoj.judgeserver.remote.DTO.ProblemRemoteService;
 import com.gzhuoj.judgeserver.remote.DTO.req.SubmitRemoteDTO;
 import com.gzhuoj.judgeserver.remote.DTO.resp.ProblemRespDTO;
 import com.gzhuoj.judgeserver.service.JudgeServerService;
-import common.convention.result.Result;
+import org.gzhuoj.common.sdk.convention.result.Result;
 import common.enums.SubmissionStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

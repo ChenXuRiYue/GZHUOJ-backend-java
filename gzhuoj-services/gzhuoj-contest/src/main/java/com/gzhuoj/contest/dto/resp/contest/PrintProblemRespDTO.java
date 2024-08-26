@@ -1,7 +1,7 @@
 package com.gzhuoj.contest.dto.resp.contest;
 
+import com.gzhuacm.sdk.problem.model.dto.ProblemPrintDTO;
 import com.gzhuoj.contest.model.entity.ContestDO;
-import common.model.pojo.ProblemPrintDTO;
 import lombok.Data;
 
 import java.util.List;

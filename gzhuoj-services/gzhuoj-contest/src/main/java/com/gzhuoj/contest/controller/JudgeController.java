@@ -1,19 +1,16 @@
 package com.gzhuoj.contest.controller;
 
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.gzhuoj.contest.dto.req.Judge.RegContestJudgeSubmitReqDTO;
-import com.gzhuoj.contest.model.entity.SubmitDO;
-import com.gzhuoj.contest.remote.Req.SubmitRemoteDTO;
+import com.gzhuacm.sdk.contest.model.dto.SubmitRemoteDTO;
 import com.gzhuoj.contest.service.judge.JudgeService;
 import com.gzhuoj.contest.service.judge.SubmitService;
-import common.convention.result.Result;
-import common.convention.result.Results;
+import org.gzhuoj.common.sdk.convention.result.Result;
+import org.gzhuoj.common.sdk.convention.result.Results;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.*;
 
-import static common.convention.errorcode.BaseErrorCode.JUDGE_SUBMIT_ERROR;
+import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.JUDGE_SUBMIT_ERROR;
 
 @RestController
 @RequiredArgsConstructor

@@ -4,8 +4,8 @@ import com.gzhuoj.contest.dto.req.contestBalloon.ContestBalloonChangeStReqDTO;
 import com.gzhuoj.contest.dto.req.contestBalloon.ContestBalloonQueueReqDTO;
 import com.gzhuoj.contest.dto.resp.contestBalloon.ContestBalloonQueueRespDTO;
 import com.gzhuoj.contest.service.contestBalloon.ContestBalloonService;
-import common.convention.result.Result;
-import common.convention.result.Results;
+import org.gzhuoj.common.sdk.convention.result.Result;
+import org.gzhuoj.common.sdk.convention.result.Results;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

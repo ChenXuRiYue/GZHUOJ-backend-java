@@ -1,10 +1,8 @@
 package com.gzhuoj.contest.service.judge;
 
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gzhuoj.contest.model.entity.SubmitDO;
-import com.gzhuoj.contest.remote.Req.SubmitRemoteDTO;
+import com.gzhuacm.sdk.contest.model.dto.SubmitRemoteDTO;
 
 public interface SubmitService extends IService<SubmitDO> {
     /**
