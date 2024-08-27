@@ -19,12 +19,14 @@ import common.toolkit.GenerateRandStrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.gzhuoj.contest.constant.PathConstant.JUDGE_SERVER_JUDGE_PATH;
 import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.JUDGE_TYPE_ERROR;
 
 /**
@@ -38,6 +40,7 @@ public class Dispatcher {
     private final SubmitService submitService;
     private final JudgeServerService judgeServerService;
     private final JudgeServerApi judgeServerApi;
+    private final RestTemplate restTemplate;
 
     private final static Integer MAX_TRY_NUM = 300;
     private final static Integer MAX_TRY_AGAIN_NUM = 10;
@@ -75,11 +78,11 @@ public class Dispatcher {
             // 获取评测服务
             JudgeServerDO judgeServerDO = chooseInstanceUtils.chooseServer();
             if(judgeServerDO != null){ // 有评测机能提供服务
-                Result<Void> judgeResult = null;
+                Result judgeResult = null;
                 try{
                     data.setJudgeServerIp(judgeServerDO.getIp());
                     data.setJudgeServerPort(judgeServerDO.getPort());
-                    judgeResult = judgeServerApi.judge(data);
+                    judgeResult = restTemplate.postForObject("http://" + judgeServerDO.getUrl() + JUDGE_SERVER_JUDGE_PATH, data, Result.class);
                 } catch (Exception e){
                     log.error("[Self Judge] Request the judge server [" + judgeServerDO.getUrl() + "] error -------------->", e);
                 } finally {

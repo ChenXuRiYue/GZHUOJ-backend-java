@@ -1,5 +1,5 @@
 server:
-  port: 8063
+  port: 8088
 spring:
   application:
     name: gzhuoj-judge-service

@@ -5,3 +5,4 @@ common.config.MvcConfig
 common.web.GlobalExceptionHandler
 common.redis.RedisConfig
 common.bloom.BloomConfig
+common.config.RestTemplateConfig
