@@ -1,5 +1,6 @@
 package com.gzhuoj.contest.judge;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.gzhuacm.sdk.contest.model.dto.SubmitDTO;
 import common.constant.RedisKey;
 import com.gzhuoj.contest.constant.enums.JudgeType;
@@ -44,20 +45,7 @@ public class JudgeDispenser extends AbstractDispenser {
     }
 
     private static SubmitDTO getSubmitDTO(SubmitDO submitDO) {
-        SubmitDTO submitDTO = new SubmitDTO();
-        submitDTO.setCodeSize(submitDO.getCodeSize());
-        submitDTO.setMemory(submitDO.getMemory());
-        submitDTO.setJudger(submitDO.getJudger());
-        submitDTO.setLanguage(submitDO.getLanguage());
-        submitDTO.setStatus(submitDO.getStatus());
-        submitDTO.setSubmitTime(submitDO.getSubmitTime());
-        submitDTO.setContestId(submitDO.getSubmitId());
-        submitDTO.setExecTime(submitDO.getExecTime());
-        submitDTO.setTeamAccount(submitDO.getTeamAccount());
-        submitDTO.setJudger(submitDO.getJudger());
-        submitDTO.setSubmitId(submitDO.getSubmitId());
-        submitDTO.setProblemId(submitDO.getProblemId());
-        return submitDTO;
+        return BeanUtil.toBean(submitDO, SubmitDTO.class);
     }
 
     @Override

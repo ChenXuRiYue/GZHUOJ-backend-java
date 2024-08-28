@@ -31,6 +31,7 @@ public class LanguageConfigLoader implements InitializingBean {
     private static List<String> localEnv = Arrays.asList(
             "PATH=C:\\mingw64\\bin"
     );
+
     private static List<String> localRunEnv = Arrays.asList(
             "PATH=C:\\mingw64\\bin", "LANG=en_US.UTF-8", "LC_ALL=en_US.UTF-8", "LANGUAGE=en_US:en"
     );
