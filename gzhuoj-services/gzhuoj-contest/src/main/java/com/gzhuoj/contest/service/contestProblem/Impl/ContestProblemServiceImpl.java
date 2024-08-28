@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gzhuacm.sdk.problem.api.ProblemApi;
 import com.gzhuacm.sdk.problem.model.dto.ProblemContentRespDTO;
+import com.gzhuacm.sdk.problem.model.dto.ProblemReqDTO;
 import com.gzhuoj.contest.dto.resp.contestProblem.ContestResultRespDTO;
 import com.gzhuoj.contest.mapper.ContestMapper;
 import com.gzhuoj.contest.mapper.ContestProblemMapper;
@@ -152,15 +153,15 @@ public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper,
      * @return
      */
     @Override
-    public ProblemContentRespDTO getContestProblem(Integer contestId, Integer contestProblemNum) {
-        // 找到题目在的实际编号
+    public ProblemContentRespDTO getContestProblem(Integer contestId, Integer problemIdInContest) {
         QueryWrapper<ContestProblemDO> queryWrapper = new QueryWrapper<>();
-//        queryWrapper.eq("contest_id", contestId);
-        queryWrapper.allEq(Map.of("contest_id", contestId, "problem_id" , contestProblemNum));
+        queryWrapper.allEq(Map.of("contest_id", contestId, "actual_num" , problemIdInContest));
         ContestProblemDO contestProblemDO = contestProblemMapper.selectOne(queryWrapper);
         if(ObjectUtils.isEmpty(contestProblemDO)){
             throw new  ServiceException(PROBLEM_MESSAGE_LOST);
         }
-        return problemApi.getProblemContent(contestProblemDO.getActualNum()).getData();
+        ProblemReqDTO problemReqDTO = new ProblemReqDTO();
+        problemReqDTO.setProblemNum(contestProblemDO.getProblemId());
+        return problemApi.getProblemContent(problemReqDTO).getData();
     }
 }
