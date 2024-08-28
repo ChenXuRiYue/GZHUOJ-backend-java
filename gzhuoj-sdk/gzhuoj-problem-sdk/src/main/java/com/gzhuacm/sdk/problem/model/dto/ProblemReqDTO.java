@@ -1,4 +1,4 @@
-package com.gzhuoj.problem.dto.req.problem;
+package com.gzhuacm.sdk.problem.model.dto;
 
 import lombok.Data;
 

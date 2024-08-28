@@ -45,6 +45,8 @@
         <spring-cloud-openfeign.version>4.0.4</spring-cloud-openfeign.version>
         <unirest-java.version>3.14.1</unirest-java.version>
         <spring-web.version>6.0.8</spring-web.version>
+        <spring-boot-test.version>3.0.7</spring-boot-test.version>
+        <junit-jupiter-api.version> 5.9.3</junit-jupiter-api.version>
     </properties>
 
     <dependencyManagement>
@@ -150,6 +152,17 @@
                 <groupId>com.konghq</groupId>
                 <artifactId>unirest-java</artifactId>
                 <version>${unirest-java.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-test</artifactId>
+                <version>${spring-boot-test.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>${junit-jupiter-api.version}</version>
             </dependency>
 
         </dependencies>
