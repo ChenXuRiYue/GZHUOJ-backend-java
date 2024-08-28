@@ -10,7 +10,6 @@ import common.exception.ClientException;
 import common.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.javassist.compiler.CompileError;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 

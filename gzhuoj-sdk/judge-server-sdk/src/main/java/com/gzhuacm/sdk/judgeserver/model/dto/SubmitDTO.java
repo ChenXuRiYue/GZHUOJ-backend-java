@@ -1,5 +1,4 @@
-package com.gzhuacm.sdk.contest.model.dto;
-
+package com.gzhuacm.sdk.judgeserver.model.dto;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

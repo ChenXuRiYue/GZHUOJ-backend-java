@@ -1,18 +1,4 @@
 ---
-language: C
-src_path: main.c
-exe_path: main
-compile:
-  env: default
-  command: /usr/bin/gcc -DONLINE_JUDGE -w -fmax-errors=1 -std=c11 {src_path} -lm -o {exe_path}
-  maxCpuTime: 5s
-  maxRealTime: 10s
-  maxMemory: 256mb
-run:
-  env: default
-  command: /w/{exe_path}
-
----
 language: C With O2
 src_path: main.c
 exe_path: main
@@ -27,71 +13,13 @@ run:
   command: /w/{exe_path}
 
 ---
-language: C++
-src_path: main.cpp
-exe_path: main
-compile:
-  command: /usr/bin/g++ -DONLINE_JUDGE -w -fmax-errors=1 -std=c++14 {src_path} -lm -o {exe_path}
-  env: default
-  maxCpuTime: 10s
-  maxRealTime: 20s
-  maxMemory: 512mb
-run:
-  env: default
-  command: /w/{exe_path}
-
----
-language: C++ With O2
-src_path: main.cpp
-exe_path: main
-compile:
-  env: default
-  command: /usr/bin/g++ -DONLINE_JUDGE -O2 -w -fmax-errors=1 -std=c++14 {src_path} -lm -o {exe_path}
-  maxCpuTime: 10s
-  maxRealTime: 20s
-  maxMemory: 512mb
-run:
-  env: default
-  command: /w/{exe_path}
-
----
-language: C++ 17
-src_path: main.cpp
-exe_path: main
-compile:
-  env: default
-  command: /usr/bin/g++ -DONLINE_JUDGE -w -fmax-errors=1 -std=c++17 {src_path} -lm -o {exe_path}
-  maxCpuTime: 10s
-  maxRealTime: 20s
-  maxMemory: 512mb
-run:
-  env: default
-  command: /w/{exe_path}
-
----
 language: C++ 17 With O2
-#src_path: main.cpp
 src_path: main.cpp
-#exe_path: main
 exe_path: main
 compile:
   env: default
 #  command: /usr/bin/g++ -DONLINE_JUDGE -O2 -w -fmax-errors=1 -std=c++17 {src_path} -lm -o {exe_path}
   command: C:\mingw64\bin\g++ {src_path} -o {exe_path}
-  maxCpuTime: 10s
-  maxRealTime: 20s
-  maxMemory: 512mb
-run:
-  env: default
-  command: "{exe_path}"
-
----
-language: C++ 20
-src_path: main.cpp
-exe_path: main
-compile:
-  env: default
-  command: /usr/bin/g++ -DONLINE_JUDGE -w -fmax-errors=1 -std=c++2a {src_path} -lm -o {exe_path}
   maxCpuTime: 10s
   maxRealTime: 20s
   maxMemory: 512mb
@@ -196,28 +124,6 @@ compile:
   maxMemory: 512mb
 run:
   env: golang_run
-  command: /w/{exe_path}
-
----
-language: Ruby
-src_path: main.rb
-exe_path: main.rb
-run:
-  env: default
-  command: /usr/bin/ruby /w/{exe_path}
-
----
-language: Rust
-src_path: Main.cs
-exe_path: main
-compile:
-  env: default
-  command: /usr/bin/rustc -O -o {exe_path} {src_path}
-  maxCpuTime: 5s
-  maxRealTime: 10s
-  maxMemory: 512mb
-run:
-  env: default
   command: /w/{exe_path}
 
 # 以下为特殊评测或交互评测使用的语言
