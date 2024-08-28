@@ -30,7 +30,7 @@ public class JudgeServiceImpl implements JudgeService {
         // 先判断提交的代码是否符合规范
         judgeValidator.submitArgChecker(requestParam);
         SubmitDO submitDO = SubmitDO.builder()
-                .contestId(requestParam.getCid())
+                .contestId(requestParam.getContestId())
                 .teamAccount(requestParam.getTeamAccount())
                 .problemId(requestParam.getProblemId())
                 .language(requestParam.getLanguage())

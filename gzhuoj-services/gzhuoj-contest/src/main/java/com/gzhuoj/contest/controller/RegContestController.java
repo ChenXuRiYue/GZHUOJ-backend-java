@@ -100,12 +100,12 @@ public class RegContestController {
     /**
      * 根据比赛id查询比赛是否存在
      *
-     * @param cid 比赛id
+     * @param contestId 比赛id
      * @return 存在返回 true
      */
     @GetMapping("/exist")
-    public Result<ContestDO> getContest(Integer cid) {
-        return Results.success(regContestService.getContest(cid));
+    public Result<ContestDO> getContest(Integer contestId) {
+        return Results.success(regContestService.getContest(contestId));
     }
 
     /**

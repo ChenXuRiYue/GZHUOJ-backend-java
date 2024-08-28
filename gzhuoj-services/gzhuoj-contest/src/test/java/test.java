@@ -1,12 +1,8 @@
 import com.gzhuoj.contest.ContestApplication;
 import com.gzhuoj.contest.mapper.ContestProblemMapper;
-import com.gzhuoj.contest.model.pojo.SFC;
 import common.bloom.Bloom;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.text.SimpleDateFormat;
 
 @SpringBootTest(classes = ContestApplication.class)
 public class test {

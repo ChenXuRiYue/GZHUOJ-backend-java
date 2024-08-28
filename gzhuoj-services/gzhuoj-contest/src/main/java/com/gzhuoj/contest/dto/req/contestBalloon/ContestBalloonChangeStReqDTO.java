@@ -7,7 +7,7 @@ public class ContestBalloonChangeStReqDTO {
     /**
      * 比赛编号
      */
-    private Integer cid;
+    private Integer contestId;
 
     /**
      * 队伍编号

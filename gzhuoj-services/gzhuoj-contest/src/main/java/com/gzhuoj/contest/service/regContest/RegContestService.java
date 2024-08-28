@@ -27,7 +27,7 @@ public interface RegContestService {
 
     List<RegContestProSetRespDTO> problemSet(RegContestProSetReqDTO requestParam);
 
-    ContestDO getContest(Integer cid);
+    ContestDO getContest(Integer contestId);
 
     ContestSeatRespDTO contestSeat(Integer contestId, ContestSeatReqDTO reqDTO);
 }

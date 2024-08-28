@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface TeamMapper extends BaseMapper<TeamDO> {
-    Integer getLastTeamNum(Integer cid);
+    Integer getLastTeamNum(Integer contestId);
 
     void insertOrUpdateTeam(@Param("team") TeamDO team);
 
