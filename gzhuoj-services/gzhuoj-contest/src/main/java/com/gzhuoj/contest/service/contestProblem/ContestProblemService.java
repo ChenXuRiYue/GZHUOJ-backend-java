@@ -18,5 +18,5 @@ public interface ContestProblemService extends IService<ContestProblemDO> {
 
     ContestResultRespDTO getResult(Integer ContestId);
 
-    ProblemContentRespDTO getContestProblem(Integer contestId, Integer contestProblemNum);
+    ProblemContentRespDTO getContestProblem(Integer contestId, Integer problemIdInContest);
 }

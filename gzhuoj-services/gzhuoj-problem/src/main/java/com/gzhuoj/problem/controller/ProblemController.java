@@ -8,7 +8,7 @@ import com.gzhuoj.problem.constant.PathConstant;
 import com.gzhuoj.problem.constant.PatternConstant;
 import com.gzhuoj.problem.dto.req.problem.CreateProblemReqDTO;
 import com.gzhuoj.problem.dto.req.problem.ListProblemReqDTO;
-import com.gzhuoj.problem.dto.req.problem.ProblemReqDTO;
+import com.gzhuacm.sdk.problem.model.dto.ProblemReqDTO;
 import com.gzhuoj.problem.dto.req.problem.UpdateProblemReqDTO;
 import com.gzhuoj.problem.dto.resp.problem.ListProblemRespDTO;
 import com.gzhuoj.problem.service.problem.ProblemService;
