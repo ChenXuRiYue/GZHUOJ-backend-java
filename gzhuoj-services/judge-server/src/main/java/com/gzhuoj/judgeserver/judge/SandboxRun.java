@@ -32,7 +32,7 @@ public class SandboxRun {
         requestFactory.setReadTimeout(180000);
         restTemplate = new RestTemplate(requestFactory);
     }
-    private static final String SANDBOX_BASE_URL = "http://localhost:5050";
+    private static final String SANDBOX_BASE_URL = "http://go-judge:5050";
 
     private static final Integer maxProcNum = 100;
 
