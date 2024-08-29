@@ -1,9 +1,14 @@
 package common.enums;
 
+import jdk.jfr.Unsigned;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.gzhuoj.common.sdk.model.pojo.Option;
 
+import javax.security.auth.callback.LanguageCallback;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -14,6 +19,7 @@ public enum SubmissionLanguage {
     Java(2, "Java"),
     Python(3, "Python"),
     Go(4,"Go");
+
     /**
      * 提交语言编号
      */
@@ -39,6 +45,23 @@ public enum SubmissionLanguage {
      */
     public static String getLangById(Integer languageId) {
         return codeToLangMap.get(languageId);
+    }
+
+    /**
+     * 根据语言掩码，获得支持语言的选项列表
+     */
+    public static List<Option<String, Integer>> getLanguageOptionListByCode(long languageMask){
+        List<Option<String, Integer>> languageOptions = new ArrayList<>();
+        // TODO 如果未来支持语言数量大于 64 个，这里需要更改
+        for(int i = 0; i < 32; i++){
+            if(((languageMask >> i) & 1) == 1){
+                Option<String, Integer> option = new Option<>();
+                option.setKey(getLangById(i));
+                option.setValue(i);
+                languageOptions.add(option);
+            }
+        }
+        return languageOptions;
     }
 
     public static void main(String[] args) {

@@ -26,7 +26,7 @@ public class JudgeServiceImpl implements JudgeService {
     private final RegContestService regContestService;
     private final SubmitMapper submitMapper;
     @Override
-    public boolean submit(RegContestJudgeSubmitReqDTO requestParam) {
+    public void submit(RegContestJudgeSubmitReqDTO requestParam) {
         // 先判断提交的代码是否符合规范
         judgeValidator.submitArgChecker(requestParam);
         SubmitDO submitDO = SubmitDO.builder()
@@ -44,7 +44,6 @@ public class JudgeServiceImpl implements JudgeService {
 
         // 将submit放入到评测队列中待下一步处理
         judgeDispatcher.sendTask(submitDO.getSubmitId(), requestParam.getProblemId());
-        return true;
     }
 
     @Override

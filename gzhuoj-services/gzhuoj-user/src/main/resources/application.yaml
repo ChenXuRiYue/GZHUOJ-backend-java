@@ -1,28 +1,42 @@
-#server:
-#  port: 8009
+server:
+  port: 8088
 spring:
   application:
-    name: gzhuoj-user-service
-  profiles:
-    active: dev
+    name: gzhuoj-judge-service
+  cloud:
+    ## consul 服务端治理设置
+    consul:
+      host: 47.120.53.127
+      port: 8500
+      discovery:
+        ## 注册到consul的服务名称
+        service-name: gzhuoj-judge-service
+        heartbeat:
+          enabled: true
+        prefer-ip-address: true # 使用容器的外部IP地址进行注册
   data:
     redis:
       host: 47.120.53.127
       port: 6379
       password: gzhuoj
+  datasource:
+    username: root
+    password: 3.14PAi#!
+    url: jdbc:mysql://47.120.53.127:3307/gzhuoj-contest?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-test-query: select 1
+      connection-timeout: 20000
+      idle-timeout: 300000
+      maximum-pool-size: 5
+      minimum-idle: 5
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath:**/mapper/*.xml
 
-batchImport:
-  max_users: 300
-
-# JWT相关配置
-gzhuoj:
-  jwt:
-    location: classpath:gzhuoj.jks
-    alias: gzhuoj
-    password: gzhuoj
-    tokenTTL: 3600m
-#  auth:
+gzhuoj-judge-server:
+  ip: ${JUDGE_SERVER_IP:127.0.0.1} # 使用环境变量 JUDGE_SERVER_IP，如果未设置则使用默认值
+  port: ${JUDGE_SERVER_PORT:8088}   # 使用环境变量 JUDGE_SERVER_PORT，如果未设置则使用默认值
+  name: ${JUDGE_SERVER_NAME:gzhuoj-judger-2} # 使用环境变量 JUDGE_SERVER_NAME，如果未设置则使用默认值
+  max-task-num: ${MAX_TASK_NUM:-1}  # 使用环境变量 MAX_TASK_NUM，如果未设置则使用默认值

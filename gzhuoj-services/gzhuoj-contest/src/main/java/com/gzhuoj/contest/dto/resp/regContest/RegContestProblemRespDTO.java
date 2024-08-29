@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class RegContestProSetRespDTO implements Serializable {
+public class RegContestProblemRespDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     /**

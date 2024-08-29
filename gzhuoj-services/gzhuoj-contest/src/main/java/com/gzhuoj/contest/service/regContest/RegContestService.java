@@ -5,7 +5,9 @@ import com.gzhuoj.contest.dto.req.regContest.*;
 import com.gzhuoj.contest.dto.resp.regContest.*;
 import com.gzhuoj.contest.model.entity.ContestDO;
 import jakarta.servlet.http.HttpServletResponse;
+import org.gzhuoj.common.sdk.model.pojo.Options;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface RegContestService {
@@ -25,9 +27,20 @@ public interface RegContestService {
 
     ContestWaitRespDTO waitTime(ContestWaitReqDTO requestParam);
 
-    List<RegContestProSetRespDTO> problemSet(RegContestProSetReqDTO requestParam);
+    List<RegContestProblemRespDTO> getContestProblemSetView(RegContestProSetReqDTO requestParam);
+
+
+    List<RegContestProblemRespDTO> getRegProblemSet(Integer contestId);
+
+    // TODO 写入缓存
+    // TODO 总结一套完整的序列化配置方案，防止出现不同的配置情况。
+    ArrayList<RegContestProblemRespDTO> getRegProblemSetByRedis(Integer contestId);
 
     ContestDO getContest(Integer contestId);
 
     ContestSeatRespDTO contestSeat(Integer contestId, ContestSeatReqDTO reqDTO);
+
+    Options<String, Integer> getLanguageOptions(Integer contestId);
+
+    Options<String, Integer> getProblemOptions(Integer contestId);
 }

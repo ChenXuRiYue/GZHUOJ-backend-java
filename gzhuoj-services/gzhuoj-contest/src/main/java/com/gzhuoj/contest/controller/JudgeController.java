@@ -24,10 +24,7 @@ public class JudgeController {
      */
     @PostMapping("/submit")
     public Result<Void> submit(@RequestBody RegContestJudgeSubmitReqDTO requestParam){
-        boolean submitRes = judgeService.submit(requestParam);
-        if(!submitRes) {
-            return Results.failure(JUDGE_SUBMIT_ERROR.code(), JUDGE_SUBMIT_ERROR.message());
-        }
+        judgeService.submit(requestParam);
         return Results.success();
     }
 

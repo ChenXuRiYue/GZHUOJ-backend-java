@@ -4,7 +4,7 @@ import com.gzhuoj.contest.dto.req.Judge.RegContestJudgeSubmitReqDTO;
 import com.gzhuoj.contest.model.entity.SubmitDO;
 
 public interface JudgeService {
-    boolean submit(RegContestJudgeSubmitReqDTO requestParam);
+    void submit(RegContestJudgeSubmitReqDTO requestParam);
 
     /**
      * 根据submitId查询SubmitDO

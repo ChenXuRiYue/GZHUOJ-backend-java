@@ -9,6 +9,7 @@ import org.gzhuoj.common.sdk.convention.result.Result;
 import org.gzhuoj.common.sdk.convention.result.Results;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.gzhuoj.common.sdk.model.pojo.Options;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -115,8 +116,8 @@ public class RegContestController {
      * @return 题目列表展示返回实体
      */
     @PostMapping("/problems")
-    public Result<List<RegContestProSetRespDTO>> problemSet(@RequestBody RegContestProSetReqDTO requestParam) {
-        return Results.success(regContestService.problemSet(requestParam));
+    public Result<List<RegContestProblemRespDTO>> problemSet(@RequestBody RegContestProSetReqDTO requestParam) {
+        return Results.success(regContestService.getContestProblemSetView(requestParam));
     }
 
     @GetMapping("/wait")
@@ -127,5 +128,15 @@ public class RegContestController {
     @PostMapping("/seat")
     public Result<ContestSeatRespDTO> contestSeat(Integer contestId,@RequestBody ContestSeatReqDTO reqDTO){
         return Results.success(regContestService.contestSeat(contestId,reqDTO));
+    }
+
+    @GetMapping("/options/language")
+    public Result<Options<String, Integer>> getLanguageOptions(Integer contestId) {
+        return Results.success(regContestService.getLanguageOptions(contestId));
+    }
+
+    @GetMapping("/options/problem")
+    public Result<Options<String, Integer>> getProblemOptions(Integer contestId) {
+        return Results.success(regContestService.getProblemOptions(contestId));
     }
 }
