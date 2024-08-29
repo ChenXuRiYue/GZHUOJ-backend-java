@@ -35,6 +35,7 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath:**/mapper/*.xml
 
+#本地
 gzhuoj-judge-server:
   ip: ${JUDGE_SERVER_IP:47.121.209.33} # 使用环境变量 JUDGE_SERVER_IP，如果未设置则使用默认值
   port: ${JUDGE_SERVER_PORT:8088}   # 使用环境变量 JUDGE_SERVER_PORT，如果未设置则使用默认值

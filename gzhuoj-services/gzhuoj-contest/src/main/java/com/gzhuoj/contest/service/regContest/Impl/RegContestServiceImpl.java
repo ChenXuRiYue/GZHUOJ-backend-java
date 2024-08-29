@@ -25,7 +25,8 @@ import com.gzhuoj.contest.service.contestProblem.ContestProblemService;
 import com.gzhuoj.contest.service.contest.ContestService;
 import com.gzhuoj.contest.service.regContest.RegContestService;
 import com.gzhuoj.contest.util.JwtTool;
-import common.constant.RedisKey;
+import common.enums.SubmissionLanguage;
+import common.redis.RedisKeyUtil;
 import common.redis.RedisUtil;
 import common.biz.user.UserContext;
 import common.enums.SubmissionStatus;
@@ -36,6 +37,9 @@ import common.toolkit.GenerateRandStrUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
+import org.gzhuoj.common.sdk.model.pojo.Option;
+import org.gzhuoj.common.sdk.model.pojo.Options;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -66,17 +70,17 @@ public class RegContestServiceImpl implements RegContestService {
     @Override
 //    @Transactional
     public List<RegContestGenTeamRespDTO> genTeam(RegContestGenTeamReqDTO requestParam) {
-        // 当reset为on时删除cid的所有team重新载入
-        if(requestParam.getCid() == null){
+        // 当reset为on时删除contestId的所有team重新载入
+        if(requestParam.getContestId() == null){
             throw new ClientException("请传入比赛编号");
         }
 
-        if(contestService.queryByNum(requestParam.getCid()) == null){
+        if(contestService.queryByNum(requestParam.getContestId()) == null){
             throw new ClientException("比赛不存在");
         }
         if(Objects.equals(requestParam.getReset(), "on")){
             LambdaQueryWrapper<TeamDO> deleteWrapper = Wrappers.lambdaQuery(TeamDO.class)
-                    .eq(TeamDO::getContestId, requestParam.getCid());
+                    .eq(TeamDO::getContestId, requestParam.getContestId());
             teamMapper.delete(deleteWrapper);
         }
 
@@ -96,7 +100,7 @@ public class RegContestServiceImpl implements RegContestService {
                 if(teamNum != null) {
                     for (int i = 0; i < teamNum; i++) {
                         TeamDO teamDO = new TeamDO();
-                        teamDO.setContestId(requestParam.getCid());
+                        teamDO.setContestId(requestParam.getContestId());
                         teamDO.setTeamStatus(0);
                         teamDO.setTeamType(0);
                         teamDO.setTeamAccount(teamPrefix + leadZero(Integer.toString(i), 4));
@@ -128,7 +132,7 @@ public class RegContestServiceImpl implements RegContestService {
             for(int i = 0; i < fieldNum; i++ ){
                 //  输入的字符串格式不一定完全一样
                 String field = i < infoLen ? teamInfo[i].trim() : "";
-                int lastTeamNum = teamMapper.getLastTeamNum(requestParam.getCid());
+                int lastTeamNum = teamMapper.getLastTeamNum(requestParam.getContestId());
                 String curTeamNum = leadZero(Integer.toString(lastTeamNum), 4);
                 switch (fieldList[i]){
                     case "team_id" -> {
@@ -170,7 +174,7 @@ public class RegContestServiceImpl implements RegContestService {
                         teamDO.setPassword(field);
                     }
                     case "contest_id" -> {
-                        teamDO.setContestId(requestParam.getCid());
+                        teamDO.setContestId(requestParam.getContestId());
                     }
                     // 去除了权限的设置，改到由super_admin自己设置
                 }
@@ -214,14 +218,14 @@ public class RegContestServiceImpl implements RegContestService {
     public void deleteTeam(RegContestDelTeamReqDTO requestParam) {
         LambdaQueryWrapper<TeamDO> queryWrapper = Wrappers.lambdaQuery(TeamDO.class)
                 .eq(TeamDO::getTeamAccount, requestParam.getTeamAccount())
-                .eq(TeamDO::getContestId, requestParam.getCid());
+                .eq(TeamDO::getContestId, requestParam.getContestId());
         teamMapper.delete(queryWrapper);
     }
 
     @Override
     public void updateTeam(RegContestUpdateTeamReqDTO requestParam) {
         LambdaQueryWrapper<TeamDO> queryWrapper = Wrappers.lambdaQuery(TeamDO.class)
-                .eq(TeamDO::getContestId, requestParam.getCid())
+                .eq(TeamDO::getContestId, requestParam.getContestId())
                 .eq(TeamDO::getTeamAccount, requestParam.getTeamAccount());
         TeamDO hasTeamDO = teamMapper.selectOne(queryWrapper);
         if(hasTeamDO == null){
@@ -258,14 +262,14 @@ public class RegContestServiceImpl implements RegContestService {
     @Override
     public RegContestTeamInfoRespDTO teamInfo(RegContestTeamInfoReqDTO requestParam) {
         LambdaQueryWrapper<TeamDO> queryWrapper = Wrappers.lambdaQuery(TeamDO.class)
-                .eq(TeamDO::getContestId, requestParam.getCid())
+                .eq(TeamDO::getContestId, requestParam.getContestId())
                 .eq(TeamDO::getTeamAccount, requestParam.getTeamAccount());
         TeamDO hasTeamDO = teamMapper.selectOne(queryWrapper);
         if(hasTeamDO == null){
             throw new ClientException(TEAM_INFO_NOT_FOUND_ERROR);
         }
         RegContestTeamInfoRespDTO bean = BeanUtil.toBean(hasTeamDO, RegContestTeamInfoRespDTO.class);
-        bean.setCid(requestParam.getCid());
+        bean.setContestId(requestParam.getContestId());
         return bean;
     }
 
@@ -298,30 +302,56 @@ public class RegContestServiceImpl implements RegContestService {
         return result.convert(each -> BeanUtil.toBean(each, RegContestStatusRespDTO.class));
     }
 
+    // TODO 改造， 将两者分离。 并且优化缓存方案
+    // 创建 contest 首页题目集里列表： 这意味着要将更多的信息展示，总体上为 problemList + 选手过题情况 + 个人过题情况
     @Override
-    public List<RegContestProSetRespDTO> problemSet(RegContestProSetReqDTO requestParam) {
-        RedisUtil redisUtil = new RedisUtil(stringRedisTemplate);
-        String key = REGULAR_CONTEST + UserContext.getUserId() + requestParam.getCid();
-        Object jsonStr = stringRedisTemplate.opsForHash().get(key, REGULAR_CONTEST_PROBLEM_SET_HASH_KEY);
-        List<RegContestProSetRespDTO> listFromHash = redisUtil.getListFromHash(jsonStr, key, RegContestProSetRespDTO.class);
-        if(CollUtil.isNotEmpty(listFromHash)){
-            return listFromHash;
-        }
-        ContestDO contestDO = contestService.queryByNum(requestParam.getCid());
-        if(contestDO == null){
+    public List<RegContestProblemRespDTO> getContestProblemSetView(RegContestProSetReqDTO requestParam) {
+        // 判断合法性
+        ContestDO contestDO = contestService.queryByNum(requestParam.getContestId());
+        if (contestDO == null) {
             throw new ClientException(CONTEST_NOT_FOUND_ERROR);
         }
+        // 查出contestProblemSet 注意是公共数据: 题目基本信息， 不涉及选手过题情况， 个人过题情况等。
+        // 该函数已经处理了是否缓存的情况。
+        ArrayList<RegContestProblemRespDTO> result = (ArrayList<RegContestProblemRespDTO>) getRegProblemSet(requestParam.getContestId());
+
+        // 查出选手过题情况预处理。特殊处理封榜情况，处理contestDO 的时间，
+        initTimeInterval(contestDO);
+        // 计算选手过题情况
+        calculateProblemsSubmissionDetails(result, contestDO);
+
+        return result;
+    }
+
+    @Override
+    public List<RegContestProblemRespDTO> getRegProblemSet(Integer contestId) {
+        ArrayList<RegContestProblemRespDTO> result = getRegProblemSetByRedis(contestId);
+        if (ObjectUtils.isEmpty(result)) {
+            result = getRegProblemSetBydatabase(contestId);
+            // 调整顺序且缓存
+            result.sort(Comparator.comparingInt(RegContestProblemRespDTO::getActualNum));
+            cacheRegProblemSetByRedis(contestId, result);
+        }
+        return result;
+    }
+
+    /**
+     * @param contestId
+     * @return
+     */
+    public ArrayList<RegContestProblemRespDTO> getRegProblemSetBydatabase(Integer contestId) {
+        //
 
         // 获取题目列表和颜色
         // 题目在比赛中实际的位置 多表查询
-        List<ContestProblemDO> allProblem = contestProblemService.getAllProblem(requestParam.getCid());
-        ArrayList<RegContestProSetRespDTO> result = new ArrayList<>();
-        for(ContestProblemDO cpDO : allProblem){
+        List<ContestProblemDO> allProblem = contestProblemService.getAllProblem(contestId);
+        ArrayList<RegContestProblemRespDTO> result = new ArrayList<>();
+        for (ContestProblemDO cpDO : allProblem) {
             ProblemRespDTO problemRespDTO = problemApi.queryProByNum(cpDO.getProblemId()).getData();
-            if(problemRespDTO == null){
+            if (problemRespDTO == null) {
                 throw new ServiceException(SERVICE_PROBLEM_NOT_FOUND_ERROR);
             }
-            RegContestProSetRespDTO regContestProSetRespDTO = RegContestProSetRespDTO.builder()
+            RegContestProblemRespDTO regContestProblemRespDTO = RegContestProblemRespDTO.builder()
                     .color(cpDO.getProblemColor())
                     .problemNum(cpDO.getProblemId())
                     .actualNum(cpDO.getActualNum())
@@ -329,52 +359,100 @@ public class RegContestServiceImpl implements RegContestService {
                     .timeLimit(problemRespDTO.getTimeLimit())
                     .problemName(problemRespDTO.getProblemName())
                     .build();
-            result.add(regContestProSetRespDTO);
+            result.add(regContestProblemRespDTO);
         }
-        // 设计submit状态对应表
+        return result;
+    }
 
+    // TODO 写入缓存
+    // TODO 总结一套完整的序列化配置方案，防止出现不同的配置情况。
+    @Override
+    public ArrayList<RegContestProblemRespDTO> getRegProblemSetByRedis(Integer contestId) {
+        String key = RedisKeyUtil.generateContestProblemSetKey(contestId);
+        RedisUtil redisUtil = new RedisUtil(stringRedisTemplate);
+        Object jsonStr = stringRedisTemplate.opsForHash().get(key, REGULAR_CONTEST_PROBLEM_SET_HASH_KEY);
+        ArrayList<RegContestProblemRespDTO> listFromHash = (ArrayList<RegContestProblemRespDTO>) redisUtil.getListFromHash(jsonStr, key, RegContestProblemRespDTO.class);
+        if (CollUtil.isNotEmpty(listFromHash)) {
+            return listFromHash;
+        }
+        return null;
+    }
+
+
+    // TODO 读入缓存
+    public void cacheRegProblemSetByRedis(Integer contestId, List<RegContestProblemRespDTO> target) {
+        // 查询到结果后将结果缓存5s 缓解查询压力
+        // TODO 减少重复创建导致的消耗。对客户端进行统一管理
+        RedisUtil redisUtil = new RedisUtil(stringRedisTemplate);
+        String key = RedisKeyUtil.generateContestProblemSetKey(contestId);
+        // 缓存10分钟
+        redisUtil.saveListToHash(key, REGULAR_CONTEST_PROBLEM_SET_HASH_KEY, target, 600L, TimeUnit.SECONDS);
+    }
+
+
+    private void initTimeInterval(ContestDO contestDO) {
+        // 设计submit状态对应表
         Date startTime = contestDO.getStartTime();
         Date endTime = contestDO.getEndTime();
+
         // TODO 测试加入用户上下文之后的结果
-        if(Objects.equals(UserContext.getRole(), "3")){
+        if (Objects.equals(UserContext.getRole(), "3")) {
             // 管理员 -> 不封榜
             // sql -> 区间时间 -> groupBy teamName -> teamId -> contestId ----> 个数
             // 非管理员 -> 封榜
             endTime = addTime(endTime, -(contestDO.getFrozenMinute()));
             // TODO 创建比赛时封榜开始的时间不能早于比赛开始时间
-            if(endTime.before(startTime)){
+            if (endTime.before(startTime)) {
                 endTime = startTime;
             }
         }
-
-        for(RegContestProSetRespDTO respDTO : result){
-            // 该用户是否AC 无提交则无颜色变化 WA -> 红  AC -> 绿
-            boolean AC = false;
-            LambdaQueryWrapper<SubmitDO> queryWrapper = Wrappers.lambdaQuery(SubmitDO.class)
-                    .eq(SubmitDO::getContestId, requestParam.getCid())
-                    .eq(SubmitDO::getProblemId, respDTO.getProblemNum())
-                    .eq(SubmitDO::getTeamAccount, UserContext.getUserId())
-                    .eq(SubmitDO::getStatus, SubmissionStatus.ACCEPTED);
-            SubmitDO submitDO = submitMapper.selectOne(queryWrapper);
-            if(submitDO != null){
-                AC = true;
-            }
-            LambdaQueryWrapper<SubmitDO> submitDOLambdaQueryWrapper = Wrappers.lambdaQuery(SubmitDO.class)
-                    .select(SubmitDO::getTeamAccount)
-                    .eq(SubmitDO::getContestId, requestParam.getCid())
-                    .eq(SubmitDO::getProblemId, respDTO.getProblemNum())
-                    .between(SubmitDO::getSubmitTime, startTime, endTime)
-                    .groupBy(SubmitDO::getTeamAccount);
-            List<SubmitDO> submitDOS = submitMapper.selectList(submitDOLambdaQueryWrapper);
-            respDTO.setAccepted(submitDOS.size());
-            respDTO.setAC(AC);
-        }
-        result.sort(Comparator.comparingInt(RegContestProSetRespDTO::getActualNum));
-        // 查询到结果后将结果缓存5s 缓解查询压力
-        redisUtil.saveListToHash(key, REGULAR_CONTEST_PROBLEM_SET_HASH_KEY, result, 5L, TimeUnit.SECONDS);
-        return result;
-
+        // 将更新后的查询时间重用到contestDO 中
+        contestDO.setStartTime(startTime);
+        contestDO.setEndTime(endTime);
     }
+
+    /**
+     * 计算过题情况
+     */
+    public void calculateProblemsSubmissionDetails(List<RegContestProblemRespDTO> target, ContestDO contestDO) {
+        for (RegContestProblemRespDTO respDTO : target) {
+            calculatePersonalProblemPassDetails(respDTO, contestDO);
+            calculateGlobalProblemPassDetails(respDTO, contestDO);
+        }
+    }
+
+    /**
+     * 这几个量实时性较强，并且不好拆分，因此暂时不做缓存方案
+     *
+     * @param respDTO
+     * @param contestDO
+     */
+    public void calculatePersonalProblemPassDetails(RegContestProblemRespDTO respDTO, ContestDO contestDO) {
+        // 该用户是否AC 无提交则无颜色变化 WA -> 红  AC -> 绿
+        boolean AC = false;
+        LambdaQueryWrapper<SubmitDO> queryWrapper = Wrappers.lambdaQuery(SubmitDO.class)
+                .eq(SubmitDO::getContestId, contestDO.getContestId())
+                .eq(SubmitDO::getProblemId, respDTO.getProblemNum())
+                .eq(SubmitDO::getTeamAccount, UserContext.getUserId())
+                .eq(SubmitDO::getStatus, SubmissionStatus.ACCEPTED);
+        SubmitDO submitDO = submitMapper.selectOne(queryWrapper);
+        if (submitDO != null) {
+            AC = true;
+        }
+        respDTO.setAC(AC);
+    }
+
+    public void calculateGlobalProblemPassDetails(RegContestProblemRespDTO respDTO, ContestDO contestDO) {
+        LambdaQueryWrapper<SubmitDO> submitDOLambdaQueryWrapper = Wrappers.lambdaQuery(SubmitDO.class)
+                .select(SubmitDO::getTeamAccount)
+                .eq(SubmitDO::getContestId, contestDO.getContestId())
+                .eq(SubmitDO::getProblemId, respDTO.getProblemNum())
+                .between(SubmitDO::getSubmitTime, contestDO.getStartTime(), contestDO.getEndTime())
+                .groupBy(SubmitDO::getTeamAccount);
+        List<SubmitDO> submitDOS = submitMapper.selectList(submitDOLambdaQueryWrapper);
+        respDTO.setAccepted(submitDOS.size());
+    }
+
 
     /**
      * 给当前时间加若干分钟
@@ -390,9 +468,9 @@ public class RegContestServiceImpl implements RegContestService {
     }
 
     @Override
-    public ContestDO getContest(Integer cid) {
+    public ContestDO getContest(Integer contestId) {
         LambdaQueryWrapper<ContestDO> queryWrapper = Wrappers.lambdaQuery(ContestDO.class)
-                .eq(ContestDO::getContestId, cid)
+                .eq(ContestDO::getContestId, contestId)
                 .eq(ContestDO::getDeleteFlag, 0);
         return contestMapper.selectOne(queryWrapper);
     }
@@ -464,4 +542,36 @@ public class RegContestServiceImpl implements RegContestService {
         }
         return sBuilder.toString();
     }
+
+    @Override
+    public Options<String, Integer> getLanguageOptions(Integer contestId) {
+        long languageMask = getContestLanguageMask(contestId);
+        List<Option<String, Integer>> languageOptions = SubmissionLanguage.getLanguageOptionListByCode(languageMask);
+        return new Options<>(languageOptions);
+    }
+
+    public long getContestLanguageMask(Integer contestId) {
+        LambdaQueryWrapper<ContestDO> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(ContestDO::getContestId, contestId);
+        return contestMapper.selectOne(lambdaQueryWrapper).getLanguageMask();
+    }
+
+    @Override
+    public Options<String, Integer> getProblemOptions(Integer contestId) {
+        List<RegContestProblemRespDTO> regContestProblemRespDTOS = getRegProblemSet(contestId);
+        return contestProblemsToProblemOptions(regContestProblemRespDTOS);
+    }
+
+    public Options<String, Integer> contestProblemsToProblemOptions(List<RegContestProblemRespDTO> regContestProblemRespDTOS) {
+        // ep: A. 题目名称 , ActualNum; -> 实际编号不轻易暴露给用户；
+        Options<String, Integer> res = new Options<>();
+        for (RegContestProblemRespDTO regContestProblem : regContestProblemRespDTOS) {
+            Option<String, Integer> option = new Option<>();
+            option.setKey((char) (regContestProblem.getActualNum() + 'A') + ":" + regContestProblem.getProblemName());
+            option.setValue(regContestProblem.getActualNum());
+            res.add(option);
+        }
+        return res;
+    }
+
 }

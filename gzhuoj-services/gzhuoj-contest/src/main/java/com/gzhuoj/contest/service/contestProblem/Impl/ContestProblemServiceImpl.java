@@ -43,9 +43,9 @@ public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper,
     ProblemApi problemApi;
 
     @Override
-    public List<ContestProblemDO> getAllProblem(Integer cid) {
+    public List<ContestProblemDO> getAllProblem(Integer contestId) {
         LambdaQueryWrapper<ContestProblemDO> queryWrapper = Wrappers.lambdaQuery(ContestProblemDO.class)
-                .eq(ContestProblemDO::getContestId, cid);
+                .eq(ContestProblemDO::getContestId, contestId);
         return baseMapper.selectList(queryWrapper);
     }
 
