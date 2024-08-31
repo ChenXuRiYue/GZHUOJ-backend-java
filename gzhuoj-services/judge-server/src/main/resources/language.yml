@@ -18,8 +18,8 @@ src_path: main.cpp
 exe_path: main
 compile:
   env: default
-#  command: /usr/bin/g++ -DONLINE_JUDGE -O2 -w -fmax-errors=1 -std=c++17 {src_path} -lm -o {exe_path}
-  command: C:\mingw64\bin\g++ {src_path} -o {exe_path}
+  command: /usr/bin/g++ -DONLINE_JUDGE -O2 -w -fmax-errors=1 -std=c++17 {src_path} -lm -o {exe_path}
+#  command: C:\mingw64\bin\g++ {src_path} -o {exe_path}
   maxCpuTime: 10s
   maxRealTime: 20s
   maxMemory: 512mb

@@ -44,7 +44,8 @@ public class Compiler {
             throw new ClientException("Compile Error.");
         }
         // fileId为编译后的文件的唯一标识
-        String fileId = ((JSONObject) compileResult.get("fileIds")).getStr(languageConfig.getExeName() + ".exe");
+//        String fileId = ((JSONObject) compileResult.get("fileIds")).getStr(languageConfig.getExeName() + ".exe");
+        String fileId = ((JSONObject) compileResult.get("fileIds")).getStr(languageConfig.getExeName());
         if (StringUtils.isEmpty(fileId)) {
             throw new ServiceException("Executable file not found.");
         }
