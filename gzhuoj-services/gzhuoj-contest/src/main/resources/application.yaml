@@ -7,7 +7,7 @@ spring:
     active: dev
   data:
     redis:
-      host: 47.120.53.127
+      host: 47.121.209.33
       port: 6379
       password: gzhuoj
 Contest:
