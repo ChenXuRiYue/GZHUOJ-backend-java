@@ -147,6 +147,20 @@ services:
       gzhuoj-network:
         ipv4_address: 172.20.0.9
 
+  gzhuoj-judge:
+    build:
+      context: ./go-judge
+      dockerfile: Dockerfile
+    image: gzhuoj-go-judge
+    container_name: go-judge
+    privileged: true
+    shm_size: '256m'
+    ports:
+      - "5050:5050"
+    stdin_open: true
+    tty: true
+    restart: always
+
 networks:
   gzhuoj-network:
     driver: bridge
