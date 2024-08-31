@@ -11,6 +11,8 @@
     </parent>
 
     <artifactId>gzhuoj-contest</artifactId>
+    <version>1.0.0</version>
+
     <dependencies>
         <dependency>
             <groupId>gzhuoj</groupId>

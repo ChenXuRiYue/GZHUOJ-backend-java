@@ -9,7 +9,10 @@
         <version>1.0-SNAPSHOT</version>
         <relativePath/>
     </parent>
+
     <artifactId>judge-server</artifactId>
+    <version>1.0.0</version>
+
     <dependencies>
         <dependency>
             <groupId>gzhuoj</groupId>

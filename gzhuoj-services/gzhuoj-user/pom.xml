@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>gzhuoj-user</artifactId>
-
+    <version>1.0.0</version>
 
     <dependencies>
 

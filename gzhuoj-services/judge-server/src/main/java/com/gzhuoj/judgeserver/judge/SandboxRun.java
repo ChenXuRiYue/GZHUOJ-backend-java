@@ -218,7 +218,8 @@ public class SandboxRun {
         cmd.set("files", COMPILE_FILES);
 
         if (needCopyOutCached) {
-            cmd.set("copyOutCached", new JSONArray().put(exeName+".exe"));
+//            cmd.set("copyOutCached", new JSONArray().put(exeName + ".exe"));
+            cmd.set("copyOutCached", new JSONArray().put(exeName));
         }
 
         cmd.set("copyOut", new JSONArray().put("stdout").put("stderr"));

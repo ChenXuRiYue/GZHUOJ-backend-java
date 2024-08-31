@@ -1,0 +1,131 @@
+version: "3.8"
+services:
+  consul:
+    image: consul:1.15
+    container_name: consul_server
+    ports:
+      - "8500:8500"
+      - "8600:8600/udp"
+    environment:
+      - CONSUL_BIND_INTERFACE=eth0
+    command: agent -server -bootstrap -ui -client=0.0.0.0 -node=consul-server -bind=0.0.0.0 -data-dir=/consul/data
+    networks:
+      gzhuoj-network:
+        ipv4_address: 172.20.0.2
+
+  mysql:
+    image: mysql:9.0.1
+    container_name: gzhuoj-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 123456
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init:/docker-entrypoint-initdb.d
+    networks:
+      gzhuoj-network:
+        ipv4_address: 172.20.0.3
+
+  redis:
+    image: redis:latest
+    container_name: redis_server
+    ports:
+      - "6379:6379"
+    networks:
+      gzhuoj-network:
+        ipv4_address: 172.20.0.4
+
+  gzhuoj-contest:
+    build:
+      context: ./gzhuoj-services/contest
+      dockerfile: Dockerfile
+    container_name: gzhuoj-contest-service
+    ports:
+      - "8085:8085"
+    volumes:
+      - /root/home/data:/w/data
+    environment:
+      - GZHUOJ_CONTEST_IP=${GZHUOJ_CONTEST_IP:-172.20.0.5}
+      - CONSUL_BIND_INTERFACE=eth0
+      - CONSUL_ADVERTISE_ADDR=172.20.0.5
+    networks:
+      gzhuoj-network:
+        ipv4_address: 172.20.0.5
+
+  gzhuoj-problem:
+    build:
+      context: ./gzhuoj-services/problem
+      dockerfile: Dockerfile
+    container_name: gzhuoj-problem-service
+    ports:
+      - "8086:8086"
+    volumes:
+      - /root/home/data:/w/data
+    environment:
+      - GZHUOJ_PROBLEM_IP=${GZHUOJ_PROBLEM_IP:-172.20.0.6}
+      - CONSUL_BIND_INTERFACE=eth0
+      - CONSUL_ADVERTISE_ADDR=172.20.0.6
+    networks:
+      gzhuoj-network:
+        ipv4_address: 172.20.0.6
+
+  gzhuoj-user:
+    build:
+      context: ./gzhuoj-services/user
+      dockerfile: Dockerfile
+    container_name: gzhuoj-user-service
+    ports:
+      - "8087:8087"
+    volumes:
+      - /root/home/data:/w/data
+    environment:
+      - GZHUOJ_USER_IP=${GZHUOJ_USER_IP:-172.20.0.7}
+      - CONSUL_BIND_INTERFACE=eth0
+      - CONSUL_ADVERTISE_ADDR=172.20.0.7
+    networks:
+      gzhuoj-network:
+        ipv4_address: 172.20.0.7
+
+  judge-server:
+    build:
+      context: ./gzhuoj-services/judgeServer
+      dockerfile: Dockerfile
+    container_name: gzhuoj-judge-service
+    ports:
+      - "8088:8088"
+    volumes:
+      - /root/home/data:/w/data
+    environment:
+      - JUDGE_SERVER_IP=${JUDGE_SERVER_IP:-172.20.0.8}
+      - CONSUL_BIND_INTERFACE=eth0
+      - CONSUL_ADVERTISE_ADDR=172.20.0.8
+    networks:
+      gzhuoj-network:
+        ipv4_address: 172.20.0.8
+
+  gzhuoj-gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: gzhuoj-gateway-service
+    ports:
+      - "8080:8080"
+    environment:
+      - CONSUL_BIND_INTERFACE=eth0
+      - CONSUL_ADVERTISE_ADDR=172.20.0.9
+    networks:
+      gzhuoj-network:
+        ipv4_address: 172.20.0.9
+
+networks:
+  gzhuoj-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  mysql_data:
