@@ -4,7 +4,7 @@ MAINTAINER LJCzzzzZ
 
 WORKDIR /w
 
-COPY gzhuoj-gateway-1.0.0.jar /w/gzhuoj-gateway
+COPY target/gzhuoj-gateway-1.0.0.jar /w/gzhuoj-gateway.jar
 
 EXPOSE 8080
 

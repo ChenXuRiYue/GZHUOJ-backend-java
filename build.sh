@@ -31,6 +31,6 @@ done
 
 # 构建Docker 镜像并启动容器
 echo "Building Docker images and starting services..."
-docker-compose up -d --build -d
+docker-compose up --build -d
 
 echo "All services are up and running"

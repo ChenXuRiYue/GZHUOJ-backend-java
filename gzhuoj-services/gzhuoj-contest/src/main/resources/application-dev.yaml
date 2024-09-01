@@ -17,7 +17,11 @@ spring:
         service-name: gzhuoj-contest-service
         heartbeat:
           enabled: true
-
+  data:
+    redis:
+      host: 47.120.53.127
+      port: 6379
+      password: gzhuoj
   ## 数据库配置
   datasource:
     username: root

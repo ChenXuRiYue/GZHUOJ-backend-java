@@ -4,7 +4,7 @@ MAINTAINER LJCzzzzZ
 
 WORKDIR /w
 
-COPY gzhuoj-user-1.0.0.jar /w/gzhuoj-user
+COPY target/gzhuoj-user-1.0.0.jar /w/gzhuoj-user.jar
 
 EXPOSE 8087
 

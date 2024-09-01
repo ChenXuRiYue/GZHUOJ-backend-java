@@ -18,6 +18,11 @@ spring:
         heartbeat:
           enabled: true
         prefer-ip-address: true # 使用容器的外部IP地址进行注册
+  data:
+    redis:
+      host: 47.120.53.127
+      port: 6379
+      password: gzhuoj
   ## 数据库配置
   datasource:
     username: root

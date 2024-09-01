@@ -4,7 +4,7 @@ MAINTAINER LJCzzzzZ
 
 WORKDIR /w
 
-COPY gzhuoj-contest-1.0.0.jar /w/gzhuoj-contest
+COPY target/gzhuoj-contest-1.0.0.jar /w/gzhuoj-contest.jar
 
 EXPOSE 8085
 

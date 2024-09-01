@@ -1,3 +1,6 @@
+-- 似乎是Navicat的原因使得不加这一句建的表会出现中文乱码
+SET NAMES 'utf8';
+
 -- 创建数据库，指定字符集和排序规则
 CREATE
 DATABASE IF NOT EXISTS `gzhuoj-problem`

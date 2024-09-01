@@ -106,8 +106,8 @@ public class LanguageConfigLoader implements InitializingBean {
                     languageConfig.setCompileEnvs(golangCompileEnv);
                     break;
                 default:
-                    languageConfig.setCompileEnvs(defaultEnv);
-//                    languageConfig.setCompileEnvs(localEnv);
+//                    languageConfig.setCompileEnvs(defaultEnv);
+                    languageConfig.setCompileEnvs(localEnv);
             }
             languageConfig.setMaxCpuTime(parseTimeStr(compileJson.getStr("maxCpuTime")));
             languageConfig.setMaxRealTime(parseTimeStr(compileJson.getStr("maxRealTime")));
@@ -130,8 +130,8 @@ public class LanguageConfigLoader implements InitializingBean {
                     languageConfig.setRunEnvs(golangRunEnv);
                     break;
                 default:
-                    languageConfig.setRunEnvs(defaultEnv);
-//                    languageConfig.setRunEnvs(localRunEnv);
+//                    languageConfig.setRunEnvs(defaultEnv);
+                    languageConfig.setRunEnvs(localRunEnv);
             }
         }
         return languageConfig;

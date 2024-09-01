@@ -11,6 +11,7 @@ import com.gzhuoj.judgeserver.remote.DTO.ProblemRemoteService;
 import com.gzhuoj.judgeserver.remote.DTO.req.SubmitRemoteDTO;
 import com.gzhuoj.judgeserver.remote.DTO.resp.ProblemRespDTO;
 import com.gzhuoj.judgeserver.service.JudgeServerService;
+import lombok.extern.slf4j.Slf4j;
 import org.gzhuoj.common.sdk.convention.result.Result;
 import common.enums.SubmissionStatus;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import java.util.HashMap;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class JudgeServerServiceImpl extends ServiceImpl<JudgeServerMapper, JudgeServerDO> implements JudgeServerService {
     private final ContestRemoteService contestRemoteService;
     private final ProblemRemoteService problemRemoteService;
@@ -44,6 +46,7 @@ public class JudgeServerServiceImpl extends ServiceImpl<JudgeServerMapper, Judge
                 .build();
         Result<Boolean> booleanResult = contestRemoteService.submitUpdate(submitRemoteDTO);
         if(!booleanResult.getData()){
+            log.error("submit update failure submitId = {}", submitDO.getSubmitId());
             return;
         }
         Result<ProblemRespDTO> problemRespDTO = problemRemoteService.queryProByNum(submitDO.getProblemId());

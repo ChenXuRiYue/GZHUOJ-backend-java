@@ -25,6 +25,8 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p123456" ]
     networks:
       gzhuoj-network:
         ipv4_address: 172.20.0.3
@@ -40,7 +42,7 @@ services:
 
   gzhuoj-contest:
     build:
-      context: ./gzhuoj-services/contest
+      context: ./gzhuoj-services/gzhuoj-contest
       dockerfile: Dockerfile
     container_name: gzhuoj-contest-service
     ports:
@@ -51,13 +53,18 @@ services:
       - GZHUOJ_CONTEST_IP=${GZHUOJ_CONTEST_IP:-172.20.0.5}
       - CONSUL_BIND_INTERFACE=eth0
       - CONSUL_ADVERTISE_ADDR=172.20.0.5
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       gzhuoj-network:
         ipv4_address: 172.20.0.5
 
   gzhuoj-problem:
     build:
-      context: ./gzhuoj-services/problem
+      context: ./gzhuoj-services/gzhuoj-problem
       dockerfile: Dockerfile
     container_name: gzhuoj-problem-service
     ports:
@@ -68,13 +75,18 @@ services:
       - GZHUOJ_PROBLEM_IP=${GZHUOJ_PROBLEM_IP:-172.20.0.6}
       - CONSUL_BIND_INTERFACE=eth0
       - CONSUL_ADVERTISE_ADDR=172.20.0.6
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       gzhuoj-network:
         ipv4_address: 172.20.0.6
 
   gzhuoj-user:
     build:
-      context: ./gzhuoj-services/user
+      context: ./gzhuoj-services/gzhuoj-user
       dockerfile: Dockerfile
     container_name: gzhuoj-user-service
     ports:
@@ -85,13 +97,18 @@ services:
       - GZHUOJ_USER_IP=${GZHUOJ_USER_IP:-172.20.0.7}
       - CONSUL_BIND_INTERFACE=eth0
       - CONSUL_ADVERTISE_ADDR=172.20.0.7
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       gzhuoj-network:
         ipv4_address: 172.20.0.7
 
   judge-server:
     build:
-      context: ./gzhuoj-services/judgeServer
+      context: ./gzhuoj-services/judge-server
       dockerfile: Dockerfile
     container_name: gzhuoj-judge-service
     ports:
@@ -102,13 +119,18 @@ services:
       - JUDGE_SERVER_IP=${JUDGE_SERVER_IP:-172.20.0.8}
       - CONSUL_BIND_INTERFACE=eth0
       - CONSUL_ADVERTISE_ADDR=172.20.0.8
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       gzhuoj-network:
         ipv4_address: 172.20.0.8
 
   gzhuoj-gateway:
     build:
-      context: ./gateway
+      context: ./gzhuoj-gateway
       dockerfile: Dockerfile
     container_name: gzhuoj-gateway-service
     ports:
@@ -116,9 +138,28 @@ services:
     environment:
       - CONSUL_BIND_INTERFACE=eth0
       - CONSUL_ADVERTISE_ADDR=172.20.0.9
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       gzhuoj-network:
         ipv4_address: 172.20.0.9
+
+  gzhuoj-judge:
+    build:
+      context: ./go-judge
+      dockerfile: Dockerfile
+    image: gzhuoj-go-judge
+    container_name: go-judge
+    privileged: true
+    shm_size: '256m'
+    ports:
+      - "5050:5050"
+    stdin_open: true
+    tty: true
+    restart: always
 
 networks:
   gzhuoj-network:

@@ -4,12 +4,8 @@ spring:
   application:
     name: gzhuoj-contest-service
   profiles:
-    active: dev
-  data:
-    redis:
-      host: 47.120.53.127
-      port: 6379
-      password: gzhuoj
+#    active: dev
+    active: prd
 Contest:
   max-file-num: 10
 RegContest:

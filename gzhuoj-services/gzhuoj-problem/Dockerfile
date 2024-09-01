@@ -4,7 +4,7 @@ MAINTAINER LJCzzzzZ
 
 WORKDIR /w
 
-COPY gzhuoj-problem-1.0.0.jar /w/gzhuoj-problem
+COPY target/gzhuoj-problem-1.0.0.jar /w/gzhuoj-problem.jar
 
 EXPOSE 8086
 

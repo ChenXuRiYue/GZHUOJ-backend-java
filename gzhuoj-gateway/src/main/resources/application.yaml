@@ -5,11 +5,8 @@ spring:
     name: gzhuoj-gateway
   profiles:
     active: dev
-  data:
-    redis:
-      host: 47.120.53.127
-      port: 6379
-      password: gzhuoj
+#    active: prd
+
 # JWT相关配置
 gzhuoj:
   jwt:
