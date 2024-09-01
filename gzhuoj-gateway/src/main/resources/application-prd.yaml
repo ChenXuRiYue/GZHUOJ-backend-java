@@ -8,8 +8,8 @@ spring:
   ## 数据库配置
   datasource:
     username: root
-    password: 3.14PAi#!
-    url: jdbc:mysql://47.120.53.127:3307/gzhuoj-user?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8
+    password: 123456
+    url: jdbc:mysql://47.121.209.33:3306/gzhuoj-user?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       connection-test-query: select 1
@@ -19,15 +19,12 @@ spring:
       minimum-idle: 5
   data:
     redis:
-      host: 47.120.53.127
+      host: 47.121.209.33
       port: 6379
       password: gzhuoj
-
-  application:
-    name: gzhuoj-gateway
   cloud:
     consul:
-      host: 47.120.53.127
+      host: 47.121.209.33
       port: 8500
       discovery:
         service-name: gzhuoj-gateway

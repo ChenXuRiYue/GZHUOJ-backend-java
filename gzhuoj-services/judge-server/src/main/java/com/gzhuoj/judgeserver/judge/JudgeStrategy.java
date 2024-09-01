@@ -40,9 +40,7 @@ public class JudgeStrategy {
         String userFileId = null;
         try{
             LanguageConfig languageConfig = languageConfigLoader
-//                    .getLanguageConfigByName(SubmissionLanguage.getLangById(submitDO.getLanguage()));
-                    // 指定编译语言的版本
-                    .getLanguageConfigByName("C++ 17 With O2");
+                    .getLanguageConfigByName(SubmissionLanguage.getLangById(submitDO.getLanguage()));
             if(languageConfig.getCompileCommand() != null){
                 // 通过沙箱编译后返回全局唯一的编译后文件的唯一标识
                 userFileId = Compiler.compiler(languageConfig,

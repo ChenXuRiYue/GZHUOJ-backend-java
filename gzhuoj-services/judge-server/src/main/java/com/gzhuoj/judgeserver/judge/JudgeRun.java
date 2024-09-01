@@ -52,11 +52,10 @@ public class JudgeRun {
                 .runConfig(languageConfigLoader.getLanguageConfigByName(SubmissionLanguage.getLangById(submitDO.getLanguage())))
                 .maxStack(1024)
                 .build();
-        // 顺序测, 一个点错就返回
-        return orderJudge(judgeParam, testCaseInputList, testCaseOutputList);
+        return createJudgeFutureTask(judgeParam, testCaseInputList, testCaseOutputList);
     }
 
-    private List<JSONObject> orderJudge(JudgeParam judgeParam, List<String> testCaseInputList, List<String> testCaseOutputList) throws ExecutionException, InterruptedException {
+    private List<JSONObject> createJudgeFutureTask(JudgeParam judgeParam, List<String> testCaseInputList, List<String> testCaseOutputList) throws ExecutionException, InterruptedException {
         List<FutureTask<JSONObject>> futureTaskList = new ArrayList<>();
         for(int i = 0; i < testCaseInputList.size(); i++) {
             TestCaseParam testCaseParam = TestCaseParam.builder()

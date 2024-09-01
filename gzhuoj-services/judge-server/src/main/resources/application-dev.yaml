@@ -1,12 +1,7 @@
 message: This is the development environment
-server:
-  port: 8087
 #  address: 0.0.0.0
 
 spring:
-  application:
-    name: gzhuoj-user-service
-
   cloud:
     ## consul 服务端治理设置
     consul:
@@ -14,7 +9,7 @@ spring:
       port: 8500
       discovery:
         ## 注册到consul的服务名称
-        service-name: gzhuoj-user-service
+        service-name: gzhuoj-judge-service
         heartbeat:
           enabled: true
         prefer-ip-address: true # 使用容器的外部IP地址进行注册
@@ -23,11 +18,10 @@ spring:
       host: 47.120.53.127
       port: 6379
       password: gzhuoj
-  ## 数据库配置
   datasource:
     username: root
     password: 3.14PAi#!
-    url: jdbc:mysql://47.120.53.127:3307/gzhuoj-user?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8
+    url: jdbc:mysql://47.120.53.127:3307/gzhuoj-contest?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       connection-test-query: select 1
@@ -35,4 +29,10 @@ spring:
       idle-timeout: 300000
       maximum-pool-size: 5
       minimum-idle: 5
+
+gzhuoj-judge-server:
+  ip: ${JUDGE_SERVER_IP:127.0.0.1} # 使用环境变量 JUDGE_SERVER_IP，如果未设置则使用默认值
+  port: ${JUDGE_SERVER_PORT:8088}   # 使用环境变量 JUDGE_SERVER_PORT，如果未设置则使用默认值
+  name: ${JUDGE_SERVER_NAME:gzhuoj-judger-1} # 使用环境变量 JUDGE_SERVER_NAME，如果未设置则使用默认值
+  max-task-num: ${MAX_TASK_NUM:-1}  # 使用环境变量 MAX_TASK_NUM，如果未设置则使用默认值
 

@@ -71,7 +71,7 @@ public class ServiceInitRunner implements CommandLineRunner {
         } else {
             // TODO 获取到Judge服务的状态
             HashMap<String, Object> judgeServerInfo = judgeServer.getJudgeServerInfo();
-            log.info("HOJ-JudgeServer had successfully started! The judge config and sandbox config Info:" + judgeServerInfo);
+            log.info("GZHUOJ had successfully started! The judge config and sandbox config Info:" + judgeServerInfo);
         }
     }
 }

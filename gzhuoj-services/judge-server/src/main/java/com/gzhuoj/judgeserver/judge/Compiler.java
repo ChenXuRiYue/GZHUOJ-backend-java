@@ -41,12 +41,14 @@ public class Compiler {
         JSONObject compileResult = (JSONObject) compile.get(0);
         // 编译成功的返回status为Accepted
         if (compileResult.getInt("status").intValue() != SubmissionStatus.ACCEPTED.getCode()) {
+            log.error("compileResult status is not ACCEPTED, but compileResult = {}", compileResult);
             throw new ClientException("Compile Error.");
         }
         // fileId为编译后的文件的唯一标识
-//        String fileId = ((JSONObject) compileResult.get("fileIds")).getStr(languageConfig.getExeName() + ".exe");
-        String fileId = ((JSONObject) compileResult.get("fileIds")).getStr(languageConfig.getExeName());
+        String fileId = ((JSONObject) compileResult.get("fileIds")).getStr(languageConfig.getExeName() + ".exe");
+//        String fileId = ((JSONObject) compileResult.get("fileIds")).getStr(languageConfig.getExeName());
         if (StringUtils.isEmpty(fileId)) {
+            log.error("fileId is empty, compileResult = {}", compileResult);
             throw new ServiceException("Executable file not found.");
         }
         return fileId;

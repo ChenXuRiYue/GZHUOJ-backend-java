@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gzhuoj.judgeserver.model.entity.SubmitDO;
 import com.gzhuoj.judgeserver.service.JudgeServerService;
 import common.exception.ServiceException;
+import lombok.extern.slf4j.Slf4j;
 import org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode;
 import org.gzhuoj.common.sdk.convention.result.Result;
 import org.gzhuoj.common.sdk.convention.result.Results;
@@ -29,20 +30,17 @@ import java.util.concurrent.CountDownLatch;
 
 import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.JUDGE_PARAM_NOT_FOUND_ERROR;
 
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/gzhuoj-judge-server")
 public class JudgeController {
     private final JudgeServerService judgeServerService;
 
-    private Map<String, CountDownLatch> latchMap = new ConcurrentHashMap<>();
-    private Map<String, String> responseMap = new ConcurrentHashMap<>();
-
     @PostMapping("/judge")
     public Result<Void> judge(@RequestBody ToJudgeReqDTO requestParam){
         if(requestParam.getSubmitDTO() == null || requestParam.getJudgeServerIp() == null || requestParam.getJudgeServerPort() == null){
-            // 应该告诉contest这边再次检测到参数不符合
+            log.error("Judge Param error, ToJudgeReqDTO = {}", requestParam);
             throw new ServiceException(JUDGE_PARAM_NOT_FOUND_ERROR);
         }
         SubmitDO submitDO = BeanUtil.toBean(requestParam.getSubmitDTO(), SubmitDO.class);

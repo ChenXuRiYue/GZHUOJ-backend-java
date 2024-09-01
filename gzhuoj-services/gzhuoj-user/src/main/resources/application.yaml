@@ -4,12 +4,8 @@ spring:
   application:
     name: gzhuoj-user-service
   profiles:
-    active: dev
-  data:
-    redis:
-      host: 47.121.209.33
-      port: 6379
-      password: gzhuoj
+#    active: dev
+    active: prd
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
