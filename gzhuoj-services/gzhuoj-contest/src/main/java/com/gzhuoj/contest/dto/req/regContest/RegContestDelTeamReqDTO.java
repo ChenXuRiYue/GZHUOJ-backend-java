@@ -7,7 +7,7 @@ public class RegContestDelTeamReqDTO {
     /**
      * 比赛id
      */
-    private Integer cid;
+    private Integer contestId;
 
     /**
      * 队伍id

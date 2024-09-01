@@ -18,13 +18,13 @@ import java.util.List;
 public class ContestProblemController {
     private final ContestProblemService contestProblemService;
     @GetMapping("/problem")
-    public Result<List<ContestProblemDO>> getAllProblem(Integer cid){
-        return Results.success(contestProblemService.getAllProblem(cid));
+    public Result<List<ContestProblemDO>> getAllProblem(Integer contestId){
+        return Results.success(contestProblemService.getAllProblem(contestId));
     }
 
     @GetMapping("/getresult")
-    public Result<ContestResultRespDTO> getAllResult(Integer cid){
-        return Results.success(contestProblemService.getResult(cid));
+    public Result<ContestResultRespDTO> getAllResult(Integer contestId){
+        return Results.success(contestProblemService.getResult(contestId));
     }
 
     /**

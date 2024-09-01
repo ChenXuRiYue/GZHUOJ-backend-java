@@ -8,7 +8,7 @@ public class RegContestJudgeSubmitReqDTO {
     /**
      * 比赛id
      */
-    private Integer cid;
+    private Integer contestId;
 
     /**
      * 题目编号

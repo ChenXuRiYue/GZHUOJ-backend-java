@@ -3,7 +3,7 @@
 
 <mapper namespace="com.gzhuoj.contest.mapper.TeamMapper">
     <select id="getLastTeamNum" parameterType="java.lang.Integer" resultType="java.lang.Integer">
-        select count(*) from team where team_account regexp '^team[0-9]+$' and contest_id = #{cid}
+        select count(*) from team where team_account regexp '^team[0-9]+$' and contest_id = #{contestId}
     </select>
 
     <insert id="insertOrUpdateTeam" parameterType="com.gzhuoj.contest.model.entity.TeamDO">

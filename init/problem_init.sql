@@ -2,12 +2,14 @@
 SET NAMES 'utf8';
 
 -- 创建数据库，指定字符集和排序规则
-CREATE DATABASE IF NOT EXISTS `gzhuoj-problem`
+CREATE
+DATABASE IF NOT EXISTS `gzhuoj-problem`
     DEFAULT CHARACTER SET utf8mb4
     DEFAULT COLLATE utf8mb4_unicode_ci;
 
 -- 使用刚创建的数据库
-USE `gzhuoj-problem`;
+USE
+`gzhuoj-problem`;
 
 CREATE TABLE `problem`
 (
@@ -28,10 +30,7 @@ CREATE TABLE `problem`
     `delete_flag`    tinyint      NOT NULL DEFAULT '0',
     `problem_type`   tinyint      NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`)
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 29
-  DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `problem_description`
 (
@@ -46,10 +45,7 @@ CREATE TABLE `problem_description`
     `explanation`             text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
     `explanation_html`        text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
     PRIMARY KEY (`id`)
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 39
-  DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `test_example`
 (
@@ -60,6 +56,19 @@ CREATE TABLE `test_example`
     `create_time`      date NOT NULL,
     `update_time`      date NOT NULL,
     `delete_flag`      tinyint DEFAULT NULL
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `gzhuoj-problem`.problem_judge_resources
+(
+    problem_id   INTEGER      NOT NULL COMMENT 'problem 在题库中的序号',
+    id           INTEGER auto_increment NOT NULL COMMENT '表内主键',
+    file_name    varchar(128) NOT NULL,
+    file_content LONGTEXT NULL COMMENT '文件内容',
+    create_time  date         NOT NULL,
+    update_time  date         NOT NULL,
+    delete_flag  tinyint NULL,
+    CONSTRAINT problem_judge_resources_pk PRIMARY KEY (id)
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_0900_ai_ci
+COMMENT='保存了评测的测试资源根据评测类型，数据格式包括了  in, out, spj 或其他扩展的格式';

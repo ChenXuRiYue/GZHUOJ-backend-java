@@ -17,6 +17,7 @@ import com.gzhuoj.contest.service.contest.UploadService;
 import org.gzhuoj.common.sdk.convention.result.Result;
 import org.gzhuoj.common.sdk.convention.result.Results;
 import lombok.RequiredArgsConstructor;
+import org.gzhuoj.common.sdk.model.pojo.Options;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -120,4 +121,5 @@ public class ContestController {
     public Result<PrintProblemRespDTO> printProblem(Integer contestId){
         return Results.success(contestService.printProblem(contestId));
     }
+
 }
