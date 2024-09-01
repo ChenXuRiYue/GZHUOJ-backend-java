@@ -26,6 +26,8 @@ public enum BaseErrorCode implements IErrorCode {
     PROBLEM_NOT_FOUND("A000302", "题目不存在"),
     PROBLEM_MESSAGE_LOST("A000303", "题目内容信息缺失"),
     PROBLEM_TEST_CASE_UPLOAD_PATH_ERROR("A000304", "题目上传路径错误"),
+    PROBLEM_DATA_SET_FILES_ILLEGAL("A000310",  "题目数据不合法"),
+    PROBLEM_DATA_SET_ZIP_STRUCTURE_ILLEGAL("A000311",  "ZIP结构不合法"),
 
     CONTEST_NOT_FOUND_ERROR("A000401", "比赛不存在"),
     CONTEST_PROBLEM_FOUND_NOT_ERROR("A000402", "比赛题目不存在"),
