@@ -18,7 +18,8 @@
 当前项目仍在持续迭代更新中，未给出稳定版本，主分支代码可能随时改变
 <br/><br/>
 
-**推荐部署环境**： Ubuntu 22.04.4 LTS
+**推荐部署环境**： Ubuntu 22.04.4 LTS <br/>
+**机器推荐配置**： 4核8G <br/>
 一键化部署
 ```
 git clone https://github.com/ChenXuRiYue/GZHUOJ-backend-java.git
@@ -27,7 +28,8 @@ chmod u+x build.sh
 ./build.sh
 ```
 
-
+<br/>
+<br/>
 ### 主要开发成员
 <table>
     <tr>
