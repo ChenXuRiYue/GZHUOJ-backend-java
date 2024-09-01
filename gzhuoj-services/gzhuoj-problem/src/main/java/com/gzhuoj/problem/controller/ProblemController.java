@@ -5,7 +5,7 @@ import com.gzhuacm.sdk.problem.model.dto.ProblemContentRespDTO;
 import com.gzhuacm.sdk.problem.model.dto.ProblemPrintDTO;
 import com.gzhuacm.sdk.problem.model.dto.ProblemRespDTO;
 import com.gzhuoj.problem.constant.PathConstant;
-import com.gzhuoj.problem.constant.PatternConstant;
+import org.gzhuoj.common.sdk.constant.PatternConstant;
 import com.gzhuoj.problem.dto.req.problem.CreateProblemReqDTO;
 import com.gzhuoj.problem.dto.req.problem.ListProblemReqDTO;
 import com.gzhuacm.sdk.problem.model.dto.ProblemReqDTO;
@@ -91,10 +91,7 @@ public class ProblemController {
      */
     @PostMapping("/uploadDescr")
     public Result<Void> uploadDescr(@RequestParam("problemNum") Integer problemNum, @RequestPart("testCase") List<MultipartFile> testCase){
-        Boolean Fail = uploadService.upload(problemNum, testCase, PathConstant.PROBLEM_UPLOAD_PATH, Pattern.compile(PatternConstant.PROBLEM_DESCRIPTION_PATTERN));
-        if(Fail){
-            return Results.failure(ADMIN_UPLOAD_ILLEGAL_PROBLEM_DESCRIPTION_ERROR.code(), ADMIN_UPLOAD_ILLEGAL_PROBLEM_DESCRIPTION_ERROR.message());
-        }
+        uploadService.upload(problemNum, testCase, PathConstant.PROBLEM_UPLOAD_PATH, Pattern.compile(PatternConstant.PROBLEM_DESCRIPTION_PATTERN));
         return Results.success();
     }
 

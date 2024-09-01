@@ -1,12 +1,22 @@
 package common.toolkit;
 
+import cn.hutool.core.lang.Pair;
 import common.exception.ClientException;
+import common.exception.ServiceException;
+import org.gzhuoj.common.sdk.constant.PatternConstant;
+import org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.rmi.ServerException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -82,4 +92,37 @@ public class ZipUtils {
         }
         return normalizePath;
     }
+
+    public static List<Pair<String, String>> decompressZipToStrings(MultipartFile zipFile) throws Exception {
+        List<Pair<String, String>> fileContents = new ArrayList<>();
+
+        Pattern pattern = Pattern.compile(PatternConstant.FILE_IN_ZIP_PATTERN);
+        try (ZipInputStream zipInputStream = new ZipInputStream(zipFile.getInputStream(), StandardCharsets.UTF_8)) {
+            ZipEntry entry;
+            while ((entry = zipInputStream.getNextEntry()) != null) {
+                // 过滤不合法的文件名
+                if (!pattern.matcher(entry.getName()).matches()) {
+                    throw new ClientException("ZIP 文件中的文件名不合法: " + entry.getName());
+                }
+
+                // 如果不是目录，读取内容并转为字符串
+                if (!entry.isDirectory()) {
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[1024];
+                    int len;
+                    while ((len = zipInputStream.read(buffer)) > 0) {
+                        outputStream.write(buffer, 0, len);
+                    }
+                    // 将字节流转换为字符串并添加到列表中
+                    String content = outputStream.toString(StandardCharsets.UTF_8);
+                    fileContents.add(new Pair<>(entry.getName(), content));
+                } else throw new ClientException(BaseErrorCode.PROBLEM_DATA_SET_ZIP_STRUCTURE_ILLEGAL);
+                zipInputStream.closeEntry();
+            }
+        } catch (IOException e) {
+            throw new ServiceException(BaseErrorCode.SERVICE_ERROR);
+        }
+        return fileContents;
+    }
+
 }
