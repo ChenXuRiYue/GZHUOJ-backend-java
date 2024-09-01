@@ -28,8 +28,7 @@ chmod u+x build.sh
 ```
 
 
-<br/>
-### 项目开发组成员
+### 主要开发成员
 <table>
     <tr>
         <td align="center" style="width: 33%;">
