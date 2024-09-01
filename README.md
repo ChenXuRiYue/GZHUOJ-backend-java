@@ -28,8 +28,6 @@ chmod u+x build.sh
 ./build.sh
 ```
 
-<br/>
-<br/>
 ### 主要开发成员
 <table>
     <tr>
