@@ -4,8 +4,8 @@ spring:
   application:
     name: gzhuoj-gateway
   profiles:
-    active: dev
-#    active: prd
+#    active: dev
+    active: prd
 
 # JWT相关配置
 gzhuoj:
