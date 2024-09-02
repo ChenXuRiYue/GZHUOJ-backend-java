@@ -2,14 +2,14 @@ package com.gzhuoj.judgeserver.service.Impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.gzhuacm.sdk.judgeserver.api.ContestRemoteService;
+import com.gzhuacm.sdk.judgeserver.model.dto.req.SubmitRemoteDTO;
+import com.gzhuacm.sdk.problem.api.ProblemApi;
+import com.gzhuacm.sdk.problem.model.dto.ProblemRespDTO;
 import com.gzhuoj.judgeserver.judge.JudgeContext;
 import com.gzhuoj.judgeserver.mapper.JudgeServerMapper;
 import com.gzhuoj.judgeserver.model.entity.JudgeServerDO;
 import com.gzhuoj.judgeserver.model.entity.SubmitDO;
-import com.gzhuoj.judgeserver.remote.DTO.ContestRemoteService;
-import com.gzhuoj.judgeserver.remote.DTO.ProblemRemoteService;
-import com.gzhuoj.judgeserver.remote.DTO.req.SubmitRemoteDTO;
-import com.gzhuoj.judgeserver.remote.DTO.resp.ProblemRespDTO;
 import com.gzhuoj.judgeserver.service.JudgeServerService;
 import lombok.extern.slf4j.Slf4j;
 import org.gzhuoj.common.sdk.convention.result.Result;
@@ -25,7 +25,7 @@ import java.util.HashMap;
 @Slf4j
 public class JudgeServerServiceImpl extends ServiceImpl<JudgeServerMapper, JudgeServerDO> implements JudgeServerService {
     private final ContestRemoteService contestRemoteService;
-    private final ProblemRemoteService problemRemoteService;
+    private final ProblemApi problemRemoteService;
     private final JudgeContext judgeContext;
 
     @Value("${gzhuoj-judge-server.name}")

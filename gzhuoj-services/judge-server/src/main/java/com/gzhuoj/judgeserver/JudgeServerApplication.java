@@ -8,7 +8,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @MapperScan("com.gzhuoj.judgeserver.mapper")
-@EnableFeignClients("com.gzhuoj.judgeserver.remote")
+@EnableFeignClients("com.gzhuacm.sdk.*.api")
 @EnableDiscoveryClient
 public class JudgeServerApplication {
     public static void main(String[] args) {

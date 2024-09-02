@@ -3,6 +3,7 @@ package com.gzhuoj.problem.service.common.Impl;
 import cn.hutool.core.lang.Pair;
 import cn.hutool.core.util.ObjectUtil;
 import com.gzhuacm.sdk.problem.model.dto.ProblemRespDTO;
+import com.gzhuoj.problem.model.entity.ProblemJudgeResourcesDO;
 import com.gzhuoj.problem.service.problem.ProblemService;
 import com.gzhuoj.problem.service.common.UploadService;
 import com.gzhuoj.problem.service.resources.FileResourceService;
@@ -47,6 +48,7 @@ public class UploadServiceImpl implements UploadService {
         checkProblemIfExist(problemNum);
         unzipAndSaveTestCase(testCase, problemNum);
     }
+
     private void CheckZipValidity( List<MultipartFile> testCase){
         // 空, 或者长度为1.
         if(CollectionUtils.isEmpty(testCase) || testCase.size() != 1){

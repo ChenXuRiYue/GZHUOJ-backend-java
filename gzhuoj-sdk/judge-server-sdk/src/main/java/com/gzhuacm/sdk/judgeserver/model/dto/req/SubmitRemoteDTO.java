@@ -1,4 +1,4 @@
-package com.gzhuoj.judgeserver.remote.DTO.req;
+package com.gzhuacm.sdk.judgeserver.model.dto.req;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

@@ -1,6 +1,8 @@
 package com.gzhuoj.problem.controller;
 
+import com.gzhuacm.sdk.problem.model.dto.ProblemJudgeResourcesRespDTO;
 import com.gzhuoj.problem.constant.PathConstant;
+import com.gzhuoj.problem.service.resources.FileResourceService;
 import org.gzhuoj.common.sdk.constant.PatternConstant;
 import com.gzhuoj.problem.dto.req.judge.ListJudgeDataReqDTO;
 import com.gzhuoj.problem.service.judge.JudgeService;
@@ -20,6 +22,8 @@ import java.util.regex.Pattern;
 public class JudgeController {
     private final JudgeService judgeService;
     private final UploadService uploadService;
+    private final FileResourceService fileResourceService;
+
     /**
      * 题目测试数据管理/展示
      * @param requestParam 关键字
@@ -41,5 +45,13 @@ public class JudgeController {
         return Results.success();
     }
 
-
+    /**
+     * 查询某道题目所有的测试数据文件
+     * @param problemId 题目编号
+     * @return 测试数据对象响应集合
+     */
+    @GetMapping("/testcase/upload")
+    public Result<List<ProblemJudgeResourcesRespDTO>> getUpLoadData(@RequestParam("problemId") Integer problemId){
+        return Results.success(fileResourceService.getUpLoadData(problemId));
+    }
 }

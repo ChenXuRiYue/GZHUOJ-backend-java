@@ -12,7 +12,7 @@ spring:
         service-name: gzhuoj-judge-service
         heartbeat:
           enabled: true
-        prefer-ip-address: true # 使用容器的外部IP地址进行注册
+#        prefer-ip-address: true # 使用容器的外部IP地址进行注册
   data:
     redis:
       host: 47.120.53.127
@@ -31,7 +31,7 @@ spring:
       minimum-idle: 5
 
 gzhuoj-judge-server:
-  ip: ${JUDGE_SERVER_IP:127.0.0.1} # 使用环境变量 JUDGE_SERVER_IP，如果未设置则使用默认值
+  ip: ${JUDGE_SERVER_IP:localhost} # 使用环境变量 JUDGE_SERVER_IP，如果未设置则使用默认值
   port: ${JUDGE_SERVER_PORT:8088}   # 使用环境变量 JUDGE_SERVER_PORT，如果未设置则使用默认值
   name: ${JUDGE_SERVER_NAME:gzhuoj-judger-1} # 使用环境变量 JUDGE_SERVER_NAME，如果未设置则使用默认值
   max-task-num: ${MAX_TASK_NUM:-1}  # 使用环境变量 MAX_TASK_NUM，如果未设置则使用默认值
