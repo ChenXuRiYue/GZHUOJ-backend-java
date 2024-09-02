@@ -1,7 +1,6 @@
-package com.gzhuoj.judgeserver.remote.DTO;
+package com.gzhuacm.sdk.judgeserver.api;
 
-
-import com.gzhuoj.judgeserver.remote.DTO.req.SubmitRemoteDTO;
+import com.gzhuacm.sdk.judgeserver.model.dto.req.SubmitRemoteDTO;
 import org.gzhuoj.common.sdk.convention.result.Result;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.beans.Encoder;
-
 @FeignClient(name = "gzhuoj-contest-service",
         configuration = {ContestRemoteService.MultipartSupportConfig.class})
 public interface ContestRemoteService {

@@ -8,7 +8,6 @@ import com.gzhuoj.contest.constant.enums.JudgeType;
 import com.gzhuoj.contest.model.entity.JudgeServerDO;
 import com.gzhuoj.contest.model.entity.SubmitDO;
 import com.gzhuacm.sdk.contest.model.dto.ToJudgeDTO;
-import com.gzhuacm.sdk.contest.api.JudgeServerApi;
 import com.gzhuoj.contest.service.judge.JudgeServerService;
 import com.gzhuoj.contest.service.judge.SubmitService;
 import com.gzhuoj.contest.util.ChooseInstanceUtils;
@@ -39,7 +38,6 @@ public class Dispatcher {
     private final ChooseInstanceUtils chooseInstanceUtils;
     private final SubmitService submitService;
     private final JudgeServerService judgeServerService;
-    private final JudgeServerApi judgeServerApi;
     private final RestTemplate restTemplate;
 
     private final static Integer MAX_TRY_NUM = 300;

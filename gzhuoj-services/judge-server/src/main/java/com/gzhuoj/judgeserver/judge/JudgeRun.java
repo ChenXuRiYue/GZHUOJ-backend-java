@@ -2,11 +2,11 @@ package com.gzhuoj.judgeserver.judge;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONObject;
+import com.gzhuacm.sdk.problem.model.dto.ProblemRespDTO;
 import com.gzhuoj.judgeserver.judge.JudgeType.DefaultJudge;
 import com.gzhuoj.judgeserver.model.entity.SubmitDO;
 import com.gzhuoj.judgeserver.model.pojo.JudgeParam;
 import com.gzhuoj.judgeserver.model.pojo.TestCaseParam;
-import com.gzhuoj.judgeserver.remote.DTO.resp.ProblemRespDTO;
 import com.gzhuoj.judgeserver.util.ThreadPoolUtils;
 import common.enums.SubmissionLanguage;
 import common.exception.ServiceException;

@@ -26,7 +26,7 @@
         </dependency>
         <dependency>
             <groupId>gzhuoj</groupId>
-            <artifactId>gzhuoj-contest-sdk</artifactId>
+            <artifactId>judge-server-sdk</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

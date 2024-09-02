@@ -1,11 +1,11 @@
 package com.gzhuoj.judgeserver.judge;
 
 import cn.hutool.json.JSONObject;
+import com.gzhuacm.sdk.judgeserver.api.ContestRemoteService;
+import com.gzhuacm.sdk.problem.model.dto.ProblemRespDTO;
 import com.gzhuoj.judgeserver.judge.JudgeType.DefaultJudge;
 import com.gzhuoj.judgeserver.model.entity.SubmitDO;
 import com.gzhuoj.judgeserver.model.pojo.LanguageConfig;
-import com.gzhuoj.judgeserver.remote.DTO.ContestRemoteService;
-import com.gzhuoj.judgeserver.remote.DTO.resp.ProblemRespDTO;
 import org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode;
 import common.enums.SubmissionLanguage;
 import common.enums.SubmissionStatus;
@@ -48,6 +48,7 @@ public class JudgeStrategy {
                         SubmissionLanguage.getLangById(submitDO.getLanguage())
                 );
             }
+
             // 当前工作目录
             Path absolutePath = Paths.get("").toAbsolutePath();
             Path relativePath = Paths.get("data", "public", "problem", problemRespDTO.getAttach(), "test_case");

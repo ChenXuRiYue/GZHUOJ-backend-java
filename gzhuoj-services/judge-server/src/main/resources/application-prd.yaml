@@ -12,7 +12,7 @@ spring:
         service-name: gzhuoj-judge-service
         heartbeat:
           enabled: true
-#        prefer-ip-address: true # 使用容器的外部IP地址进行注册
+        prefer-ip-address: true # 使用容器的外部IP地址进行注册
   data:
     redis:
       host: 47.121.209.33

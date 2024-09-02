@@ -1,7 +1,6 @@
 package com.gzhuoj.judgeserver.dto.req;
 
-import com.gzhuacm.sdk.contest.model.dto.SubmitDTO;
-import com.gzhuoj.judgeserver.model.entity.SubmitDO;
+import com.gzhuacm.sdk.judgeserver.model.dto.SubmitDTO;
 import lombok.Data;
 
 @Data
