@@ -4,8 +4,8 @@ spring:
   application:
     name: gzhuoj-contest-service
   profiles:
-#    active: dev
-    active: prd
+    active: dev
+#    active: prd
 Contest:
   max-file-num: 10
 RegContest:

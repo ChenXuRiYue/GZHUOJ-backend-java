@@ -4,8 +4,8 @@ spring:
   application:
     name: gzhuoj-judge-service
   profiles:
-#    active: dev
-    active: prd
+    active: dev
+#    active: prd
 
 mybatis-plus:
   configuration:

@@ -4,8 +4,8 @@ spring:
   application:
     name: gzhuoj-problem-service
   profiles:
-#    active: dev
-    active: prd
+    active: dev
+#    active: prd
   servlet:
     multipart:
       enabled: true
