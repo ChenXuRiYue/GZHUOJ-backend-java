@@ -1,17 +1,20 @@
 package com.gzhuoj.contest.dto.req.contest;
 
-import com.gzhuoj.contest.model.entity.ProblemMapDO;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
-public class ContestCreateReqDTO {
+@AllArgsConstructor
+@NoArgsConstructor
+public class ContestReqDTO {
 
     /**
      * 比赛编号
      */
-    private Integer contestId;
+    private Integer contestNum;
 
     /**
      * 比赛标题
@@ -19,54 +22,14 @@ public class ContestCreateReqDTO {
     private String title;
 
     /**
-     * 开始年份
+     * 用于开始时间的时间戳
      */
-    private String startYear;
+    private Long startTimes;
 
     /**
-     * 开始月份
+     * 用于结束时间的时间戳
      */
-    private String startMonth;
-
-    /**
-     * 开始天
-     */
-    private String startDay;
-
-    /**
-     * 开始小时
-     */
-    private String startHour;
-
-    /**
-     * 开始分钟
-     */
-    private String startMinute;
-
-    /**
-     * 结束年份
-     */
-    private String endYear;
-
-    /**
-     * 结束月份
-     */
-    private String endMonth;
-
-    /**
-     * 结束天
-     */
-    private String endDay;
-
-    /**
-     * 结束小时
-     */
-    private String endHour;
-
-    /**
-     * 结束分钟
-     */
-    private String endMinute;
+    private Long endTimes;
 
     /**
      * 比赛开放状态 0 -> 不开放， 1 -> 开放
@@ -74,9 +37,14 @@ public class ContestCreateReqDTO {
     private Integer contestStatus;
 
     /**
-     * 比赛描述
+     * 比赛描述 markdown
      */
     private String description;
+
+    /**
+     * 比赛描述 Html
+     */
+    private String descriptionHtml;
 
     /**
      * 比赛访问权限 0 -> private 1 -> public 2 -> protect(需要密码)
@@ -92,11 +60,18 @@ public class ContestCreateReqDTO {
      * 比赛密码
      */
     private String password;
-
     /**
-     * 每个学校或组织显示排名最高的k支队r
+     * 金牌个数
      */
-    private Integer topteam;
+    private Integer goldCount;
+    /**
+     * 银牌个数
+     */
+    private Integer silverCount;
+    /**
+     * 铜牌个数
+     */
+    private Integer bronzeCount;
 
     /**
      * 金奖获奖率
@@ -106,12 +81,12 @@ public class ContestCreateReqDTO {
     /**
      * 银奖获奖率
      */
-    private String ratiosilver;
+    private String ratioSilver;
 
     /**
      * 铜奖获奖率
      */
-    private String ratiobronze;
+    private String ratioBronze;
 
 
     /**
@@ -125,7 +100,8 @@ public class ContestCreateReqDTO {
     private Integer frozenAfter;
 
     /**
-     *
+     * 不好命名：
      */
-    private List<ProblemMapDO> problemMapDOList;
+    private List<SelectedProblemMsgWhenCreateContest> selectedProblemMsgWhenCreateContestList;
+
 }

@@ -3,13 +3,13 @@
 
 <mapper namespace="com.gzhuoj.contest.mapper.TeamMapper">
     <select id="getLastTeamNum" parameterType="java.lang.Integer" resultType="java.lang.Integer">
-        select count(*) from team where team_account regexp '^team[0-9]+$' and contest_id = #{contestId}
+        select count(*) from team where team_account regexp '^team[0-9]+$' and contest_num = #{contestNum}
     </select>
 
     <insert id="insertOrUpdateTeam" parameterType="com.gzhuoj.contest.model.entity.TeamDO">
-        INSERT INTO team (team_account, contest_id, team_status, password, team_name, team_member, team_type, coach, school,
+        INSERT INTO team (team_account, contest_num, team_status, password, team_name, team_member, team_type, coach, school,
                           room, team_privilege)
-        VALUES (#{team.teamAccount}, #{team.contestId}, #{team.teamStatus}, #{team.password}, #{team.teamName},
+        VALUES (#{team.teamAccount}, #{team.contestNum}, #{team.teamStatus}, #{team.password}, #{team.teamName},
                 #{team.teamMember}, #{team.teamType}, #{team.coach}, #{team.school}, #{team.room},
                 #{team.teamPrivilege}) ON DUPLICATE KEY
         UPDATE

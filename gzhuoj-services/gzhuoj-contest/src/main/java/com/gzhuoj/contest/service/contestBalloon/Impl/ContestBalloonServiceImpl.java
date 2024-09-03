@@ -33,17 +33,17 @@ public class ContestBalloonServiceImpl extends ServiceImpl<ContestBalloonMapper,
     private final ContestProblemService contestProblemService;
     @Override
     public List<ContestBalloonQueueRespDTO> queue(ContestBalloonQueueReqDTO requestParam) {
-        ContestDO contestDO = contestService.queryByNum(requestParam.getContestId());
+        ContestDO contestDO = contestService.queryByNum(requestParam.getContestNum());
         if(contestDO == null){
             throw new ClientException(CONTEST_NOT_FOUND_ERROR);
         }
         Map<Integer, Integer> map = contestProblemService
-                .getAllProblem(requestParam.getContestId())
+                .getAllProblem(requestParam.getContestNum())
                 .stream()
                 .collect(Collectors.toMap(ContestProblemDO::getProblemId, ContestProblemDO::getActualNum));
 
         LambdaQueryWrapper<ContestBalloonDO> queryWrapper = Wrappers.lambdaQuery(ContestBalloonDO.class)
-                .eq(ContestBalloonDO::getContestId, requestParam.getContestId())
+                .eq(ContestBalloonDO::getContestNum, requestParam.getContestNum())
                 .eq(ContestBalloonDO::getRoom, requestParam.getRoom());
         List<ContestBalloonDO> contestBalloonDOS = baseMapper.selectList(queryWrapper);
 
@@ -57,7 +57,7 @@ public class ContestBalloonServiceImpl extends ServiceImpl<ContestBalloonMapper,
     @Override
     public void status(ContestBalloonChangeStReqDTO requestParam) {
         LambdaUpdateWrapper<ContestBalloonDO> updateWrapper = Wrappers.lambdaUpdate(ContestBalloonDO.class)
-                .eq(ContestBalloonDO::getContestId, requestParam.getContestId())
+                .eq(ContestBalloonDO::getContestNum, requestParam.getContestNum())
                 .eq(ContestBalloonDO::getProblemId, requestParam.getProblemId())
                 .eq(ContestBalloonDO::getTeamAccount, requestParam.getTeamAccount());
         ContestBalloonDO contestBalloonDO = new ContestBalloonDO();

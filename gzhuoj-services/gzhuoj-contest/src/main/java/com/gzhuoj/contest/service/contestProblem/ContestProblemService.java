@@ -12,11 +12,11 @@ import java.util.Date;
 import java.util.List;
 
 public interface ContestProblemService extends IService<ContestProblemDO> {
-    List<ContestProblemDO> getAllProblem(Integer contestId);
+    List<ContestProblemDO> getAllProblem(Integer contestNum);
 
-    CPResult getProblemResult(Integer contestId, Integer problemId, Date beginTime, Date endTime);
+    CPResult getProblemResult(Integer contestNum, Integer problemId, Date beginTime, Date endTime);
 
-    ContestResultRespDTO getResult(Integer ContestId);
+    ContestResultRespDTO getResult(Integer ContestNum);
 
-    ProblemContentRespDTO getContestProblem(Integer contestId, Integer problemIdInContest);
+    ProblemContentRespDTO getContestProblem(Integer contestNum, Integer problemIdInContest);
 }

@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class UpdateScoreAttempt {
-    private String contestId;
+    private String contestNum;
     private CompetitorBasicInfo competitor;
     private Integer passTime ;
     private Integer punishTime;

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ContestWaitReqDTO {
     private String teamAccount;
-    private Integer contestId;
+    private Integer contestNum;
 
 
 }

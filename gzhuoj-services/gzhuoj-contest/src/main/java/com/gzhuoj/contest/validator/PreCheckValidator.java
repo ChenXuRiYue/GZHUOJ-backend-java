@@ -38,7 +38,7 @@ public class PreCheckValidator {
      * 比赛信息前置校验并且将提交数据放入数据库
      */
     public void contestPreCheckAndSave(RegContestJudgeSubmitReqDTO requestParam, SubmitDO submitDO){
-        ContestDO contest = regContestService.getContest(requestParam.getContestId());
+        ContestDO contest = regContestService.getContest(requestParam.getContestNum());
         if(contest == null){
             // 比赛是否存在
             throw new ClientException(CONTEST_NOT_FOUND_ERROR);
@@ -52,7 +52,7 @@ public class PreCheckValidator {
                 throw new ClientException(CONTEST_NOT_START);
             }
             // team是否存在
-            if(!validTeam(requestParam.getContestId(), requestParam.getTeamAccount())){
+            if(!validTeam(requestParam.getContestNum(), requestParam.getTeamAccount())){
                 throw new ClientException(CONTEST_TEAM_NOT_FOUND);
             }
         }
@@ -67,9 +67,9 @@ public class PreCheckValidator {
         // 插入源代码
         submitCodeMapper.insert(new SubmitCodeDO(submitDO.getSubmitId(), requestParam.getCode()));
     }
-    private boolean validTeam(Integer contestId, String teamAccount){
+    private boolean validTeam(Integer contestNum, String teamAccount){
         LambdaQueryWrapper<TeamDO> queryWrapper = Wrappers.lambdaQuery(TeamDO.class)
-                .eq(TeamDO::getContestId, contestId)
+                .eq(TeamDO::getContestNum, contestNum)
                 .eq(TeamDO::getTeamAccount, teamAccount);
         return teamMapper.selectOne(queryWrapper) != null;
     }

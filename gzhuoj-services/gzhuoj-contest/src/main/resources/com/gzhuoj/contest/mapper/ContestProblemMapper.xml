@@ -2,11 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.gzhuoj.contest.mapper.ContestProblemMapper">
+    <insert id="batchInsert" parameterType="java.util.List">
+        INSERT INTO contest_problem
+        (problem_id, contest_num, actual_num)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.problemId}, #{item.contestNum}, #{item.actualNum})
+        </foreach>
+    </insert>
     <select id="selectForContest"
             parameterType="com.gzhuoj.contest.model.pojo.SFC" resultType="int">
         SELECT count(submit_time) from gzhuoj_contest.submit
         <where>
-            contest_id=#{contestId} and
+            contest_num=#{contestNum} and
             problem_id=#{problemId}
             <if test="beginTime !=null">
                 and submit_time between #{beginTime} and #{endTime}

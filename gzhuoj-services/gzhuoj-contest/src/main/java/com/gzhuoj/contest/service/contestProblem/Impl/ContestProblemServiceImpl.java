@@ -43,30 +43,30 @@ public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper,
     ProblemApi problemApi;
 
     @Override
-    public List<ContestProblemDO> getAllProblem(Integer contestId) {
+    public List<ContestProblemDO> getAllProblem(Integer contestNum) {
         LambdaQueryWrapper<ContestProblemDO> queryWrapper = Wrappers.lambdaQuery(ContestProblemDO.class)
-                .eq(ContestProblemDO::getContestId, contestId);
+                .eq(ContestProblemDO::getContestNum, contestNum);
         return baseMapper.selectList(queryWrapper);
     }
 
     /**
      * 查询某一题的信息
-     * @param contestId
+     * @param contestNum
      * @param problemId
      * @param beginTime
      * @param endTime
      * @return
      */
     @Override
-    public CPResult getProblemResult(Integer contestId, Integer problemId, Date beginTime, Date endTime) {
+    public CPResult getProblemResult(Integer contestNum, Integer problemId, Date beginTime, Date endTime) {
         SFC sfc = new SFC();
         sfc.beginTime=beginTime;
         sfc.endTime=endTime;
-        sfc.contestId=contestId;
+        sfc.contestNum=contestNum;
         sfc.problemId=problemId;
 
         CPResult cpResult = new CPResult();
-        ContestProblemDO contestProblemDO = contestProblemMapper.selectByProblemId(problemId,contestId);
+        ContestProblemDO contestProblemDO = contestProblemMapper.selectByProblemId(problemId,contestNum);
         cpResult.name = String.valueOf((char)('A'+contestProblemDO.getActualNum()));
         sfc.status=0;cpResult.ac=contestProblemMapper.selectForContest(sfc);
         sfc.status=1;cpResult.pe=contestProblemMapper.selectForContest(sfc);
@@ -89,7 +89,7 @@ public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper,
     }
 
     @Override
-    public ContestResultRespDTO getResult(Integer contestId) {
+    public ContestResultRespDTO getResult(Integer contestNum) {
         //String role = UserContext.getRole();
 
         String role;
@@ -98,13 +98,13 @@ public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper,
         if (role.equals("3"))role="user";
         else                 role="admin";
         System.out.println("当前用户为："+role);
-        if (Boolean.TRUE.equals(redis.hasKey(contestId + '_' + role))){
-            String s = redis.opsForValue().get(contestId + '_' + role);
+        if (Boolean.TRUE.equals(redis.hasKey(contestNum + '_' + role))){
+            String s = redis.opsForValue().get(contestNum + '_' + role);
             ContestResultRespDTO resultRespDTO = JSONObject.parseObject(s, ContestResultRespDTO.class);
             System.out.println("成功命中缓存");
             return resultRespDTO;
         }
-        ContestDO CDO = contestMapper.selectByContestId(contestId);
+        ContestDO CDO = contestMapper.selectByContestNum(contestNum);
         Date startTime = CDO.getStartTime();
         Date endTime = CDO.getEndTime();
 
@@ -117,12 +117,12 @@ public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper,
         ContestResultRespDTO contestResultRespDTO = new ContestResultRespDTO();
         contestResultRespDTO.problem=new ArrayList<>();
 
-        List<ContestProblemDO> contestProblemDOS = contestProblemMapper.selectByContestId(contestId);
+        List<ContestProblemDO> contestProblemDOS = contestProblemMapper.selectByContestNum(contestNum);
         CPResult total=new CPResult();
         total.name="total";
         for (ContestProblemDO CPD : contestProblemDOS) {
             Integer problemId = CPD.getProblemId();
-            CPResult problemResult = getProblemResult(contestId, problemId, startTime, endTime);
+            CPResult problemResult = getProblemResult(contestNum, problemId, startTime, endTime);
             contestResultRespDTO.problem.add(problemResult);
             total.ac+=problemResult.ac;
             total.pe+=problemResult.pe;
@@ -141,7 +141,7 @@ public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper,
         }
         contestResultRespDTO.problem.add(total);
 
-        redis.opsForValue().set(contestId + '_' + role, JSONObject.toJSONString(contestResultRespDTO), Duration.ofSeconds(50));
+        redis.opsForValue().set(contestNum + '_' + role, JSONObject.toJSONString(contestResultRespDTO), Duration.ofSeconds(50));
 
         return contestResultRespDTO;
     }
@@ -153,9 +153,9 @@ public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper,
      * @return
      */
     @Override
-    public ProblemContentRespDTO getContestProblem(Integer contestId, Integer problemIdInContest) {
+    public ProblemContentRespDTO getContestProblem(Integer contestNum, Integer problemIdInContest) {
         QueryWrapper<ContestProblemDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.allEq(Map.of("contest_id", contestId, "actual_num" , problemIdInContest));
+        queryWrapper.allEq(Map.of("contest_num", contestNum, "actual_num" , problemIdInContest));
         ContestProblemDO contestProblemDO = contestProblemMapper.selectOne(queryWrapper);
         if(ObjectUtils.isEmpty(contestProblemDO)){
             throw new  ServiceException(PROBLEM_MESSAGE_LOST);

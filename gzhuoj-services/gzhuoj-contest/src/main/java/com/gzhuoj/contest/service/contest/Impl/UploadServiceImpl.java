@@ -4,7 +4,7 @@ import com.gzhuoj.contest.model.entity.ContestDO;
 import com.gzhuoj.contest.service.contest.ContestService;
 import com.gzhuoj.contest.service.contest.UploadService;
 import common.exception.ClientException;
-import common.toolkit.ZipUtils;
+import common.utils.ZipUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;

@@ -10,14 +10,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gzhuacm.sdk.problem.api.ProblemApi;
 import com.gzhuacm.sdk.problem.model.dto.ProblemPrintDTO;
 import com.gzhuoj.contest.constant.PathConstant;
-import com.gzhuoj.contest.dto.req.contest.ContestAllReqDTO;
-import com.gzhuoj.contest.dto.req.contest.ContestCreateReqDTO;
-import com.gzhuoj.contest.dto.req.contest.ContestStatusReqDTO;
-import com.gzhuoj.contest.dto.req.contest.ContestUpdateReqDTO;
+import com.gzhuoj.contest.dto.req.contest.*;
 import com.gzhuoj.contest.dto.resp.contest.ContestAllRespDTO;
 import com.gzhuoj.contest.dto.resp.contest.PrintProblemRespDTO;
 import com.gzhuoj.contest.mapper.ContestDescrMapper;
@@ -27,7 +25,7 @@ import com.gzhuoj.contest.model.entity.*;
 import common.biz.user.UserContext;
 import com.gzhuoj.contest.service.contest.ContestService;
 import common.exception.ClientException;
-import common.toolkit.GenerateRandStrUtil;
+import common.utils.GenerateRandStrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.ObjectUtils;
@@ -53,76 +51,94 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, ContestDO> im
     private final ContestProblemMapper contestProblemMapper;
     private final ContestMapper contestMapper;
     private final ProblemApi problemApi;
-    private static final String DATE_FORMAT = "%s-%s-%s %s:%s";
+
     @Override
     @Transactional
-    public void create(ContestCreateReqDTO requestParam) {
-        LambdaQueryWrapper<ContestDO> queryWrapper = Wrappers.lambdaQuery(ContestDO.class)
-                .eq(ContestDO::getContestId, requestParam.getContestId())
-                .eq(ContestDO::getDeleteFlag, 0);
-        ContestDO hasContestDO = baseMapper.selectOne(queryWrapper);
-        if(hasContestDO != null){
+    public void createContest(ContestReqDTO requestParam) {
+        if(checkContestIfExist(requestParam.getContestNum())){
             throw new ClientException("比赛编号已存在");
         }
+        insertContestDo(requestParam);
+        insertContestDescDO(requestParam);
+        insertContestProblemDO(requestParam);
+    }
 
-        String startTime = String.format(DATE_FORMAT
-                , requestParam.getStartYear()
-                , requestParam.getStartMonth()
-                , requestParam.getStartDay()
-                , requestParam.getStartHour()
-                , requestParam.getStartMinute()
-        );
-        String endTime = String.format(DATE_FORMAT
-                , requestParam.getEndYear()
-                , requestParam.getEndMonth()
-                , requestParam.getEndDay()
-                , requestParam.getEndHour()
-                , requestParam.getEndMinute()
-        );
+    /**
+     * 检查当前比赛是否存在
+     * @param contestNum
+     * @return
+     */
+    public Boolean checkContestIfExist(Integer contestNum){
+        LambdaQueryWrapper<ContestDO> queryWrapper = Wrappers.lambdaQuery(ContestDO.class)
+                .eq(ContestDO::getContestNum, contestNum)
+                .eq(ContestDO::getDeleteFlag, 0);
+        return ObjectUtils.isNotEmpty(baseMapper.selectOne(queryWrapper));
+    }
+
+    public ContestDO constructContestDOByContestRequest(ContestReqDTO requestParam){
         int mask = 0;
         for(Integer num : requestParam.getLanguage()){
             mask |= num;
         }
         ContestDO contestDO = ContestDO.builder()
-                .contestId(requestParam.getContestId())
+                .contestNum(requestParam.getContestNum())
                 .contestStatus(requestParam.getContestStatus())
-                .startTime(DateUtil.parse(startTime))
-                .endTime(DateUtil.parse(endTime))
+                .startTime(DateUtil.date(requestParam.getStartTimes()))
+                .endTime(DateUtil.date(requestParam.getEndTimes()))
                 .title(requestParam.getTitle())
                 .access(requestParam.getAccess())
                 .languageMask(mask)
                 .frozenMinute(requestParam.getFrozenMinute())
                 .frozenAfter(requestParam.getFrozenAfter())
-                .awardRatio(StrUtil.join("#", requestParam.getRatioGold(), requestParam.getRatiosilver(), requestParam.getRatiobronze()))
-                .topteam(requestParam.getTopteam())
+                .awardRatio(StrUtil.join("#", requestParam.getRatioGold(), requestParam.getRatioSilver(), requestParam.getRatioBronze()))
                 // TODO 脱敏
                 .password(requestParam.getPassword())
                 .build();
+        // TODO  奖牌分配信息的处理。
         String identify = createUniqueDir();
         contestDO.setAttach(identify);
+
+        return contestDO;
+    }
+
+    public void  insertContestDo(ContestReqDTO requestParam){
+        ContestDO contestDO = constructContestDOByContestRequest(requestParam);
         baseMapper.insert(contestDO);
+    }
 
-        contestDescrMapper.insert(new ContestDescrDO(requestParam.getContestId(), requestParam.getDescription()));
+    public void insertContestDescDO(ContestReqDTO requestParam){
+        ContestDescDO target = ContestDescDO.builder()
+                .contestNum(requestParam.getContestNum())
+                .description(requestParam.getDescription())
+                .descriptionHtml(requestParam.getDescriptionHtml())
+                .build();
+        contestDescrMapper.insert(target);
+    }
 
-        List<ProblemMapDO> problemMapDOList = requestParam.getProblemMapDOList();
-        if(CollUtil.isNotEmpty(problemMapDOList)){
-            for(int i = 0; i < problemMapDOList.size(); i++ ){
-                ProblemMapDO problemMapDO = problemMapDOList.get(i);
+    public void insertContestProblemDO(ContestReqDTO requestParam){
+        List<SelectedProblemMsgWhenCreateContest> problemMsgWhenCreateContests = requestParam.getSelectedProblemMsgWhenCreateContestList();
+        if(CollUtil.isNotEmpty(problemMsgWhenCreateContests)){
+            List<ContestProblemDO> contestProblemDOS = new ArrayList<>();
+            // TODO 校验题目合法性。完善表逻辑
+            for(int i = 0; i < problemMsgWhenCreateContests.size(); i++){
+                SelectedProblemMsgWhenCreateContest problemMsg = problemMsgWhenCreateContests.get(i);
                 ContestProblemDO contestProblemDO = ContestProblemDO.builder()
+                        .problemId(problemMsg.getProblemNum())
+                        .contestNum(requestParam.getContestNum())
                         .actualNum(i)
-                        .problemId(problemMapDO.getProblemNum())
-                        .problemColor(problemMapDO.getColor())
-                        .contestId(requestParam.getContestId())
                         .build();
-                contestProblemMapper.insert(contestProblemDO);
+                contestProblemDOS.add(contestProblemDO);
             }
+            contestProblemMapper.batchInsert(contestProblemDOS);
         }
     }
+
+
 
     @Override
     public ContestDO queryByNum(Integer num) {
         LambdaQueryWrapper<ContestDO> queryWrapper = Wrappers.lambdaQuery(ContestDO.class)
-                .eq(ContestDO::getContestId, num)
+                .eq(ContestDO::getContestNum, num)
                 .eq(ContestDO::getDeleteFlag, 0);
         return baseMapper.selectOne(queryWrapper);
     }
@@ -131,14 +147,14 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, ContestDO> im
     @Override
     public void changeStatus(ContestStatusReqDTO requestParam) {
         LambdaQueryWrapper<ContestDO> queryWrapper = Wrappers.lambdaQuery(ContestDO.class)
-                .eq(ContestDO::getContestId, requestParam.getId())
+                .eq(ContestDO::getContestNum, requestParam.getId())
                 .eq(ContestDO::getDeleteFlag, 0);
         ContestDO hasContestDO = baseMapper.selectOne(queryWrapper);
         if(hasContestDO == null){
             throw new ClientException("比赛编号不存在");
         }
         LambdaUpdateWrapper<ContestDO> updateWrapper = Wrappers.lambdaUpdate(ContestDO.class)
-                .eq(ContestDO::getContestId, requestParam.getId())
+                .eq(ContestDO::getContestNum, requestParam.getId())
                 .eq(ContestDO::getDeleteFlag, 0);
         ContestDO contestDO = new ContestDO();
         contestDO.setContestStatus(requestParam.getStatus() ^ 1);
@@ -146,21 +162,21 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, ContestDO> im
     }
 
     @Override
-    public List<SubmitDO> sumbitData(Integer contestId) {
-        return contestMapper.sumbitSelectByContestId(contestId);
+    public List<SubmitDO> sumbitData(Integer contestNum) {
+        return contestMapper.sumbitSelectByContestNum(contestNum);
     }
 
     @Override
-    public List<TeamDO> teamData(Integer contestId) {
-        return contestMapper.teamSelectByContestId(contestId);
+    public List<TeamDO> teamData(Integer contestNum) {
+        return contestMapper.teamSelectByContestNum(contestNum);
     }
 
     @Override
-    public PrintProblemRespDTO printProblem(Integer contestId) {
+    public PrintProblemRespDTO printProblem(Integer contestNum) {
         PrintProblemRespDTO respDTO = new PrintProblemRespDTO();
-        ContestDO contestDO = contestMapper.selectByContestId(contestId);
+        ContestDO contestDO = contestMapper.selectByContestNum(contestNum);
         respDTO.setContest(contestDO);
-        List<ContestProblemDO> contestProblemDOS = contestProblemMapper.selectByContestId(contestId);
+        List<ContestProblemDO> contestProblemDOS = contestProblemMapper.selectByContestNum(contestNum);
         respDTO.setProblems(new ArrayList<>());
         for (ContestProblemDO PDO : contestProblemDOS) {
             Integer problemId = PDO.getProblemId();
@@ -179,11 +195,11 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, ContestDO> im
         queryWrapper.eq("delete_flag", 0);
         if(!StrUtil.isEmpty(requestParam.getSearch())){
             queryWrapper.like("title", requestParam.getSearch())
-                    .or().like("contest_id", requestParam.getSearch());
+                    .or().like("contest_num", requestParam.getSearch());
         }
         Pair<String, String> order = requestParam.getOrder();
         if(ObjectUtils.isEmpty(order)){
-            order = new Pair<>("contest_id", "asc");
+            order = new Pair<>("contest_num", "asc");
         }
         queryWrapper.orderByAsc(StringUtils.equals("asc", order.getValue()), Collections.singletonList(order.getKey()));
         // 公开视图。 TODO userInFO
@@ -205,80 +221,67 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, ContestDO> im
         return identify;
     }
 
+    // TODO 代码重构
     @Override
-    public void update(ContestUpdateReqDTO requestParam) {
-        LambdaQueryWrapper<ContestDO> queryWrapper = Wrappers.lambdaQuery(ContestDO.class)
-                .eq(ContestDO::getContestId, requestParam.getContestId())
-                .eq(ContestDO::getDeleteFlag, 0);
-        ContestDO hasContestDO = baseMapper.selectOne(queryWrapper);
-        if(hasContestDO == null){
-            throw new ClientException("比赛编号不存在");
-        }
-
-        String startTime = String.format(DATE_FORMAT
-                , requestParam.getStartYear()
-                , requestParam.getStartMonth()
-                , requestParam.getStartDay()
-                , requestParam.getStartHour()
-                , requestParam.getStartMinute()
-        );
-        String endTime = String.format(DATE_FORMAT
-                , requestParam.getEndYear()
-                , requestParam.getEndMonth()
-                , requestParam.getEndDay()
-                , requestParam.getEndHour()
-                , requestParam.getEndMinute()
-        );
-        int mask = 0;
-        if(CollUtil.isNotEmpty(requestParam.getLanguage())) {
-            for (Integer num : requestParam.getLanguage()) {
-                mask |= num;
-            }
-        }
-        Integer contestID = requestParam.getNewContestId() == null ? requestParam.getContestId() : requestParam.getNewContestId();
-        ContestDO contestDO = ContestDO.builder()
-                .contestId(contestID)
-                .contestStatus(requestParam.getContestStatus())
-                .startTime(DateUtil.parse(startTime))
-                .endTime(DateUtil.parse(endTime))
-                .title(requestParam.getTitle())
-                .access(requestParam.getAccess())
-                .languageMask(mask == 0 ? null : mask)
-                .frozenMinute(requestParam.getFrozenMinute())
-                .frozenAfter(requestParam.getFrozenAfter())
-                .awardRatio(StrUtil.join("#", requestParam.getRatioGold(), requestParam.getRatiosilver(), requestParam.getRatiobronze()))
-                .topteam(requestParam.getTopteam())
-                // TODO 脱敏
-                .password(requestParam.getPassword())
-                .build();
-        LambdaUpdateWrapper<ContestDO> updateWrapper = Wrappers.lambdaUpdate(ContestDO.class)
-                .eq(ContestDO::getContestId, requestParam.getContestId())
-                .eq(ContestDO::getDeleteFlag, 0);
-        baseMapper.update(contestDO, updateWrapper);
-
-        LambdaQueryWrapper<ContestDescrDO> descrQuery = Wrappers.lambdaQuery(ContestDescrDO.class)
-                .eq(ContestDescrDO::getContestId, requestParam.getContestId());
-        contestDescrMapper.delete(descrQuery);
-        if(!StrUtil.isEmpty(requestParam.getDescription())){
-            contestDescrMapper.insert(new ContestDescrDO(contestID, requestParam.getDescription()));
-        }
-
-        LambdaQueryWrapper<ContestProblemDO> deleteWrappers = Wrappers.lambdaQuery(ContestProblemDO.class)
-                .eq(ContestProblemDO::getContestId, requestParam.getContestId());
-        contestProblemMapper.delete(deleteWrappers);
-        List<ProblemMapDO> problemMapDOList = requestParam.getProblemMapDOList();
-        if(CollUtil.isNotEmpty(problemMapDOList)){
-            for(int i = 0; i < problemMapDOList.size(); i++ ){
-                ProblemMapDO problemMapDO = problemMapDOList.get(i);
-                ContestProblemDO contestProblemDO = ContestProblemDO.builder()
-                        .actualNum(i)
-                        .problemId(problemMapDO.getProblemNum())
-                        .problemColor(problemMapDO.getColor())
-                        .contestId(contestID)
-                        .build();
-                contestProblemMapper.insert(contestProblemDO);
-            }
-        }
+    public void update(ContestReqDTO requestParam) {
+//        LambdaQueryWrapper<ContestDO> queryWrapper = Wrappers.lambdaQuery(ContestDO.class)
+//                .eq(ContestDO::getContestNum, requestParam.getContestNum())
+//                .eq(ContestDO::getDeleteFlag, 0);
+//        ContestDO hasContestDO = baseMapper.selectOne(queryWrapper);
+//        if(hasContestDO == null){
+//            throw new ClientException("比赛编号不存在");
+//        }
+//
+//        int mask = 0;
+//        if(CollUtil.isNotEmpty(requestParam.getLanguage())) {
+//            for (Integer num : requestParam.getLanguage()) {
+//                mask |= num;
+//            }
+//        }
+//        Integer contestID = requestParam.getContestNum();
+//        ContestDO contestDO = ContestDO.builder()
+//                .contestNum(contestID)
+//                .contestStatus(requestParam.getContestStatus())
+//                .startTime(DateUtil.date(requestParam.))
+//                .endTime(DateUtil.date(requestParam.getStartTimes()))
+//                .title(requestParam.getTitle())
+//                .access(requestParam.getAccess())
+//                .languageMask(mask == 0 ? null : mask)
+//                .frozenMinute(requestParam.getFrozenMinute())
+//                .frozenAfter(requestParam.getFrozenAfter())
+//                .awardRatio(StrUtil.join("#", requestParam.getRatioGold(), requestParam.getRatiosilver(), requestParam.getRatiobronze()))
+//                .topteam(requestParam.getTopteam())
+//                // TODO 脱敏
+//                .password(requestParam.getPassword())
+//                .build();
+//        LambdaUpdateWrapper<ContestDO> updateWrapper = Wrappers.lambdaUpdate(ContestDO.class)
+//                .eq(ContestDO::getContestNum, requestParam.getContestNum())
+//                .eq(ContestDO::getDeleteFlag, 0);
+//        baseMapper.update(contestDO, updateWrapper);
+//
+//        LambdaQueryWrapper<ContestDescDO> descrQuery = Wrappers.lambdaQuery(ContestDescDO.class)
+//                .eq(ContestDescDO::getContestNum, requestParam.getContestNum());
+//        contestDescrMapper.delete(descrQuery);
+//        if(!StrUtil.isEmpty(requestParam.getDescription())){
+//            contestDescrMapper.insert(new ContestDescDO(contestID, requestParam.getDescription()));
+//        }
+//
+//        LambdaQueryWrapper<ContestProblemDO> deleteWrappers = Wrappers.lambdaQuery(ContestProblemDO.class)
+//                .eq(ContestProblemDO::getContestNum, requestParam.getContestNum());
+//        contestProblemMapper.delete(deleteWrappers);
+//        List<ProblemMapDO> problemMapDOList = requestParam.getProblemMapDOList();
+//        if(CollUtil.isNotEmpty(problemMapDOList)){
+//            for(int i = 0; i < problemMapDOList.size(); i++ ){
+//                ProblemMapDO problemMapDO = problemMapDOList.get(i);
+//                ContestProblemDO contestProblemDO = ContestProblemDO.builder()
+//                        .actualNum(i)
+//                        .problemId(problemMapDO.getProblemNum())
+//                        .problemColor(problemMapDO.getColor())
+//                        .contestNum(contestID)
+//                        .build();
+//                contestProblemMapper.insert(contestProblemDO);
+//            }
+//        }
     }
 
     public static void main(String[] args) {

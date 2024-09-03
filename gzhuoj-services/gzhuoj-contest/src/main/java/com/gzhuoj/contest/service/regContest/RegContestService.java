@@ -30,17 +30,17 @@ public interface RegContestService {
     List<RegContestProblemRespDTO> getContestProblemSetView(RegContestProSetReqDTO requestParam);
 
 
-    List<RegContestProblemRespDTO> getRegProblemSet(Integer contestId);
+    List<RegContestProblemRespDTO> getRegProblemSet(Integer contestNum);
 
     // TODO 写入缓存
     // TODO 总结一套完整的序列化配置方案，防止出现不同的配置情况。
-    ArrayList<RegContestProblemRespDTO> getRegProblemSetByRedis(Integer contestId);
+    ArrayList<RegContestProblemRespDTO> getRegProblemSetByRedis(Integer contestNum);
 
-    ContestDO getContest(Integer contestId);
+    ContestDO getContest(Integer contestNum);
 
-    ContestSeatRespDTO contestSeat(Integer contestId, ContestSeatReqDTO reqDTO);
+    ContestSeatRespDTO contestSeat(Integer contestNum, ContestSeatReqDTO reqDTO);
 
-    Options<String, Integer> getLanguageOptions(Integer contestId);
+    Options<String, Integer> getLanguageOptions(Integer contestNum);
 
-    Options<String, Integer> getProblemOptions(Integer contestId);
+    Options<String, Integer> getProblemOptions(Integer contestNum);
 }

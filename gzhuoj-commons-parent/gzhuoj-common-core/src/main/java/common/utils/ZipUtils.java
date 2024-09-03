@@ -1,4 +1,4 @@
-package common.toolkit;
+package common.utils;
 
 import cn.hutool.core.lang.Pair;
 import common.exception.ClientException;

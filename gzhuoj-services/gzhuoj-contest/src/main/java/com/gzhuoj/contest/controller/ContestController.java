@@ -5,9 +5,8 @@ import com.gzhuoj.contest.constant.PathConstant;
 import com.gzhuoj.contest.constant.PatternConstant;
 import com.gzhuoj.contest.dto.resp.contest.PrintProblemRespDTO;
 import com.gzhuoj.contest.dto.req.contest.ContestAllReqDTO;
-import com.gzhuoj.contest.dto.req.contest.ContestCreateReqDTO;
+import com.gzhuoj.contest.dto.req.contest.ContestReqDTO;
 import com.gzhuoj.contest.dto.req.contest.ContestStatusReqDTO;
-import com.gzhuoj.contest.dto.req.contest.ContestUpdateReqDTO;
 import com.gzhuoj.contest.dto.resp.contest.ContestAllRespDTO;
 import com.gzhuoj.contest.model.entity.ContestDO;
 import com.gzhuoj.contest.model.entity.SubmitDO;
@@ -17,7 +16,6 @@ import com.gzhuoj.contest.service.contest.UploadService;
 import org.gzhuoj.common.sdk.convention.result.Result;
 import org.gzhuoj.common.sdk.convention.result.Results;
 import lombok.RequiredArgsConstructor;
-import org.gzhuoj.common.sdk.model.pojo.Options;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,8 +38,8 @@ public class ContestController {
      * @param requestParam 创建比赛参数
      */
     @PostMapping("/create")
-    public Result<Void> create(@RequestBody ContestCreateReqDTO requestParam){
-        contestService.create(requestParam);
+    public Result<Void> create(@RequestBody ContestReqDTO requestParam){
+        contestService.createContest(requestParam);
         return Results.success();
     }
 
@@ -50,7 +48,7 @@ public class ContestController {
      * @param requestParam 更新比赛参数
      */
     @PutMapping("/update")
-    public Result<Void> update(@RequestBody ContestUpdateReqDTO requestParam){
+    public Result<Void> update(@RequestBody ContestReqDTO requestParam){
         contestService.update(requestParam);
         return Results.success();
     }
@@ -102,24 +100,24 @@ public class ContestController {
      * 滚榜查看提交信息
      */
     @GetMapping("/submitData")
-    public Result<List<SubmitDO> > submitData(Integer contestId){
-        return Results.success(contestService.sumbitData(contestId));
+    public Result<List<SubmitDO> > submitData(Integer contestNum){
+        return Results.success(contestService.sumbitData(contestNum));
     }
 
     /**
      *滚榜查看队伍信息
      */
     @GetMapping("/teamData")
-    public Result<List<TeamDO> > teamData(Integer contestId){
-        return Results.success(contestService.teamData(contestId));
+    public Result<List<TeamDO> > teamData(Integer contestNum){
+        return Results.success(contestService.teamData(contestNum));
     }
 
     /**
      * 打印题目的接口
      */
     @GetMapping("/printProblem")
-    public Result<PrintProblemRespDTO> printProblem(Integer contestId){
-        return Results.success(contestService.printProblem(contestId));
+    public Result<PrintProblemRespDTO> printProblem(Integer contestNum){
+        return Results.success(contestService.printProblem(contestNum));
     }
 
 }

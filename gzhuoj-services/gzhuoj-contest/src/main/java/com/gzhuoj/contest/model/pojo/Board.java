@@ -7,6 +7,6 @@ import java.util.List;
 
 @Data
 public class Board {
-    private String contestId;
+    private String contestNum;
     private List<PersonalScore> standings;
 }
