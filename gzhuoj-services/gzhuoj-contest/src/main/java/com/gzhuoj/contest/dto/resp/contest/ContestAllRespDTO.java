@@ -10,7 +10,7 @@ public class ContestAllRespDTO {
     /**
      * 比赛编号
      */
-    private Integer contestId;
+    private Integer contestNum;
 
     /**
      * 比赛标题

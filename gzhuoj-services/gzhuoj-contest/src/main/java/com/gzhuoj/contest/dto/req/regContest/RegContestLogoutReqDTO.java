@@ -7,7 +7,7 @@ public class RegContestLogoutReqDTO {
     /**
      * 比赛编号
      */
-    private Integer contestId;
+    private Integer contestNum;
 
     /**
      * token

@@ -18,24 +18,24 @@ import java.util.List;
 public class ContestProblemController {
     private final ContestProblemService contestProblemService;
     @GetMapping("/problem")
-    public Result<List<ContestProblemDO>> getAllProblem(Integer contestId){
-        return Results.success(contestProblemService.getAllProblem(contestId));
+    public Result<List<ContestProblemDO>> getAllProblem(Integer contestNum){
+        return Results.success(contestProblemService.getAllProblem(contestNum));
     }
 
     @GetMapping("/getresult")
-    public Result<ContestResultRespDTO> getAllResult(Integer contestId){
-        return Results.success(contestProblemService.getResult(contestId));
+    public Result<ContestResultRespDTO> getAllResult(Integer contestNum){
+        return Results.success(contestProblemService.getResult(contestNum));
     }
 
     /**
      * 传入比赛Id , 以及题目在比赛中的相对序号，获取到题目的内容。
      *
-     * @param contestId        比赛序号
+     * @param contestNum        比赛序号
      * @param problemIdInContest 题目在比赛中的相对序号
      * @return 返回一个涵盖题目大多数内容的信息。
      */
     @GetMapping("/get/problem/content")
-    public Result<ProblemContentRespDTO> getContestProblem(Integer contestId, Integer problemIdInContest){
-        return Results.success(contestProblemService.getContestProblem(contestId, problemIdInContest));
+    public Result<ProblemContentRespDTO> getContestProblem(Integer contestNum, Integer problemIdInContest){
+        return Results.success(contestProblemService.getContestProblem(contestNum, problemIdInContest));
     }
 }

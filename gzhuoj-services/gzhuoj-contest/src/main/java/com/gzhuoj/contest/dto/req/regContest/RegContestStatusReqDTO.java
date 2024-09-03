@@ -30,7 +30,7 @@ public class RegContestStatusReqDTO extends Page<SubmitDO> {
     /**
      * 比赛编号
      */
-    private Integer contestId;
+    private Integer contestNum;
 
     /**
      * 评测结果

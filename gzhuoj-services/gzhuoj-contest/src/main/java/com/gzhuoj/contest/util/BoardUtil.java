@@ -32,8 +32,8 @@ public class BoardUtil {
     /**
      * 重命名
      */
-    public String renameKey(String contestId, CompetitorBasicInfo competitor) {
-        return contestId + "->" + competitor.getAccount();
+    public String renameKey(String contestNum, CompetitorBasicInfo competitor) {
+        return contestNum + "->" + competitor.getAccount();
     }
     /**
      * 分数哈希 ，三个统计维度。 与下方函数比较，该函数不是增加，而是直接插入。 用于防止缓存出现问题，导致重新启动要进行批量数据插入
@@ -52,10 +52,10 @@ public class BoardUtil {
     /**
      * 比赛开始时，进行一些必要的初始化
      */
-    public void initBoard(String contestId, List<CompetitorBasicInfo> competitors, Integer durations, TimeUnit timeUnit){
+    public void initBoard(String contestNum, List<CompetitorBasicInfo> competitors, Integer durations, TimeUnit timeUnit){
         // 设置过期时间。
         for(CompetitorBasicInfo competitor: competitors){
-            zSetOperations.add(contestId, competitor.getAccount(),  0);
+            zSetOperations.add(contestNum, competitor.getAccount(),  0);
             PersonalScore personalScore = PersonalScore.builder()
                     .competitor(competitor)
                     // 初始每个人都是排名第一。
@@ -64,10 +64,10 @@ public class BoardUtil {
                     .dirt("0%")
                     .penalty(0L)
                     .build();
-            hashOperations.put(contestId, competitor.getAccount(), personalScore);
+            hashOperations.put(contestNum, competitor.getAccount(), personalScore);
         }
         // 统一设置数据结构过期时间
-        redisTemplate.expire(contestId ,  durations , timeUnit);
+        redisTemplate.expire(contestNum ,  durations , timeUnit);
     }
     /**
      * result 判定
@@ -111,7 +111,7 @@ public class BoardUtil {
      * @param param
      */
     public void accepts(UpdateScoreAttempt param){
-        PersonalScore personalScore = (PersonalScore) hashOperations.get(param.getContestId(), param.getCompetitor().getAccount());
+        PersonalScore personalScore = (PersonalScore) hashOperations.get(param.getContestNum(), param.getCompetitor().getAccount());
         // 保险起见必须触发重新插入机制。 TODO 要防止一些极端情况。
         if(ObjectUtils.isEmpty(personalScore)){
 
@@ -132,17 +132,17 @@ public class BoardUtil {
                     .times(System.currentTimeMillis())
                     .build();
             // 插入记录
-            hashOperations.put(param.getContestId(), param.getCompetitor().getAccount(), record);
+            hashOperations.put(param.getContestNum(), param.getCompetitor().getAccount(), record);
         }else {
             record.pass();
         }
         // 完成校验，判定为有效提交。 更新排行榜排名。
         Double score = scoreHash(param.getPunishTime(), param.getPassTime());
-        zSetOperations.add(param.getContestId(),
+        zSetOperations.add(param.getContestNum(),
                 param.getCompetitor().getAccount(), score);
     }
     public void reject(UpdateScoreAttempt param){
-        var personalScore = (PersonalScore) hashOperations.get(param.getContestId(), param.getCompetitor().getAccount());
+        var personalScore = (PersonalScore) hashOperations.get(param.getContestNum(), param.getCompetitor().getAccount());
         // 保险起见必须触发重新插入机制。 TODO 要防止一些极端情况。
         if(ObjectUtils.isEmpty(personalScore)){
 
@@ -163,7 +163,7 @@ public class BoardUtil {
                     .penaltyCount(1)
                     .times(System.currentTimeMillis())
                     .build();
-            hashOperations.put(param.getContestId(), param.getCompetitor().getAccount(), record);
+            hashOperations.put(param.getContestNum(), param.getCompetitor().getAccount(), record);
         }else {
             record.reject();
         }
@@ -174,12 +174,12 @@ public class BoardUtil {
      *   查相关的API
      *   1. 查出给定范围，并且给出列表。
      */
-    public List<PersonalScore> rangeViewByLimit(String contestId,  Integer l , Integer r){
-        List<String> competitors = new ArrayList<>(Objects.requireNonNull(zSetOperations.range(contestId, l, r)));
+    public List<PersonalScore> rangeViewByLimit(String contestNum,  Integer l , Integer r){
+        List<String> competitors = new ArrayList<>(Objects.requireNonNull(zSetOperations.range(contestNum, l, r)));
         competitors.sort(Comparator.comparingDouble(key -> {
-            Double target =  zSetOperations.score(contestId, key);
+            Double target =  zSetOperations.score(contestNum, key);
             return ObjectUtils.isEmpty(target)? 0.0 : target;
         }));
-        return competitors.stream().map(x -> (PersonalScore)hashOperations.get(contestId, x)).collect(Collectors.toList());
+        return competitors.stream().map(x -> (PersonalScore)hashOperations.get(contestNum, x)).collect(Collectors.toList());
     }
 }

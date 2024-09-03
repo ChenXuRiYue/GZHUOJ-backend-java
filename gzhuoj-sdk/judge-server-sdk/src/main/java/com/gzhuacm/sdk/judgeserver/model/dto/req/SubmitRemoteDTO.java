@@ -35,7 +35,7 @@ public class SubmitRemoteDTO implements Serializable {
     /**
      * 比赛编号
      */
-    private Integer contestId;
+    private Integer contestNum;
 
     /**
      * 提交语言

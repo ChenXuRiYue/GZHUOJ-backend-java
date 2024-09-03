@@ -7,7 +7,7 @@ public class ContestBalloonQueueReqDTO {
     /**
      * 比赛编号
      */
-    private Integer contestId;
+    private Integer contestNum;
 
     /**
      * 比赛室号

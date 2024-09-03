@@ -8,7 +8,7 @@ import com.gzhuoj.problem.service.problem.ProblemService;
 import com.gzhuoj.problem.service.common.UploadService;
 import com.gzhuoj.problem.service.resources.FileResourceService;
 import common.exception.ClientException;
-import common.toolkit.ZipUtils;
+import common.utils.ZipUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.collections4.CollectionUtils;
@@ -17,10 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.nio.file.Files;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 @Service

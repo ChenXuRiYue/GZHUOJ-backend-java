@@ -7,7 +7,7 @@ public class RegContestGenTeamReqDTO {
     /**
      * 标准比赛编号
      */
-    private Integer contestId;
+    private Integer contestNum;
 
     /**
      * 生成的队伍是否覆盖当前所有
