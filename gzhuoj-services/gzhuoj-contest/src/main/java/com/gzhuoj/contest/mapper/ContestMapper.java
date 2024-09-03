@@ -9,12 +9,12 @@ import org.apache.ibatis.annotations.Select;
 import java.util.List;
 
 public interface ContestMapper extends BaseMapper<ContestDO> {
-    @Select("SELECT * from contest where contest_id=#{contestId}")
-    ContestDO selectByContestId(Integer contestId);
+    @Select("SELECT * from contest where contest_num=#{contestNum}")
+    ContestDO selectByContestNum(Integer contestNum);
 
     @Select("SELECT * from submit")
-    List<SubmitDO> sumbitSelectByContestId(Integer contestId);
+    List<SubmitDO> sumbitSelectByContestNum(Integer contestNum);
 
     @Select("SELECT * from team")
-    List<TeamDO> teamSelectByContestId(Integer contestId);
+    List<TeamDO> teamSelectByContestNum(Integer contestNum);
 }

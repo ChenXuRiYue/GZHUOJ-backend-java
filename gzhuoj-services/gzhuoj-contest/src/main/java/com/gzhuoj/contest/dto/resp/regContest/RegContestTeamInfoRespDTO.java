@@ -8,7 +8,7 @@ public class RegContestTeamInfoRespDTO {
     /**
      * 比赛id
      */
-    private Integer contestId;
+    private Integer contestNum;
 
     /**
      * 队伍编号

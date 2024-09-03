@@ -19,7 +19,7 @@ import com.gzhuoj.usr.remote.ContestRemoteService;
 import com.gzhuoj.usr.remote.ProblemRemoteService;
 import com.gzhuoj.usr.remote.dto.req.UpdateProblemReqDTO;
 import com.gzhuoj.usr.service.admin.AdminService;
-import common.toolkit.GenerateRandStrUtil;
+import common.utils.GenerateRandStrUtil;
 import common.exception.ClientException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

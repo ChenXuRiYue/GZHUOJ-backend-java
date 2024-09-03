@@ -8,14 +8,14 @@ import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface TeamMapper extends BaseMapper<TeamDO> {
-    Integer getLastTeamNum(Integer contestId);
+    Integer getLastTeamNum(Integer contestNum);
 
     void insertOrUpdateTeam(@Param("team") TeamDO team);
 
     @Select("SELECT * from team where team_account=#{teamAccount}")
     TeamDO selectByTeamAccount(String teamAccount);
 
-    @Select("select count(*) from team where contest_id=#{contestId}")
-    Integer teamTotalByContestId(Integer contestId);
+    @Select("select count(*) from team where contest_num=#{contestNum}")
+    Integer teamTotalByContestNum(Integer contestNum);
 
 }

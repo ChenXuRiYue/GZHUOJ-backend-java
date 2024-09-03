@@ -13,7 +13,7 @@ public class test {
     @Test
     public void test1() {
         SFC sfc = new SFC();
-        sfc.contestId=13;
+        sfc.contestNum=13;
         sfc.problemId=18;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 

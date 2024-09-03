@@ -7,10 +7,10 @@ public class RedisKeyUtil {
 
     /**
      * 生成竞赛题目集的基础信息： 题目列表，和数据拆开。作为缓存
-     * @param contestId
+     * @param contestNum
      * @return
      */
-    public static String generateContestProblemSetKey(Integer contestId){
-        return REGULAR_CONTEST  + contestId;
+    public static String generateContestProblemSetKey(Integer contestNum){
+        return REGULAR_CONTEST  + contestNum;
     }
 }

@@ -15,7 +15,7 @@ import com.gzhuoj.contest.util.ChooseInstanceUtils;
 import org.gzhuoj.common.sdk.convention.result.Result;
 import common.enums.SubmissionStatus;
 import common.exception.ClientException;
-import common.toolkit.GenerateRandStrUtil;
+import common.utils.GenerateRandStrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

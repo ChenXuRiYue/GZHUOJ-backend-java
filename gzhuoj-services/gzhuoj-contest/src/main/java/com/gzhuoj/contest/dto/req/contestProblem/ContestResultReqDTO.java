@@ -2,5 +2,5 @@ package com.gzhuoj.contest.dto.req.contestProblem;
 
 
 public class ContestResultReqDTO {
-    Integer contestId;
+    Integer contestNum;
 }

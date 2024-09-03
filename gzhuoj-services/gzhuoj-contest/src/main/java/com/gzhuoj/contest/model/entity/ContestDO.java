@@ -22,7 +22,7 @@ public class ContestDO extends BaseDO {
     /**
      * 比赛编号
      */
-    private Integer contestId;
+    private Integer contestNum;
 
     /**
      * 比赛标题
@@ -64,15 +64,16 @@ public class ContestDO extends BaseDO {
      */
     private String attach;
 
-    /**
-     * 每个学校或组织显示排名最高的k支队r
-     */
-    private Integer topteam;
 
     /**
      * 获奖比例
      */
     private String awardRatio;
+
+    /**
+     * 奖牌数量分配
+     */
+    private String medalAssign;
 
     /**
      * 封榜分钟数

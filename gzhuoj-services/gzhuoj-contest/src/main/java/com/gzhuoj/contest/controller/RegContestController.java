@@ -101,12 +101,12 @@ public class RegContestController {
     /**
      * 根据比赛id查询比赛是否存在
      *
-     * @param contestId 比赛id
+     * @param contestNum 比赛id
      * @return 存在返回 true
      */
     @GetMapping("/exist")
-    public Result<ContestDO> getContest(Integer contestId) {
-        return Results.success(regContestService.getContest(contestId));
+    public Result<ContestDO> getContest(Integer contestNum) {
+        return Results.success(regContestService.getContest(contestNum));
     }
 
     /**
@@ -126,17 +126,17 @@ public class RegContestController {
     }
 
     @PostMapping("/seat")
-    public Result<ContestSeatRespDTO> contestSeat(Integer contestId,@RequestBody ContestSeatReqDTO reqDTO){
-        return Results.success(regContestService.contestSeat(contestId,reqDTO));
+    public Result<ContestSeatRespDTO> contestSeat(Integer contestNum,@RequestBody ContestSeatReqDTO reqDTO){
+        return Results.success(regContestService.contestSeat(contestNum,reqDTO));
     }
 
     @GetMapping("/options/language")
-    public Result<Options<String, Integer>> getLanguageOptions(Integer contestId) {
-        return Results.success(regContestService.getLanguageOptions(contestId));
+    public Result<Options<String, Integer>> getLanguageOptions(Integer contestNum) {
+        return Results.success(regContestService.getLanguageOptions(contestNum));
     }
 
     @GetMapping("/options/problem")
-    public Result<Options<String, Integer>> getProblemOptions(Integer contestId) {
-        return Results.success(regContestService.getProblemOptions(contestId));
+    public Result<Options<String, Integer>> getProblemOptions(Integer contestNum) {
+        return Results.success(regContestService.getProblemOptions(contestNum));
     }
 }

@@ -18,9 +18,11 @@ public interface ContestProblemMapper extends BaseMapper<ContestProblemDO> {
      */
     Integer selectForContest(SFC sfc);
 
-    @Select("select * from contest_problem where problem_id=#{problemId} and contest_id=#{contestId}")
-    ContestProblemDO selectByProblemId(@Param("problemId") Integer problemId,@Param("contestId")Integer contestId);
+    @Select("select * from contest_problem where problem_id=#{problemId} and contest_num=#{contestNum}")
+    ContestProblemDO selectByProblemId(@Param("problemId") Integer problemId,@Param("contestNum")Integer contestNum);
 
-    @Select("select * from contest_problem where contest_id=#{contestId} order by actual_num asc")
-    List<ContestProblemDO> selectByContestId(Integer contestId);
+    @Select("select * from contest_problem where contest_num=#{contestNum} order by actual_num asc")
+    List<ContestProblemDO> selectByContestNum(Integer contestNum);
+
+    void batchInsert(List<ContestProblemDO> contestProblemDOS);
 }

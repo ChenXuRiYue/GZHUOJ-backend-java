@@ -25,10 +25,6 @@ public class RegContestProblemRespDTO implements Serializable {
      */
     private String problemName;
 
-    /**
-     * 题目气球颜色
-     */
-    private String color;
 
     /**
      * AC总数

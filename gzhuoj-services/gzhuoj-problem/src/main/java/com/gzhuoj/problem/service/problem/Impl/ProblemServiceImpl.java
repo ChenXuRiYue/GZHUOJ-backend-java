@@ -27,7 +27,7 @@ import com.gzhuoj.problem.service.problem.ProblemService;
 import org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode;
 import common.exception.ClientException;
 import common.exception.ServiceException;
-import common.toolkit.GenerateRandStrUtil;
+import common.utils.GenerateRandStrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.ObjectUtils;

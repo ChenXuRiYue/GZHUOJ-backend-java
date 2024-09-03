@@ -15,7 +15,7 @@ public class ContestBalloonDO {
     /**
      * 比赛编号
      */
-    private Integer contestId;
+    private Integer contestNum;
 
     /**
      * 题目编号

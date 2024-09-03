@@ -21,7 +21,7 @@ public class TeamDO {
     /**
      * 比赛编号
      */
-    private Integer contestId;
+    private Integer contestNum;
 
     /**
      * 队伍参赛情况 0 -> 参赛 1 -> 不参赛
