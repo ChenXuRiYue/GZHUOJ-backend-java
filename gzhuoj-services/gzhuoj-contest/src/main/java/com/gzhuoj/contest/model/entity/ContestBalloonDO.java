@@ -20,7 +20,7 @@ public class ContestBalloonDO {
     /**
      * 题目编号
      */
-    private Integer problemId;
+    private Integer problemNum;
 
     /**
      * 队伍账号

@@ -40,7 +40,7 @@ public class ContestBalloonServiceImpl extends ServiceImpl<ContestBalloonMapper,
         Map<Integer, Integer> map = contestProblemService
                 .getAllProblem(requestParam.getContestNum())
                 .stream()
-                .collect(Collectors.toMap(ContestProblemDO::getProblemId, ContestProblemDO::getActualNum));
+                .collect(Collectors.toMap(ContestProblemDO::getProblemNum, ContestProblemDO::getProblemLetterIndex));
 
         LambdaQueryWrapper<ContestBalloonDO> queryWrapper = Wrappers.lambdaQuery(ContestBalloonDO.class)
                 .eq(ContestBalloonDO::getContestNum, requestParam.getContestNum())
@@ -49,7 +49,7 @@ public class ContestBalloonServiceImpl extends ServiceImpl<ContestBalloonMapper,
 
         return contestBalloonDOS.stream()
                 .map(each -> BeanUtil.toBean(each, ContestBalloonQueueRespDTO.class))
-                .peek(each -> each.setActualNum(map.get(each.getProblemId())))
+                .peek(each -> each.setProblemLetterIndex(map.get(each.getProblemNum())))
                 .sorted(Comparator.comparing(ContestBalloonQueueRespDTO::getAcTime))
                 .collect(Collectors.toList());
     }
@@ -58,7 +58,7 @@ public class ContestBalloonServiceImpl extends ServiceImpl<ContestBalloonMapper,
     public void status(ContestBalloonChangeStReqDTO requestParam) {
         LambdaUpdateWrapper<ContestBalloonDO> updateWrapper = Wrappers.lambdaUpdate(ContestBalloonDO.class)
                 .eq(ContestBalloonDO::getContestNum, requestParam.getContestNum())
-                .eq(ContestBalloonDO::getProblemId, requestParam.getProblemId())
+                .eq(ContestBalloonDO::getProblemNum, requestParam.getProblemNum())
                 .eq(ContestBalloonDO::getTeamAccount, requestParam.getTeamAccount());
         ContestBalloonDO contestBalloonDO = new ContestBalloonDO();
         contestBalloonDO.setBst(requestParam.getBst());

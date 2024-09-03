@@ -14,7 +14,7 @@ public class JudgeParam {
     /**
      * 题目编号
      */
-    private Integer problemId;
+    private Integer problemNum;
 
     /**
      * 编译文件唯一标识符

@@ -52,22 +52,22 @@ public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper,
     /**
      * 查询某一题的信息
      * @param contestNum
-     * @param problemId
+     * @param problemNum
      * @param beginTime
      * @param endTime
      * @return
      */
     @Override
-    public CPResult getProblemResult(Integer contestNum, Integer problemId, Date beginTime, Date endTime) {
+    public CPResult getProblemResult(Integer contestNum, Integer problemNum, Date beginTime, Date endTime) {
         SFC sfc = new SFC();
         sfc.beginTime=beginTime;
         sfc.endTime=endTime;
         sfc.contestNum=contestNum;
-        sfc.problemId=problemId;
+        sfc.problemNum=problemNum;
 
         CPResult cpResult = new CPResult();
-        ContestProblemDO contestProblemDO = contestProblemMapper.selectByProblemId(problemId,contestNum);
-        cpResult.name = String.valueOf((char)('A'+contestProblemDO.getActualNum()));
+        ContestProblemDO contestProblemDO = contestProblemMapper.selectByProblemNum(problemNum,contestNum);
+        cpResult.name = String.valueOf((char)('A'+contestProblemDO.getProblemLetterIndex()));
         sfc.status=0;cpResult.ac=contestProblemMapper.selectForContest(sfc);
         sfc.status=1;cpResult.pe=contestProblemMapper.selectForContest(sfc);
         sfc.status=2;cpResult.wa=contestProblemMapper.selectForContest(sfc);
@@ -121,8 +121,8 @@ public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper,
         CPResult total=new CPResult();
         total.name="total";
         for (ContestProblemDO CPD : contestProblemDOS) {
-            Integer problemId = CPD.getProblemId();
-            CPResult problemResult = getProblemResult(contestNum, problemId, startTime, endTime);
+            Integer problemNum = CPD.getProblemNum();
+            CPResult problemResult = getProblemResult(contestNum, problemNum, startTime, endTime);
             contestResultRespDTO.problem.add(problemResult);
             total.ac+=problemResult.ac;
             total.pe+=problemResult.pe;
@@ -153,15 +153,15 @@ public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper,
      * @return
      */
     @Override
-    public ProblemContentRespDTO getContestProblem(Integer contestNum, Integer problemIdInContest) {
+    public ProblemContentRespDTO getContestProblem(Integer contestNum, Integer problemNumInContest) {
         QueryWrapper<ContestProblemDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.allEq(Map.of("contest_num", contestNum, "actual_num" , problemIdInContest));
+        queryWrapper.allEq(Map.of("contest_num", contestNum, "problem_letter_index" , problemNumInContest));
         ContestProblemDO contestProblemDO = contestProblemMapper.selectOne(queryWrapper);
         if(ObjectUtils.isEmpty(contestProblemDO)){
             throw new  ServiceException(PROBLEM_MESSAGE_LOST);
         }
         ProblemReqDTO problemReqDTO = new ProblemReqDTO();
-        problemReqDTO.setProblemNum(contestProblemDO.getProblemId());
+        problemReqDTO.setProblemNum(contestProblemDO.getProblemNum());
         return problemApi.getProblemContent(problemReqDTO).getData();
     }
 }

@@ -4,10 +4,10 @@
 <mapper namespace="com.gzhuoj.contest.mapper.ContestProblemMapper">
     <insert id="batchInsert" parameterType="java.util.List">
         INSERT INTO contest_problem
-        (problem_id, contest_num, actual_num)
+        (problem_num, contest_num, problem_letter_index)
         VALUES
         <foreach collection="list" item="item" separator=",">
-            (#{item.problemId}, #{item.contestNum}, #{item.actualNum})
+            (#{item.problemNum}, #{item.contestNum}, #{item.problemLetterIndex})
         </foreach>
     </insert>
     <select id="selectForContest"
@@ -15,7 +15,7 @@
         SELECT count(submit_time) from gzhuoj_contest.submit
         <where>
             contest_num=#{contestNum} and
-            problem_id=#{problemId}
+            problem_num=#{problemNum}
             <if test="beginTime !=null">
                 and submit_time between #{beginTime} and #{endTime}
             </if>

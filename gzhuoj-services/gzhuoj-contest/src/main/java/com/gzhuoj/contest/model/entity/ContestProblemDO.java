@@ -20,10 +20,10 @@ public class ContestProblemDO {
     /**
      * 题目集中的编号
      */
-    private Integer problemId;
+    private Integer problemNum;
 
     /**
      * 题目在比赛中的编号
      */
-    private Integer actualNum;
+    private Integer problemLetterIndex;
 }

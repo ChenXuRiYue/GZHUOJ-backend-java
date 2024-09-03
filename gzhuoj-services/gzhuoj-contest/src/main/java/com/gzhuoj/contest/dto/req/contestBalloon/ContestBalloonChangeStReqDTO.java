@@ -17,7 +17,7 @@ public class ContestBalloonChangeStReqDTO {
     /**
      * 题目编号
      */
-    private Integer problemId;
+    private Integer problemNum;
 
     /**
      * balloon status， 0未发、1已发

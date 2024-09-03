@@ -29,9 +29,9 @@ public class JudgeDispatcher {
     /**
      * 发送评测任务
      * @param submitId 提交Id
-     * @param problemId 题目Id
+     * @param problemNum 题目Id
      */
-    public void sendTask(Integer submitId, Integer problemId) {
+    public void sendTask(Integer submitId, Integer problemNum) {
         LambdaUpdateWrapper<SubmitDO> updateWrapper = Wrappers.lambdaUpdate(SubmitDO.class)
                 .eq(SubmitDO::getSubmitId, submitId);
         try {

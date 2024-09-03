@@ -36,14 +36,14 @@ CREATE TABLE `contest`
 CREATE TABLE `contest_balloon`
 (
     `contest_num`     int                                                           NOT NULL COMMENT '比赛编号',
-    `problem_id`     int                                                           NOT NULL COMMENT '题目编号',
+    `problem_num`     int                                                           NOT NULL COMMENT '题目编号',
     `team_account`   varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '队伍账号',
     `room`           varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '比赛室号',
     `ac_time`        int                                                           NOT NULL COMMENT '距离比赛开始的时间',
     `pst`            tinyint                                                       NOT NULL COMMENT 'problem status，2 ac、3 fb',
     `bst`            tinyint                                                       NOT NULL COMMENT 'balloon status， 4分配，5已发',
     `balloon_sender` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '气球配分员',
-    PRIMARY KEY (`contest_num`, `problem_id`, `team_account`) USING BTREE
+    PRIMARY KEY (`contest_num`, `problem_num`, `team_account`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='比赛的气球任务管理表';
@@ -59,10 +59,10 @@ CREATE TABLE `contest_description`
 
 CREATE TABLE `contest_problem`
 (
-    `problem_id`    int                                                           NOT NULL DEFAULT '0' COMMENT '题目集中的编号',
+    `problem_num`    int                                                           NOT NULL DEFAULT '0' COMMENT '题目集中的编号',
     `contest_num`    int                                                                    DEFAULT NULL COMMENT '比赛编号',
     `problem_color` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '题目对应气球颜色rgb十六进制编号',
-    `actual_num`    int                                                           NOT NULL DEFAULT '0' COMMENT '题目在比赛中的编号',
+    `problem_letter_index`    int                                                           NOT NULL DEFAULT '0' COMMENT '题目在比赛中的编号',
     KEY `Index_contest_num` (`contest_num`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
@@ -88,7 +88,7 @@ CREATE TABLE `judge_server`
 CREATE TABLE `solution`
 (
     `solution_id` int                                                       NOT NULL AUTO_INCREMENT,
-    `problem_id`  int                                                       NOT NULL DEFAULT '0',
+    `problem_num`  int                                                       NOT NULL DEFAULT '0',
     `user_id`     char(48) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
     `nick`        char(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
     `time`        int                                                       NOT NULL DEFAULT '0',
@@ -107,7 +107,7 @@ CREATE TABLE `solution`
     `judger`      char(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'LOCAL',
     PRIMARY KEY (`solution_id`),
     KEY `uid` (`user_id`),
-    KEY `pid` (`problem_id`),
+    KEY `pid` (`problem_num`),
     KEY `res` (`result`),
     KEY `cid` (`contest_num`)
 ) ENGINE = InnoDB
@@ -118,7 +118,7 @@ CREATE TABLE `solution`
 CREATE TABLE `submit`
 (
     `submit_id`    int                                                           NOT NULL AUTO_INCREMENT,
-    `problem_id`   int                                                           NOT NULL DEFAULT '0',
+    `problem_num`   int                                                           NOT NULL DEFAULT '0',
     `contest_num`   int                                                                    DEFAULT '0',
     `memory`       int                                                           NOT NULL DEFAULT '0',
     `submit_time`  datetime                                                      NOT NULL DEFAULT '2016-05-13 19:24:00',
@@ -130,7 +130,7 @@ CREATE TABLE `submit`
     `judger`       varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL DEFAULT 'LOCAL',
     PRIMARY KEY (`submit_id`) USING BTREE,
     KEY `uid` (`team_account`) USING BTREE,
-    KEY `pid` (`problem_id`) USING BTREE,
+    KEY `pid` (`problem_num`) USING BTREE,
     KEY `res` (`status`) USING BTREE,
     KEY `cid` (`contest_num`) USING BTREE,
     KEY `sfc` (`submit_time`, `status`, `language`)

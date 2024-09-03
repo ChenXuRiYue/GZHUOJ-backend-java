@@ -45,7 +45,7 @@ public class JudgeRun {
         // 包装评测参数对象
         JudgeParam judgeParam = JudgeParam.builder()
                 .fileId(userFileId)
-                .problemId(problemRespDTO.getProblemNum())
+                .problemNum(problemRespDTO.getProblemNum())
                 .maxMemory((long) problemRespDTO.getMemoryLimit())
                 .maxTime((long) problemRespDTO.getTimeLimit())
                 .testTime(testTime)

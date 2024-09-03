@@ -47,11 +47,11 @@ public class JudgeController {
 
     /**
      * 查询某道题目所有的测试数据文件
-     * @param problemId 题目编号
+     * @param problemNum 题目编号
      * @return 测试数据对象响应集合
      */
     @GetMapping("/testcase/upload")
-    public Result<List<ProblemJudgeResourcesRespDTO>> getUpLoadData(@RequestParam("problemId") Integer problemId){
-        return Results.success(fileResourceService.getUpLoadData(problemId));
+    public Result<List<ProblemJudgeResourcesRespDTO>> getUpLoadData(@RequestParam("problemNum") Integer problemNum){
+        return Results.success(fileResourceService.getUpLoadData(problemNum));
     }
 }

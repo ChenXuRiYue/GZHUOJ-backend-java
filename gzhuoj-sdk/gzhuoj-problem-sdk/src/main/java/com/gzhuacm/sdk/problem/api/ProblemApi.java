@@ -18,14 +18,14 @@ public interface ProblemApi {
     Result<ProblemRespDTO> queryProByNum(@RequestParam("num") Integer num);
 
     @GetMapping("/api/gzhuoj-problem/problem/selectProblemById")
-    ProblemPrintDTO selectProblemById(@RequestParam("problemId") Integer problemId);
+    ProblemPrintDTO selectProblemById(@RequestParam("problemNum") Integer problemNum);
 
     @PostMapping("/api/gzhuoj-problem/problem/get/contents")
     Result<ProblemContentRespDTO> getProblemContent(@RequestBody ProblemReqDTO problemReqDTO);
 
 
     @GetMapping("/api/gzhuoj-problem/judge/testcase/upload")
-    Result<List<ProblemJudgeResourcesRespDTO>> upload(@RequestParam("problemId") Integer problemId);
+    Result<List<ProblemJudgeResourcesRespDTO>> upload(@RequestParam("problemNum") Integer problemNum);
 
     class MultipartSupportConfig {
         @Bean

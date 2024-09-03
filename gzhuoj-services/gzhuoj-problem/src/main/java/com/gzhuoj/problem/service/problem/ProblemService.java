@@ -24,9 +24,9 @@ public interface ProblemService extends IService<ProblemDO> {
 
     ProblemDO selectProblemById(Integer id);
 
-    ProblemDescrDO selectProblemDescrById(Integer problemId);
+    ProblemDescrDO selectProblemDescrById(Integer problemNum);
 
-    List<Object> selectTestExampleById(Integer problemId);
+    List<Object> selectTestExampleById(Integer problemNum);
 
-    ProblemContentRespDTO getProblemContent(Integer problemId);
+    ProblemContentRespDTO getProblemContent(Integer problemNum);
 }

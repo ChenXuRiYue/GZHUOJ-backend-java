@@ -224,13 +224,13 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
     }
 
     @Override
-    public ProblemDescrDO selectProblemDescrById(Integer problemId) {
-        return problemMapper.selectProblemDesceById(problemId);
+    public ProblemDescrDO selectProblemDescrById(Integer problemNum) {
+        return problemMapper.selectProblemDesceById(problemNum);
     }
 
     @Override
-    public List<Object> selectTestExampleById(Integer problemId) {
-        List<TestExampleDO> testCaseDOS = problemMapper.selectTestExampleById(problemId);
+    public List<Object> selectTestExampleById(Integer problemNum) {
+        List<TestExampleDO> testCaseDOS = problemMapper.selectTestExampleById(problemNum);
         List<Object> testExampleList = new ArrayList<>();
         for (TestExampleDO testExampleDO : testCaseDOS) {
             testExampleList.add((Object) testExampleDO);

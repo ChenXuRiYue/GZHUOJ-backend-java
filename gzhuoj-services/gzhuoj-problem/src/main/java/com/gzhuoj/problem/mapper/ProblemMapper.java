@@ -11,12 +11,12 @@ import java.util.List;
 
 public interface ProblemMapper extends BaseMapper<ProblemDO> {
 //    void createProblem(CreateProblemReqDTO createProblemReqDTO);
-    @Select("SELECT * from `gzhuoj-problem`.problem where id=#{problemId}")
-    public ProblemDO selectProblemById(Integer problemId);
+    @Select("SELECT * from `gzhuoj-problem`.problem where id=#{problemNum}")
+    public ProblemDO selectProblemById(Integer problemNum);
 
-    @Select("SELECT * from `gzhuoj-problem`.problem_description where id=#{problemId}")
-    public ProblemDescrDO selectProblemDesceById(Integer problemId);
+    @Select("SELECT * from `gzhuoj-problem`.problem_description where id=#{problemNum}")
+    public ProblemDescrDO selectProblemDesceById(Integer problemNum);
 
-    @Select("SELECT * from `gzhuoj-problem`.test_example where test_example.problem_id=#{problemId}")
-    List<TestExampleDO> selectTestExampleById(Integer problemId);
+    @Select("SELECT * from `gzhuoj-problem`.test_example where test_example.problem_num=#{problemNum}")
+    List<TestExampleDO> selectTestExampleById(Integer problemNum);
 }

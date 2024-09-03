@@ -16,7 +16,7 @@ public class ProblemJudgeResourcesDO extends BaseDO {
     /**
      * 题库内题目序号
      */
-    private Integer problemId;
+    private Integer problemNum;
 
     /**
      * 文件名称

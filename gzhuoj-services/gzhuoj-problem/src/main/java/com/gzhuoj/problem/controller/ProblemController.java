@@ -98,12 +98,12 @@ public class ProblemController {
 
 
     @GetMapping("/selectProblemById")
-    public ProblemPrintDTO selectProblemById(Integer problemId){
-        //System.out.printf("调试%d",problemId);
+    public ProblemPrintDTO selectProblemById(Integer problemNum){
+        //System.out.printf("调试%d",problemNum);
         ProblemPrintDTO result=new ProblemPrintDTO();
-        result.setProblemDO(problemService.selectProblemById(problemId));
-        result.setProblemDescrDO(problemService.selectProblemDescrById(problemId));
-        result.setTestExampleDO(problemService.selectTestExampleById(problemId));
+        result.setProblemDO(problemService.selectProblemById(problemNum));
+        result.setProblemDescrDO(problemService.selectProblemDescrById(problemNum));
+        result.setTestExampleDO(problemService.selectTestExampleById(problemNum));
         return result;
     }
 }

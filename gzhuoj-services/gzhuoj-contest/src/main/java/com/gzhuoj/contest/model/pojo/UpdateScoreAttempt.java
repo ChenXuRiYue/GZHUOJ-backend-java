@@ -9,6 +9,6 @@ public class UpdateScoreAttempt {
     private CompetitorBasicInfo competitor;
     private Integer passTime ;
     private Integer punishTime;
-    private String ProblemId;
+    private String ProblemNum;
     private SubmissionStatus submissionStatus;
 }

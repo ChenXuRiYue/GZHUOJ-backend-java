@@ -47,7 +47,7 @@ public class JudgeContext {
         Path targetDirectoryPath = Paths.get("").toAbsolutePath().resolve(PROBLEM_BASE_PATH + "/" + problemRespDTO.getAttach() + "/test_case");
         // 该题目文件夹如果为空
         if(!FileUtils.isDirectoryExists(targetDirectoryPath.toString())){
-            loadProblemTestCase(targetDirectoryPath, submitDO.getProblemId());
+            loadProblemTestCase(targetDirectoryPath, submitDO.getProblemNum());
         }
         // judge结果用于判断错误信息
         Map<String, Object> judgeResult = judgeStrategy.judge(problemRespDTO, submitDO);
@@ -63,10 +63,10 @@ public class JudgeContext {
     /**
      * 加载单个题目的所有题目资源到本地
      * @param targetDirectoryPath 本地目标路径
-     * @param problemId 题目编号
+     * @param problemNum 题目编号
      */
-    private void loadProblemTestCase(Path targetDirectoryPath, Integer problemId) {
-        Result<List<ProblemJudgeResourcesRespDTO>> result = problemRemoteService.upload(problemId);
+    private void loadProblemTestCase(Path targetDirectoryPath, Integer problemNum) {
+        Result<List<ProblemJudgeResourcesRespDTO>> result = problemRemoteService.upload(problemNum);
         List<ProblemJudgeResourcesRespDTO> resources = result.getData();
         if(CollUtil.isEmpty(resources)){
             throw new ServiceException(JUDGE_PROBLEM_RESOURCES_NOT_FOUND_ERROR);
@@ -74,14 +74,14 @@ public class JudgeContext {
         try {
             Files.createDirectories(targetDirectoryPath);
         } catch (IOException e) {
-            throw new RuntimeException(String.format("TestCase文件夹创建失败 Path = %s, ProblemId = %d", targetDirectoryPath, problemId),e);
+            throw new RuntimeException(String.format("TestCase文件夹创建失败 Path = %s, ProblemNum = %d", targetDirectoryPath, problemNum),e);
         }
         resources.forEach(each -> {
             Path testCase = targetDirectoryPath.resolve(each.getFileName());
             try {
                 Files.writeString(testCase, each.getFileContent());
             } catch (IOException e) {
-                throw new RuntimeException(String.format("TestCase文件创建失败 Path = %s, ProblemId = %d", targetDirectoryPath, problemId),e);
+                throw new RuntimeException(String.format("TestCase文件创建失败 Path = %s, ProblemNum = %d", targetDirectoryPath, problemNum),e);
             }
         });
     }
