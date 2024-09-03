@@ -44,7 +44,7 @@ public class RegContestProblemRespDTO implements Serializable {
     /**
      * 题目在比赛中的编号
      */
-    private Integer actualNum;
+    private Integer problemLetterIndex;
 
     /**
      * 自己team是否AC

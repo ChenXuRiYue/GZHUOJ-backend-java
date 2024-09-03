@@ -49,7 +49,7 @@ public class JudgeServerServiceImpl extends ServiceImpl<JudgeServerMapper, Judge
             log.error("submit update failure submitId = {}", submitDO.getSubmitId());
             return;
         }
-        Result<ProblemRespDTO> problemRespDTO = problemRemoteService.queryProByNum(submitDO.getProblemId());
+        Result<ProblemRespDTO> problemRespDTO = problemRemoteService.queryProByNum(submitDO.getProblemNum());
         SubmitDO submitResult = judgeContext.judge(problemRespDTO.getData(), submitDO);
         contestRemoteService.submitUpdate(BeanUtil.toBean(submitResult, SubmitRemoteDTO.class));
     }

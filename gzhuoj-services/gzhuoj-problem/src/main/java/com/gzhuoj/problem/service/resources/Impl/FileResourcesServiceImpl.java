@@ -22,10 +22,10 @@ public class FileResourcesServiceImpl implements FileResourceService {
     private final ProblemJudgeResourcesMapper problemJudgeResourcesMapper;
 
     @Override
-    public void insertFileResource(List<Pair<String, String>> files, Integer ProblemId) {
+    public void insertFileResource(List<Pair<String, String>> files, Integer ProblemNum) {
         for (Pair<String, String> file : files) {
             ProblemJudgeResourcesDO problemJudgeResourcesDO = ProblemJudgeResourcesDO.builder()
-                    .problemId(ProblemId)
+                    .problemNum(ProblemNum)
                     .fileName(file.getKey())
                     .fileContent(file.getValue())
                     .build();
@@ -34,9 +34,9 @@ public class FileResourcesServiceImpl implements FileResourceService {
     }
 
     @Override
-    public List<ProblemJudgeResourcesRespDTO> getUpLoadData(Integer problemId) {
+    public List<ProblemJudgeResourcesRespDTO> getUpLoadData(Integer problemNum) {
         LambdaQueryWrapper<ProblemJudgeResourcesDO> queryWrapper = Wrappers.lambdaQuery(ProblemJudgeResourcesDO.class)
-                .eq(ProblemJudgeResourcesDO::getProblemId, problemId)
+                .eq(ProblemJudgeResourcesDO::getProblemNum, problemNum)
                 .eq(ProblemJudgeResourcesDO::getDeleteFlag, 0);
         List<ProblemJudgeResourcesDO> judgeResourcesDOS = problemJudgeResourcesMapper.selectList(queryWrapper);
         return judgeResourcesDOS.stream().map(each -> BeanUtil.toBean(each, ProblemJudgeResourcesRespDTO.class)).collect(Collectors.toList());

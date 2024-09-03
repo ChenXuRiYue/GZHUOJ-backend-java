@@ -60,7 +60,7 @@ CREATE TABLE `test_example`
 
 CREATE TABLE `gzhuoj-problem`.problem_judge_resources
 (
-    problem_id   INTEGER      NOT NULL COMMENT 'problem 在题库中的序号',
+    problem_num   INTEGER      NOT NULL COMMENT 'problem 在题库中的序号',
     id           INTEGER auto_increment NOT NULL COMMENT '表内主键',
     file_name    varchar(128) NOT NULL,
     file_content LONGTEXT NULL COMMENT '文件内容',

@@ -14,7 +14,7 @@ public class test {
     public void test1() {
         SFC sfc = new SFC();
         sfc.contestNum=13;
-        sfc.problemId=18;
+        sfc.problemNum=18;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 
@@ -25,7 +25,7 @@ public class test {
 
         sfc.status=1;
         //System.out.println("结果："+contestProblemMapper.selectForContest(sfc));
-        System.out.println(contestProblemMapper.selectByProblemId(18,13));
+        System.out.println(contestProblemMapper.selectByProblemNum(18,13));
     }
     */
     @Autowired

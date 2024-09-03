@@ -31,11 +31,11 @@ public class ContestProblemController {
      * 传入比赛Id , 以及题目在比赛中的相对序号，获取到题目的内容。
      *
      * @param contestNum        比赛序号
-     * @param problemIdInContest 题目在比赛中的相对序号
+     * @param problemNumInContest 题目在比赛中的相对序号
      * @return 返回一个涵盖题目大多数内容的信息。
      */
     @GetMapping("/get/problem/content")
-    public Result<ProblemContentRespDTO> getContestProblem(Integer contestNum, Integer problemIdInContest){
-        return Results.success(contestProblemService.getContestProblem(contestNum, problemIdInContest));
+    public Result<ProblemContentRespDTO> getContestProblem(Integer contestNum, Integer problemNumInContest){
+        return Results.success(contestProblemService.getContestProblem(contestNum, problemNumInContest));
     }
 }

@@ -120,14 +120,14 @@ public class BoardUtil {
         assert personalScore != null;
         Map<String, PersonalSingleProblemResults> problemResultDetails = personalScore.getProblemResultsDetails();
         // 得到对应题目的保存结果
-        PersonalSingleProblemResults record = problemResultDetails.get(param.getProblemId());
+        PersonalSingleProblemResults record = problemResultDetails.get(param.getProblemNum());
         // 当前题目已经通过
         if(!ObjectUtils.isEmpty(record) && record.getStatus().equals(true)){
             return;
         } else if(ObjectUtils.isEmpty(record)){
             // TODO 测试的时候处理时间。
             record = PersonalSingleProblemResults.builder()
-                    .problemId(param.getProblemId())
+                    .problemNum(param.getProblemNum())
                     .status(true)
                     .times(System.currentTimeMillis())
                     .build();
@@ -151,14 +151,14 @@ public class BoardUtil {
         assert personalScore != null;
         Map<String, PersonalSingleProblemResults> problemResultDetails = personalScore.getProblemResultsDetails();
         // 得到对应题目的保存结果
-        PersonalSingleProblemResults record = problemResultDetails.get(param.getProblemId());
+        PersonalSingleProblemResults record = problemResultDetails.get(param.getProblemNum());
         // 当前题目已经通过 不做处理
         if(!ObjectUtils.isEmpty(record) && record.getStatus().equals(true)){
             return;
         } else if(ObjectUtils.isEmpty(record)){
             // TODO 测试的时候处理时间
             record = PersonalSingleProblemResults.builder()
-                    .problemId(param.getProblemId())
+                    .problemNum(param.getProblemNum())
                     .status(false)
                     .penaltyCount(1)
                     .times(System.currentTimeMillis())

@@ -14,9 +14,9 @@ import java.util.List;
 public interface ContestProblemService extends IService<ContestProblemDO> {
     List<ContestProblemDO> getAllProblem(Integer contestNum);
 
-    CPResult getProblemResult(Integer contestNum, Integer problemId, Date beginTime, Date endTime);
+    CPResult getProblemResult(Integer contestNum, Integer problemNum, Date beginTime, Date endTime);
 
     ContestResultRespDTO getResult(Integer ContestNum);
 
-    ProblemContentRespDTO getContestProblem(Integer contestNum, Integer problemIdInContest);
+    ProblemContentRespDTO getContestProblem(Integer contestNum, Integer problemNumInContest);
 }

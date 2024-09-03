@@ -57,7 +57,7 @@ public class PreCheckValidator {
             }
         }
 
-        if(problemApi.queryProByNum(requestParam.getProblemId()) == null){
+        if(problemApi.queryProByNum(requestParam.getProblemNum()) == null){
             // 题目是否存在
             throw new ClientException(PROBLEM_NOT_FOUND);
         }

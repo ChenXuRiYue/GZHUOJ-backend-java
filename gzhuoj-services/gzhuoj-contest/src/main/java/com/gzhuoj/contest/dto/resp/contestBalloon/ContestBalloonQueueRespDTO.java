@@ -32,10 +32,10 @@ public class ContestBalloonQueueRespDTO {
     /**
      * 题目在比赛中的实际编号
      */
-    private Integer actualNum;
+    private Integer problemLetterIndex;
 
     /**
      * 题目编号
      */
-    private Integer problemId;
+    private Integer problemNum;
 }

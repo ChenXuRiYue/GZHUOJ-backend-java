@@ -68,11 +68,11 @@ public class UploadServiceImpl implements UploadService {
     }
 
     @SneakyThrows
-    private void unzipAndSaveTestCase(List<MultipartFile> testCase, Integer problemId) {
+    private void unzipAndSaveTestCase(List<MultipartFile> testCase, Integer problemNum) {
         // 确保前提已经满足
         MultipartFile zipFile = testCase.get(0);
         List<Pair<String, String>> filesContents = ZipUtils.decompressZipToStrings(zipFile);
-        fileResourceService.insertFileResource(filesContents, problemId);
+        fileResourceService.insertFileResource(filesContents, problemNum);
     }
 
     private String getDirPath(String targetFilePath) {

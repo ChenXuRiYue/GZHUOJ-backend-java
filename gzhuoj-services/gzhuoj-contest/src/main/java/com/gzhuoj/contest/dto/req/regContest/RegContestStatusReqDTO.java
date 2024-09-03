@@ -10,7 +10,7 @@ public class RegContestStatusReqDTO extends Page<SubmitDO> {
     /**
      * 题目编号
      */
-    private Integer problemId;
+    private Integer problemNum;
 
     /**
      * 队伍编号

@@ -6,7 +6,7 @@ import com.gzhuacm.sdk.problem.model.dto.ProblemJudgeResourcesRespDTO;
 import java.util.List;
 
 public interface FileResourceService {
-     void insertFileResource(List<Pair<String, String>> files, Integer problemId);
+     void insertFileResource(List<Pair<String, String>> files, Integer problemNum);
 
-     List<ProblemJudgeResourcesRespDTO> getUpLoadData(Integer problemId);
+     List<ProblemJudgeResourcesRespDTO> getUpLoadData(Integer problemNum);
 }

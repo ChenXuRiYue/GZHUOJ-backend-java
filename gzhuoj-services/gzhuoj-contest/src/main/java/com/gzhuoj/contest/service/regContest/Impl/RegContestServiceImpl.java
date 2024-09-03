@@ -277,8 +277,8 @@ public class RegContestServiceImpl implements RegContestService {
     public IPage<RegContestStatusRespDTO> status(RegContestStatusReqDTO requestParam) {
         LambdaQueryWrapper<SubmitDO> queryWrapper = Wrappers.lambdaQuery(SubmitDO.class)
                 .eq(SubmitDO::getContestNum, requestParam.getContestNum());
-        if(requestParam.getProblemId() != null){
-            queryWrapper.eq(SubmitDO::getProblemId, requestParam.getProblemId());
+        if(requestParam.getProblemNum() != null){
+            queryWrapper.eq(SubmitDO::getProblemNum, requestParam.getProblemNum());
         }
         if(requestParam.getSchool() != null){
             queryWrapper.eq(SubmitDO::getLanguage, requestParam.getSchool());
@@ -329,7 +329,7 @@ public class RegContestServiceImpl implements RegContestService {
         if (ObjectUtils.isEmpty(result)) {
             result = getRegProblemSetBydatabase(contestNum);
             // 调整顺序且缓存
-            result.sort(Comparator.comparingInt(RegContestProblemRespDTO::getActualNum));
+            result.sort(Comparator.comparingInt(RegContestProblemRespDTO::getProblemLetterIndex));
             cacheRegProblemSetByRedis(contestNum, result);
         }
         return result;
@@ -347,13 +347,13 @@ public class RegContestServiceImpl implements RegContestService {
         List<ContestProblemDO> allProblem = contestProblemService.getAllProblem(contestNum);
         ArrayList<RegContestProblemRespDTO> result = new ArrayList<>();
         for (ContestProblemDO cpDO : allProblem) {
-            ProblemRespDTO problemRespDTO = problemApi.queryProByNum(cpDO.getProblemId()).getData();
+            ProblemRespDTO problemRespDTO = problemApi.queryProByNum(cpDO.getProblemNum()).getData();
             if (problemRespDTO == null) {
                 throw new ServiceException(SERVICE_PROBLEM_NOT_FOUND_ERROR);
             }
             RegContestProblemRespDTO regContestProblemRespDTO = RegContestProblemRespDTO.builder()
-                    .problemNum(cpDO.getProblemId())
-                    .actualNum(cpDO.getActualNum())
+                    .problemNum(cpDO.getProblemNum())
+                    .problemLetterIndex(cpDO.getProblemLetterIndex())
                     .memoryLimit(problemRespDTO.getMemoryLimit())
                     .timeLimit(problemRespDTO.getTimeLimit())
                     .problemName(problemRespDTO.getProblemName())
@@ -431,7 +431,7 @@ public class RegContestServiceImpl implements RegContestService {
         boolean AC = false;
         LambdaQueryWrapper<SubmitDO> queryWrapper = Wrappers.lambdaQuery(SubmitDO.class)
                 .eq(SubmitDO::getContestNum, contestDO.getContestNum())
-                .eq(SubmitDO::getProblemId, respDTO.getProblemNum())
+                .eq(SubmitDO::getProblemNum, respDTO.getProblemNum())
                 .eq(SubmitDO::getTeamAccount, UserContext.getUserId())
                 .eq(SubmitDO::getStatus, SubmissionStatus.ACCEPTED);
         SubmitDO submitDO = submitMapper.selectOne(queryWrapper);
@@ -445,7 +445,7 @@ public class RegContestServiceImpl implements RegContestService {
         LambdaQueryWrapper<SubmitDO> submitDOLambdaQueryWrapper = Wrappers.lambdaQuery(SubmitDO.class)
                 .select(SubmitDO::getTeamAccount)
                 .eq(SubmitDO::getContestNum, contestDO.getContestNum())
-                .eq(SubmitDO::getProblemId, respDTO.getProblemNum())
+                .eq(SubmitDO::getProblemNum, respDTO.getProblemNum())
                 .between(SubmitDO::getSubmitTime, contestDO.getStartTime(), contestDO.getEndTime())
                 .groupBy(SubmitDO::getTeamAccount);
         List<SubmitDO> submitDOS = submitMapper.selectList(submitDOLambdaQueryWrapper);
@@ -562,12 +562,12 @@ public class RegContestServiceImpl implements RegContestService {
     }
 
     public Options<String, Integer> contestProblemsToProblemOptions(List<RegContestProblemRespDTO> regContestProblemRespDTOS) {
-        // ep: A. 题目名称 , ActualNum; -> 实际编号不轻易暴露给用户；
+        // ep: A. 题目名称 , ProblemLetterIndex; -> 实际编号不轻易暴露给用户；
         Options<String, Integer> res = new Options<>();
         for (RegContestProblemRespDTO regContestProblem : regContestProblemRespDTOS) {
             Option<String, Integer> option = new Option<>();
-            option.setKey((char) (regContestProblem.getActualNum() + 'A') + ":" + regContestProblem.getProblemName());
-            option.setValue(regContestProblem.getActualNum());
+            option.setKey((char) (regContestProblem.getProblemLetterIndex() + 'A') + ":" + regContestProblem.getProblemName());
+            option.setValue(regContestProblem.getProblemLetterIndex());
             res.add(option);
         }
         return res;

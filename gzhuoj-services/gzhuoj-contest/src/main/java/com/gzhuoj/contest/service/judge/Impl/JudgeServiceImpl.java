@@ -32,7 +32,7 @@ public class JudgeServiceImpl implements JudgeService {
         SubmitDO submitDO = SubmitDO.builder()
                 .contestNum(requestParam.getContestNum())
                 .teamAccount(requestParam.getTeamAccount())
-                .problemId(requestParam.getProblemId())
+                .problemNum(requestParam.getProblemNum())
                 .language(requestParam.getLanguage())
                 .codeSize(requestParam.getCode().getBytes().length)
                 // 进入pending状态
@@ -43,7 +43,7 @@ public class JudgeServiceImpl implements JudgeService {
         preCheckValidator.contestPreCheckAndSave(requestParam, submitDO);
 
         // 将submit放入到评测队列中待下一步处理
-        judgeDispatcher.sendTask(submitDO.getSubmitId(), requestParam.getProblemId());
+        judgeDispatcher.sendTask(submitDO.getSubmitId(), requestParam.getProblemNum());
     }
 
     @Override

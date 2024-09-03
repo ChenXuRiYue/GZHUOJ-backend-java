@@ -7,7 +7,7 @@ import java.sql.Time;
  */
 public class SFC {
     public Integer contestNum;
-    public Integer problemId;
+    public Integer problemNum;
     public Date beginTime;
     public Date endTime;
     public Integer language;

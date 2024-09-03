@@ -30,7 +30,7 @@ public class SubmitDO {
     /**
      * 题目编号
      */
-    private Integer problemId;
+    private Integer problemNum;
 
     /**
      * 比赛编号

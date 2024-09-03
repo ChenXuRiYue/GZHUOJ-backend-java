@@ -123,9 +123,9 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, ContestDO> im
             for(int i = 0; i < problemMsgWhenCreateContests.size(); i++){
                 SelectedProblemMsgWhenCreateContest problemMsg = problemMsgWhenCreateContests.get(i);
                 ContestProblemDO contestProblemDO = ContestProblemDO.builder()
-                        .problemId(problemMsg.getProblemNum())
+                        .problemNum(problemMsg.getProblemNum())
                         .contestNum(requestParam.getContestNum())
-                        .actualNum(i)
+                        .problemLetterIndex(i)
                         .build();
                 contestProblemDOS.add(contestProblemDO);
             }
@@ -179,8 +179,8 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, ContestDO> im
         List<ContestProblemDO> contestProblemDOS = contestProblemMapper.selectByContestNum(contestNum);
         respDTO.setProblems(new ArrayList<>());
         for (ContestProblemDO PDO : contestProblemDOS) {
-            Integer problemId = PDO.getProblemId();
-            ProblemPrintDTO neww= problemApi.selectProblemById(problemId);
+            Integer problemNum = PDO.getProblemNum();
+            ProblemPrintDTO neww= problemApi.selectProblemById(problemNum);
 
             respDTO.getProblems().add(neww);
         }
@@ -274,8 +274,8 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, ContestDO> im
 //            for(int i = 0; i < problemMapDOList.size(); i++ ){
 //                ProblemMapDO problemMapDO = problemMapDOList.get(i);
 //                ContestProblemDO contestProblemDO = ContestProblemDO.builder()
-//                        .actualNum(i)
-//                        .problemId(problemMapDO.getProblemNum())
+//                        .problemLetterIndex(i)
+//                        .problemNum(problemMapDO.getProblemNum())
 //                        .problemColor(problemMapDO.getColor())
 //                        .contestNum(contestID)
 //                        .build();

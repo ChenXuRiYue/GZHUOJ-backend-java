@@ -9,7 +9,7 @@ import lombok.*;
 @RequiredArgsConstructor
 public class PersonalSingleProblemResults {
     // 题目 -> A B C...
-    private String problemId;
+    private String problemNum;
 
     // 表示是否已经通过该题。
     private Boolean status;
@@ -23,8 +23,8 @@ public class PersonalSingleProblemResults {
     // 有效罚时提交次数。
     private Integer penaltyCount;
 
-    PersonalSingleProblemResults(String problemId){
-        this.problemId = problemId;
+    PersonalSingleProblemResults(String problemNum){
+        this.problemNum = problemNum;
         this.status = false;
         this.penaltyCount = 0;
     }
