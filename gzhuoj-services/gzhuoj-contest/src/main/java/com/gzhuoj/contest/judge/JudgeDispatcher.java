@@ -41,7 +41,9 @@ public class JudgeDispatcher {
             if (!hasPush) {
                 // 提交到评测队列失败
                 updateWrapper.set(SubmitDO::getStatus, SubmissionStatus.STATUS_SUBMITTED_FAILED);
-                submitMapper.update(null, updateWrapper);
+                SubmitDO submitDO = new SubmitDO();
+                submitDO.setSubmitId(submitId);
+                submitMapper.update(submitDO, updateWrapper);
                 throw new ClientException(JUDGE_SUBMIT_ERROR);
             }
             // 正常则将评测任务进行派发

@@ -1,11 +1,9 @@
 package common.enums;
 
-import jdk.jfr.Unsigned;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.gzhuoj.common.sdk.model.pojo.Option;
 
-import javax.security.auth.callback.LanguageCallback;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +11,7 @@ import java.util.Map;
 
 @Getter
 @RequiredArgsConstructor
-public enum SubmissionLanguage {
+public enum Language {
     C(0, "C"),
     CPlusPlus(1, "C++ 17 With O2"),
     Java(2, "Java"),
@@ -35,7 +33,7 @@ public enum SubmissionLanguage {
 
     // 静态初始化块来填充 Map
     static {
-        for (SubmissionLanguage language : SubmissionLanguage.values()) {
+        for (Language language : Language.values()) {
             codeToLangMap.put(language.getCode(), language.getLang());
         }
     }

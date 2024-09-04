@@ -7,7 +7,7 @@ import com.gzhuoj.judgeserver.judge.JudgeType.DefaultJudge;
 import com.gzhuoj.judgeserver.model.entity.SubmitDO;
 import com.gzhuoj.judgeserver.model.pojo.LanguageConfig;
 import org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode;
-import common.enums.SubmissionLanguage;
+import common.enums.Language;
 import common.enums.SubmissionStatus;
 import common.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
@@ -40,12 +40,12 @@ public class JudgeStrategy {
         String userFileId = null;
         try{
             LanguageConfig languageConfig = languageConfigLoader
-                    .getLanguageConfigByName(SubmissionLanguage.getLangById(submitDO.getLanguage()));
+                    .getLanguageConfigByName(Language.getLangById(submitDO.getLanguage()));
             if(languageConfig.getCompileCommand() != null){
                 // 通过沙箱编译后返回全局唯一的编译后文件的唯一标识
                 userFileId = Compiler.compiler(languageConfig,
                         contestRemoteService.getCode(submitDO.getSubmitId()).getData(),
-                        SubmissionLanguage.getLangById(submitDO.getLanguage())
+                        Language.getLangById(submitDO.getLanguage())
                 );
             }
 

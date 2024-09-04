@@ -8,7 +8,7 @@ import com.gzhuoj.judgeserver.model.entity.SubmitDO;
 import com.gzhuoj.judgeserver.model.pojo.JudgeParam;
 import com.gzhuoj.judgeserver.model.pojo.TestCaseParam;
 import com.gzhuoj.judgeserver.util.ThreadPoolUtils;
-import common.enums.SubmissionLanguage;
+import common.enums.Language;
 import common.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -31,10 +31,10 @@ public class JudgeRun {
                                            SubmitDO submitDO,
                                            ProblemRespDTO problemRespDTO,
                                            String userFileId) throws ExecutionException, InterruptedException {
-        if(CollUtil.isEmpty(testCaseInputList) || CollUtil.isEmpty(testCaseOutputList)) {
+        if (CollUtil.isEmpty(testCaseInputList) || CollUtil.isEmpty(testCaseOutputList)) {
             throw new ServiceException(JUDGE_TESTCASE_NOT_EXIST_ERROR);
         }
-        if(testCaseInputList.size() != testCaseOutputList.size()){
+        if (testCaseInputList.size() != testCaseOutputList.size()) {
             throw new ServiceException(JUDGE_TESTCASE_NUMBER_NOT_SAME_ERROR);
         }
 
@@ -49,7 +49,7 @@ public class JudgeRun {
                 .maxMemory((long) problemRespDTO.getMemoryLimit())
                 .maxTime((long) problemRespDTO.getTimeLimit())
                 .testTime(testTime)
-                .runConfig(languageConfigLoader.getLanguageConfigByName(SubmissionLanguage.getLangById(submitDO.getLanguage())))
+                .runConfig(languageConfigLoader.getLanguageConfigByName(Language.getLangById(submitDO.getLanguage())))
                 .maxStack(1024)
                 .build();
         return createJudgeFutureTask(judgeParam, testCaseInputList, testCaseOutputList);
@@ -98,21 +98,5 @@ public class JudgeRun {
             }
         }
         return result;
-    }
-
-    /**
-     * 提交任务到线程池中
-     * 弃用
-     */
-    private JSONObject SubmitTaskToThreadPool(FutureTask<JSONObject> futureTask) throws ExecutionException, InterruptedException {
-        ThreadPoolUtils.getInstance().getThreadPool().submit(futureTask);
-        while (true) {
-            if(futureTask.isDone() && !futureTask.isCancelled()) {
-                return futureTask.get();
-            } else {
-                // 避免CPU高速运转休息10毫秒
-                Thread.sleep(10);
-            }
-        }
     }
 }
