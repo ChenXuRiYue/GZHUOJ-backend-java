@@ -29,7 +29,7 @@ import com.gzhuoj.contest.service.contestProblem.ContestProblemService;
 import com.gzhuoj.contest.service.contest.ContestService;
 import com.gzhuoj.contest.service.regContest.RegContestService;
 import com.gzhuoj.contest.util.JwtTool;
-import common.enums.SubmissionLanguage;
+import common.enums.Language;
 import common.redis.RedisKeyUtil;
 import common.redis.RedisUtil;
 import common.biz.user.UserContext;
@@ -551,7 +551,7 @@ public class RegContestServiceImpl implements RegContestService {
     @Override
     public Options<String, Integer> getLanguageOptions(Integer contestNum) {
         long languageMask = getContestLanguageMask(contestNum);
-        List<Option<String, Integer>> languageOptions = SubmissionLanguage.getLanguageOptionListByCode(languageMask);
+        List<Option<String, Integer>> languageOptions = Language.getLanguageOptionListByCode(languageMask);
         return new Options<>(languageOptions);
     }
 

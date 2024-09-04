@@ -1,7 +1,7 @@
 package com.gzhuoj.contest.validator;
 
 import com.gzhuoj.contest.dto.req.Judge.RegContestJudgeSubmitReqDTO;
-import common.enums.SubmissionLanguage;
+import common.enums.Language;
 import common.exception.ClientException;
 import org.springframework.stereotype.Component;
 
@@ -14,11 +14,11 @@ import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.SUBMISSIO
 @Component
 public class JudgeValidator {
     private final static List<Integer> SUPPORT_LANGUAGE = Arrays.asList(
-            SubmissionLanguage.C.getCode(),
-            SubmissionLanguage.Go.getCode(),
-            SubmissionLanguage.Java.getCode(),
-            SubmissionLanguage.CPlusPlus.getCode(),
-            SubmissionLanguage.Python.getCode()
+            Language.C.getCode(),
+            Language.Go.getCode(),
+            Language.Java.getCode(),
+            Language.CPlusPlus.getCode(),
+            Language.Python.getCode()
     );
 
     /**

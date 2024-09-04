@@ -6,7 +6,7 @@ import com.gzhuacm.sdk.problem.model.dto.ProblemJudgeResourcesRespDTO;
 import com.gzhuacm.sdk.problem.model.dto.ProblemRespDTO;
 import com.gzhuoj.judgeserver.model.entity.SubmitDO;
 import com.gzhuoj.judgeserver.model.pojo.LanguageConfig;
-import common.enums.SubmissionLanguage;
+import common.enums.Language;
 import common.exception.ServiceException;
 import common.toolkit.FileUtils;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +36,7 @@ public class JudgeContext {
 
     public SubmitDO judge(ProblemRespDTO problemRespDTO, SubmitDO submitDO) {
         LanguageConfig languageConfig = languageConfigLoader
-                .getLanguageConfigByName(SubmissionLanguage.getLangById(submitDO.getLanguage()));
+                .getLanguageConfigByName(Language.getLangById(submitDO.getLanguage()));
         // 对于非C的语言给两倍空间和时间
         if(languageConfig.getSrcName() != null &&
                 !(languageConfig.getSrcName().endsWith(".c") || languageConfig.getSrcName().endsWith(".cpp"))) {
@@ -51,7 +51,7 @@ public class JudgeContext {
         }
         // judge结果用于判断错误信息
         Map<String, Object> judgeResult = judgeStrategy.judge(problemRespDTO, submitDO);
-        //Todo judge AC
+        //TODO judge AC
         return SubmitDO.builder()
                 .submitId(submitDO.getSubmitId())
                 .status((Integer) judgeResult.get("code"))
