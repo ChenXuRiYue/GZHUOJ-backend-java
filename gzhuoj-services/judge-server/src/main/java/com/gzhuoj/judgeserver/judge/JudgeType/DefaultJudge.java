@@ -63,7 +63,7 @@ public class DefaultJudge {
             result.set("status", SubmissionStatus.TIME_LIMIT_EXCEED.getCode());
         } else if (testCaseResult.getLong("exitStatus") != 0) {
             // Runtime ERROR
-            result.set("status", SubmissionStatus.RUNTIME_ERROR.getStatus());
+            result.set("status", SubmissionStatus.RUNTIME_ERROR.getCode());
             errorMsg.append(String.format("The program return exit status code: %s\n", testCaseResult.getLong("exitStatus")));
         }
 

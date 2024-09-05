@@ -149,10 +149,10 @@ public class Dispatcher {
      * 检测返回结果，用于判断是否调用错误或提交失败
      */
     private void checkResul(Result<Void> result, Integer submitId) {
-        LambdaUpdateWrapper<SubmitDO> updateWrapper = Wrappers.lambdaUpdate(SubmitDO.class);
+        LambdaUpdateWrapper<SubmitDO> updateWrapper = Wrappers.lambdaUpdate(SubmitDO.class)
+                .eq(SubmitDO::getSubmitId, submitId);
         if(result == null){
             // 提交失败
-            updateWrapper.set(SubmitDO::getSubmitId, submitId);
             updateWrapper.set(SubmitDO::getStatus, SubmissionStatus.STATUS_SUBMITTED_FAILED.getCode());
             submitService.update(updateWrapper);
         } else {

@@ -17,9 +17,11 @@ import com.gzhuoj.contest.model.pojo.CPResult;
 import com.gzhuoj.contest.model.pojo.SFC;
 import com.gzhuoj.contest.service.contestProblem.ContestProblemService;
 import common.biz.user.UserContext;
+import common.exception.ClientException;
 import common.exception.ServiceException;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.ObjectUtils;
+import org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +31,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.PROBLEM_MESSAGE_LOST;
+import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.*;
 
 @Service
 public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper, ContestProblemDO> implements ContestProblemService {
@@ -163,5 +165,20 @@ public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper,
         ProblemReqDTO problemReqDTO = new ProblemReqDTO();
         problemReqDTO.setProblemNum(contestProblemDO.getProblemNum());
         return problemApi.getProblemContent(problemReqDTO).getData();
+    }
+
+    @Override
+    public Integer queryGobleNumByLetter(Integer contestNum, Integer problemNum) {
+        if(contestNum == null || problemNum == null){
+            throw new ClientException(CONTEST_PROBLEM_MAP_FAILURE_ERROR);
+        }
+        LambdaQueryWrapper<ContestProblemDO> queryWrapper = Wrappers.lambdaQuery(ContestProblemDO.class)
+                .eq(ContestProblemDO::getProblemLetterIndex, problemNum)
+                .eq(ContestProblemDO::getContestNum, contestNum);
+        ContestProblemDO contestProblemDO = baseMapper.selectOne(queryWrapper);
+        if (contestProblemDO.getProblemNum() == null){
+            throw new ClientException(CONTEST_PROBLEM_MAP_NOT_EXISTED_ERROR);
+        }
+        return contestProblemDO.getProblemNum();
     }
 }
