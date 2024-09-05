@@ -1,9 +1,11 @@
 package com.gzhuoj.contest.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.gzhuacm.sdk.contest.model.dto.ContestProblemDTO;
 import com.gzhuoj.contest.dto.req.regContest.*;
 import com.gzhuoj.contest.dto.resp.regContest.*;
 import com.gzhuoj.contest.model.entity.ContestDO;
+import com.gzhuoj.contest.model.pojo.ContestProblemCalculation;
 import com.gzhuoj.contest.service.regContest.RegContestService;
 import org.gzhuoj.common.sdk.convention.result.Result;
 import org.gzhuoj.common.sdk.convention.result.Results;
@@ -120,6 +122,16 @@ public class RegContestController {
         return Results.success(regContestService.getContestProblemSetView(requestParam));
     }
 
+    /**
+     *
+     * @param requestParam
+     * @return
+     */
+    @PostMapping("/problem/basic-calculation")
+    public Result<ContestProblemCalculation> getContestProBasicCacl(@RequestBody ContestProblemDTO requestParam){
+        return Results.success(regContestService.getContestProBasicCacl(requestParam));
+    }
+
     @GetMapping("/wait")
     public Result<ContestWaitRespDTO> waitContest(ContestWaitReqDTO requestParam) {
         return Results.success(regContestService.waitTime(requestParam));
@@ -139,4 +151,5 @@ public class RegContestController {
     public Result<Options<String, Integer>> getProblemOptions(Integer contestNum) {
         return Results.success(regContestService.getProblemOptions(contestNum));
     }
+
 }

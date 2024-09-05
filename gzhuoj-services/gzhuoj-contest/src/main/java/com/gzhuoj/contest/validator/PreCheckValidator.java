@@ -59,10 +59,10 @@ public class PreCheckValidator {
                 throw new ClientException(CONTEST_TEAM_NOT_FOUND);
             }
         }
-        if(requestParam.getProblemNum() == null){
+        if(requestParam.getProblemLetterIndex() == null){
             throw new ClientException(CONTEST_PROBLEM_MAP_IS_NULL_ERROR);
         }
-        submitDO.setProblemNum(contestProblemService.queryGobleNumByLetter(requestParam.getContestNum(), requestParam.getProblemNum()));
+        submitDO.setProblemNum(contestProblemService.queryProNumByLetterId(requestParam.getContestNum(), requestParam.getProblemLetterIndex()));
         if(problemApi.queryProByNum(submitDO.getProblemNum()) == null){
             // 题目是否存在
             throw new ClientException(PROBLEM_NOT_FOUND);

@@ -2,6 +2,7 @@ package com.gzhuoj.contest.service.contest;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.gzhuoj.contest.dto.ContestDTO;
 import com.gzhuoj.contest.dto.req.contest.ContestAllReqDTO;
 import com.gzhuoj.contest.dto.req.contest.ContestReqDTO;
 import com.gzhuoj.contest.dto.req.contest.ContestStatusReqDTO;
@@ -18,11 +19,11 @@ public interface ContestService extends IService<ContestDO> {
 
     void createContest(ContestReqDTO requestParam);
 
-    ContestDO queryByNum(Integer num);
+    ContestDO getContestDO(Integer num);
 
     void changeStatus(ContestStatusReqDTO requestParam);
 
-    List<SubmitDO> sumbitData(Integer contestNum);
+    List<SubmitDO> submitData(Integer contestNum);
 
     List<TeamDO> teamData(Integer contestNum);
 
@@ -30,4 +31,6 @@ public interface ContestService extends IService<ContestDO> {
 
 
     IPage<ContestAllRespDTO> contestsView(ContestAllReqDTO requestParam);
+
+    ContestDTO getBasicInfoForContestProblemView(Integer contestNum);
 }

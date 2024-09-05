@@ -1,9 +1,11 @@
 package com.gzhuoj.contest.service.regContest;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.gzhuacm.sdk.contest.model.dto.ContestProblemDTO;
 import com.gzhuoj.contest.dto.req.regContest.*;
 import com.gzhuoj.contest.dto.resp.regContest.*;
 import com.gzhuoj.contest.model.entity.ContestDO;
+import com.gzhuoj.contest.model.pojo.ContestProblemCalculation;
 import jakarta.servlet.http.HttpServletResponse;
 import org.gzhuoj.common.sdk.model.pojo.Options;
 
@@ -43,4 +45,6 @@ public interface RegContestService {
     Options<String, Integer> getLanguageOptions(Integer contestNum);
 
     Options<String, Integer> getProblemOptions(Integer contestNum);
+
+    ContestProblemCalculation getContestProBasicCacl(ContestProblemDTO requestParam);
 }

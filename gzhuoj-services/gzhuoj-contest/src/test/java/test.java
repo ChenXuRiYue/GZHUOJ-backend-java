@@ -12,19 +12,19 @@ public class test {
     /*
     @Test
     public void test1() {
-        SFC sfc = new SFC();
-        sfc.contestNum=13;
-        sfc.problemNum=18;
+        ContestProblemSubmissionsCalculateExample contestProblemSubmissionsCalculateExample = new ContestProblemSubmissionsCalculateExample();
+        contestProblemSubmissionsCalculateExample.contestNum=13;
+        contestProblemSubmissionsCalculateExample.problemNum=18;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 
         String dateString = "2024-08-03 00:00:01";
-        sfc.beginTime = sdf.parse(dateString);
+        contestProblemSubmissionsCalculateExample.beginTime = sdf.parse(dateString);
         dateString = "2024-08-08 00:00:01";
-        sfc.endTime = sdf.parse(dateString);
+        contestProblemSubmissionsCalculateExample.endTime = sdf.parse(dateString);
 
-        sfc.status=1;
-        //System.out.println("结果："+contestProblemMapper.selectForContest(sfc));
+        contestProblemSubmissionsCalculateExample.status=1;
+        //System.out.println("结果："+contestProblemMapper.selectForContest(contestProblemSubmissionsCalculateExample));
         System.out.println(contestProblemMapper.selectByProblemNum(18,13));
     }
     */

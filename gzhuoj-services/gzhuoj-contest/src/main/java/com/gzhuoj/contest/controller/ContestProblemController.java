@@ -6,7 +6,6 @@ import com.gzhuoj.contest.model.entity.ContestProblemDO;
 import com.gzhuoj.contest.service.contestProblem.ContestProblemService;
 import org.gzhuoj.common.sdk.convention.result.Result;
 import org.gzhuoj.common.sdk.convention.result.Results;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +39,7 @@ public class ContestProblemController {
     }
 
     @GetMapping("/global")
-    public Result<Integer> queryGobleNumByLetter(Integer contestNum, Integer problemNum){
-        return Results.success(contestProblemService.queryGobleNumByLetter(contestNum, problemNum));
+    public Result<Integer> queryGlobalNumByLetter(Integer contestNum, Integer problemLetterIndex){
+        return Results.success(contestProblemService.queryProNumByLetterId(contestNum, problemLetterIndex));
     }
 }
