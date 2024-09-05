@@ -4,7 +4,6 @@ package com.gzhuoj.contest.judge;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.gzhuoj.contest.constant.enums.JudgeType;
 import com.gzhuoj.contest.model.entity.JudgeServerDO;
 import com.gzhuoj.contest.model.entity.SubmitDO;
 import com.gzhuacm.sdk.contest.model.dto.ToJudgeDTO;
@@ -56,6 +55,7 @@ public class Dispatcher {
                 break;
             case COMPILE_SPJ:
             case COMPILE_INTERACTIVE:
+
             default:
                 throw new ClientException(JUDGE_TYPE_ERROR);
         }

@@ -59,6 +59,9 @@ public enum BaseErrorCode implements IErrorCode {
     SERVICE_TIMEOUT_ERROR("B000100", "系统执行超时"),
     SERVICE_PROBLEM_NOT_FOUND_ERROR("B000301", "题目在数据库找不到"),
 
+    STRATEGY_INIT_LOAD_DUPLICATE_ERROR("B000401", "策略重复加载"),
+    STRATEGY_MARK_NULL_ERROR("B000402", "策略mark为空"),
+    STRATEGY_EXECUTION_ERROR("B000403", "策略执行失败"),
     // ========== 一级宏观错误码 调用第三方服务出错 ==========
     REMOTE_ERROR("C000001", "调用第三方服务出错");
 

@@ -3,7 +3,6 @@ package com.gzhuoj.contest.judge;
 import cn.hutool.core.bean.BeanUtil;
 import com.gzhuacm.sdk.contest.model.dto.SubmitDTO;
 import common.constant.RedisKey;
-import com.gzhuoj.contest.constant.enums.JudgeType;
 import com.gzhuoj.contest.model.entity.SubmitDO;
 import com.gzhuacm.sdk.contest.model.dto.ToJudgeDTO;
 import com.gzhuoj.contest.service.judge.SubmitService;
@@ -25,7 +24,8 @@ public class JudgeDispenser extends AbstractDispenser {
     public void processWaitingTasks() {
         // 目前还未加入普遍评测接口，但需为其优先级进行排序
         priorityTask(
-                RedisKey.CONTEST_JUDGE_QUEUE
+                RedisKey.CONTEST_JUDGE_QUEUE,
+                RedisKey.COMMON_JUDGE_QUEUE
         );
     }
 
@@ -42,6 +42,7 @@ public class JudgeDispenser extends AbstractDispenser {
             // 根据JudgeType 指定评测类型
             dispatcher.dispatch(JudgeType.COMMON_JUDGE, toJudgeDTO);
         }
+        processWaitingTasks();
     }
 
     private static SubmitDTO getSubmitDTO(SubmitDO submitDO) {

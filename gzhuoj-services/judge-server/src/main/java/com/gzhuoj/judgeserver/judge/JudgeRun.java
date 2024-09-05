@@ -3,11 +3,12 @@ package com.gzhuoj.judgeserver.judge;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONObject;
 import com.gzhuacm.sdk.problem.model.dto.ProblemRespDTO;
-import com.gzhuoj.judgeserver.judge.JudgeType.DefaultJudge;
 import com.gzhuoj.judgeserver.model.entity.SubmitDO;
 import com.gzhuoj.judgeserver.model.pojo.JudgeParam;
 import com.gzhuoj.judgeserver.model.pojo.TestCaseParam;
 import com.gzhuoj.judgeserver.util.ThreadPoolUtils;
+import common.constant.JudgeType;
+import common.designpattern.strategy.AbstractStrategyChoose;
 import common.enums.Language;
 import common.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +24,8 @@ import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.JUDGE_TES
 @Component
 @RequiredArgsConstructor
 public class JudgeRun {
-    private final DefaultJudge defaultJudge;
     private final LanguageConfigLoader languageConfigLoader;
+    private final AbstractStrategyChoose abstractStrategyChoose;
 
     public List<JSONObject> MulThreadJudge(List<String> testCaseInputList,
                                            List<String> testCaseOutputList,
@@ -64,7 +65,9 @@ public class JudgeRun {
                     .testCaseOutput(testCaseOutputList.get(i))
                     .build();
             FutureTask<JSONObject> testCase = new FutureTask<>(() -> {
-                JSONObject result = defaultJudge.judge(testCaseParam, judgeParam);
+//                JSONObject result = defaultJudge.judge(testCaseParam, judgeParam);
+                // FIXME 将mark通过参数传入
+                JSONObject result = abstractStrategyChoose.chooseAndExecuteResp(JudgeType.COMMON_JUDGE.getMark(), testCaseParam, judgeParam);
                 result.set("testCaseID", testCaseParam.getTestCaseNum());
                 return result;
             });

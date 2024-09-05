@@ -15,13 +15,19 @@ public final class RedisKey {
 
     public static final String REGULAR_CONTEST = "regular_contest:";
 
-
     // hashKey
     public static final String REGULAR_CONTEST_PROBLEM_SET_HASH_KEY = "regular_contest_problem_set_hash_key";
 
 
     public static final String REGULAR_CONTEST_PROBLEMS = "regular_contest_problem";
+
     public static final String TEAM_LOGIN_KEY = "gzhuoj-team:login:%s";
+
+    // 比赛队列
     public static final String CONTEST_JUDGE_QUEUE = "gzhuoj-contest-judge:queue";
+
+    // 普通队列 （非比赛）
+    public static final String COMMON_JUDGE_QUEUE = "gzhuoj-contest-judge:queue";
+
 
 }
