@@ -3,7 +3,7 @@ package com.gzhuoj.judgeserver.judge;
 import cn.hutool.json.JSONObject;
 import com.gzhuacm.sdk.judgeserver.api.ContestRemoteService;
 import com.gzhuacm.sdk.problem.model.dto.ProblemRespDTO;
-import com.gzhuoj.judgeserver.judge.JudgeType.DefaultJudge;
+import com.gzhuoj.judgeserver.judge.handler.AbstractJudgeTemplate;
 import com.gzhuoj.judgeserver.model.entity.SubmitDO;
 import com.gzhuoj.judgeserver.model.pojo.LanguageConfig;
 import org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode;
@@ -150,7 +150,7 @@ public class JudgeStrategy {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    testCaseOutputList.add(DigestUtils.md5DigestAsHex(DefaultJudge.removeEndSpace(output.toString()).getBytes(StandardCharsets.UTF_8)));
+                    testCaseOutputList.add(DigestUtils.md5DigestAsHex(AbstractJudgeTemplate.removeEndSpace(output.toString()).getBytes(StandardCharsets.UTF_8)));
                 }
             }
         }

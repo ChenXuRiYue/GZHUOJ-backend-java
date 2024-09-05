@@ -38,6 +38,10 @@ public class ContestProblemController {
         return Results.success(contestProblemService.getContestProblem(contestNum, problemNumInContest));
     }
 
+    /**
+     * 将比赛题目的编排编号映射成全局中实际的题目编号
+     * @return 题目编号
+     */
     @GetMapping("/global")
     public Result<Integer> queryGlobalNumByLetter(Integer contestNum, Integer problemLetterIndex){
         return Results.success(contestProblemService.queryProNumByLetterId(contestNum, problemLetterIndex));
