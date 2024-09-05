@@ -13,7 +13,7 @@ public class RegContestJudgeSubmitReqDTO {
     /**
      * 题目编号
      */
-    private Integer problemNum;
+    private Integer problemLetterIndex;
 
     /**
      * 提交语言

@@ -11,6 +11,7 @@ import com.gzhuoj.contest.model.entity.ContestDO;
 import com.gzhuoj.contest.model.entity.SubmitCodeDO;
 import com.gzhuoj.contest.model.entity.SubmitDO;
 import com.gzhuoj.contest.model.entity.TeamDO;
+import com.gzhuoj.contest.service.contestProblem.ContestProblemService;
 import com.gzhuoj.contest.service.regContest.RegContestService;
 import common.biz.user.UserContext;
 import common.exception.ClientException;
@@ -33,6 +34,7 @@ public class PreCheckValidator {
     private final TeamMapper teamMapper;
     private final SubmitMapper submitMapper;
     private final SubmitCodeMapper submitCodeMapper;
+    private final ContestProblemService contestProblemService;
 
     /**
      * 比赛信息前置校验并且将提交数据放入数据库
@@ -56,8 +58,11 @@ public class PreCheckValidator {
                 throw new ClientException(CONTEST_TEAM_NOT_FOUND);
             }
         }
-
-        if(problemApi.queryProByNum(requestParam.getProblemNum()) == null){
+        if(requestParam.getProblemLetterIndex() == null){
+            throw new ClientException(CONTEST_PROBLEM_MAP_IS_NULL_ERROR);
+        }
+        submitDO.setProblemNum(contestProblemService.queryProNumByLetterId(requestParam.getContestNum(), requestParam.getProblemLetterIndex()));
+        if(problemApi.queryProByNum(submitDO.getProblemNum()) == null){
             // 题目是否存在
             throw new ClientException(PROBLEM_NOT_FOUND);
         }

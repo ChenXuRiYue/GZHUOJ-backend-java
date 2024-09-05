@@ -34,6 +34,9 @@ public enum BaseErrorCode implements IErrorCode {
     CONTEST_HAVE_BEGIN("A000403","比赛已经开始了"),
     CONTEST_NOT_START("A000404","比赛还未开始"),
     CONTEST_TEAM_NOT_FOUND("A000404","比赛队伍不存在"),
+    CONTEST_PROBLEM_MAP_IS_NULL_ERROR("A000405","比赛中题目对应全局编号为空"),
+    CONTEST_PROBLEM_MAP_FAILURE_ERROR("A000406", "比赛题目映射失败，题目或比赛参数为空"),
+    CONTEST_PROBLEM_MAP_NOT_EXISTED_ERROR("A000407","比赛中题目对应全局编号不存在"),
 
     JUDGE_SUBMIT_ERROR("A000501", "评测提交错误"),
     JUDGE_TYPE_ERROR("A000502", "评测方式错误或不存在"),

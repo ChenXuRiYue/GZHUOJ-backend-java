@@ -74,7 +74,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, ProblemDO> im
             ProblemDO problemDO = ProblemDO.builder()
                     .problemNum(requestParam.getProblemNum())
                     .problemName(requestParam.getProblemName())
-                    .timeLimit(requestParam.getTimeLimit())
+                    .timeLimit(requestParam.getTimeLimit() * 1000)
                     .memoryLimit(requestParam.getMemoryLimit())
                     .ProblemType(requestParam.getProblemType())
                     .spj(requestParam.getSpj())

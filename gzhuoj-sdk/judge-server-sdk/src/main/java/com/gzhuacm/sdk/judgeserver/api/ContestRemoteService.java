@@ -21,6 +21,7 @@ public interface ContestRemoteService {
 
     @GetMapping("/api/gzhuoj-contest/code")
     Result<String> getCode(@RequestParam("submitId") Integer submitId);
+
     class MultipartSupportConfig {
         @Bean
         @Primary

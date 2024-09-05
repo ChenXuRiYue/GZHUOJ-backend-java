@@ -6,7 +6,6 @@ import com.gzhuoj.contest.model.entity.ContestProblemDO;
 import com.gzhuoj.contest.service.contestProblem.ContestProblemService;
 import org.gzhuoj.common.sdk.convention.result.Result;
 import org.gzhuoj.common.sdk.convention.result.Results;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,5 +36,10 @@ public class ContestProblemController {
     @GetMapping("/get/problem/content")
     public Result<ProblemContentRespDTO> getContestProblem(Integer contestNum, Integer problemNumInContest){
         return Results.success(contestProblemService.getContestProblem(contestNum, problemNumInContest));
+    }
+
+    @GetMapping("/global")
+    public Result<Integer> queryGlobalNumByLetter(Integer contestNum, Integer problemLetterIndex){
+        return Results.success(contestProblemService.queryProNumByLetterId(contestNum, problemLetterIndex));
     }
 }

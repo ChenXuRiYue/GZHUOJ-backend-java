@@ -21,8 +21,9 @@ import com.gzhuoj.contest.service.contest.ContestService;
 import com.gzhuoj.contest.service.contestProblem.ContestProblemService;
 import common.biz.contant.RoleConstant;
 import common.biz.user.UserContext;
-import common.enums.SubmissionLanguage;
+import common.enums.Language;
 import common.enums.SubmissionStatus;
+import common.exception.ClientException;
 import common.exception.ServiceException;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
@@ -32,7 +33,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.PROBLEM_MESSAGE_LOST;
+import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.*;
 
 @Service
 public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper, ContestProblemDO> implements ContestProblemService {
@@ -133,7 +134,7 @@ public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper,
 
         ContestProblemSubmissionsCalculateExample example = initContestProSubmissionsCaclExampleBasicInfo(request);
         // 不更新acTotal
-        for(SubmissionLanguage language: SubmissionLanguage.values()){
+        for(Language language: Language.values()){
             example.setLanguage(language.getCode());
             Integer targetSubmissionsAmount = contestProblemMapper.selectForContest(example);
             result.getLanguageCalculation().put(language.getLang(), targetSubmissionsAmount);
@@ -235,6 +236,21 @@ public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper,
         ProblemReqDTO problemReqDTO = new ProblemReqDTO();
         problemReqDTO.setProblemNum(contestProblemDO.getProblemNum());
         return problemApi.getProblemContent(problemReqDTO).getData();
+    }
+
+    @Override
+    public Integer queryProNumByLetterId(Integer contestNum, Integer problemLetterIndex) {
+        if(contestNum == null || problemLetterIndex == null){
+            throw new ClientException(CONTEST_PROBLEM_MAP_FAILURE_ERROR);
+        }
+        LambdaQueryWrapper<ContestProblemDO> queryWrapper = Wrappers.lambdaQuery(ContestProblemDO.class)
+                .eq(ContestProblemDO::getProblemLetterIndex, problemLetterIndex)
+                .eq(ContestProblemDO::getContestNum, contestNum);
+        ContestProblemDO contestProblemDO = baseMapper.selectOne(queryWrapper);
+        if (contestProblemDO.getProblemNum() == null){
+            throw new ClientException(CONTEST_PROBLEM_MAP_NOT_EXISTED_ERROR);
+        }
+        return contestProblemDO.getProblemNum();
     }
 
     /**
