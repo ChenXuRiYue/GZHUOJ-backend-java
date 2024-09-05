@@ -19,4 +19,6 @@ public interface ContestProblemService extends IService<ContestProblemDO> {
     ContestResultRespDTO getResult(Integer ContestNum);
 
     ProblemContentRespDTO getContestProblem(Integer contestNum, Integer problemNumInContest);
+
+    Integer queryGobleNumByLetter(Integer contestNum, Integer problemNum);
 }

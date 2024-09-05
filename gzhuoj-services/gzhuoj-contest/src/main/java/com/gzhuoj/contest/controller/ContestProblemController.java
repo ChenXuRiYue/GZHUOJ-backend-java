@@ -38,4 +38,9 @@ public class ContestProblemController {
     public Result<ProblemContentRespDTO> getContestProblem(Integer contestNum, Integer problemNumInContest){
         return Results.success(contestProblemService.getContestProblem(contestNum, problemNumInContest));
     }
+
+    @GetMapping("/global")
+    public Result<Integer> queryGobleNumByLetter(Integer contestNum, Integer problemNum){
+        return Results.success(contestProblemService.queryGobleNumByLetter(contestNum, problemNum));
+    }
 }
