@@ -15,7 +15,7 @@ import java.util.List;
         configuration = {ProblemApi.MultipartSupportConfig.class})
 public interface ProblemApi {
     @GetMapping("/api/gzhuoj-problem/problem/query")
-    Result<ProblemRespDTO> queryProByNum(@RequestParam("num") Integer num);
+    Result<ProblemRespDTO> queryProByNum(@RequestParam("problemNum") Integer problemNum);
 
     @GetMapping("/api/gzhuoj-problem/problem/selectProblemById")
     ProblemPrintDTO selectProblemById(@RequestParam("problemNum") Integer problemNum);

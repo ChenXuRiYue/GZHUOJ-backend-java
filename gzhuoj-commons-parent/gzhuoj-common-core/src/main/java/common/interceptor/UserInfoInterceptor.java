@@ -13,7 +13,8 @@ public class UserInfoInterceptor implements HandlerInterceptor {
         String userId = request.getHeader("userId");
         String role = request.getHeader("role");
         if(ObjectUtils.isEmpty(userId)) userId = "";
-        if(ObjectUtils.isEmpty(role)) role = "";
+        // TODO
+        if(ObjectUtils.isEmpty(role)) role = "0";
         UserInfoDO userInfoDO = new UserInfoDO(userId, role);
         // 2.判断是否为空
         UserContext.setUserInfo(userInfoDO);

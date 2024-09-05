@@ -3,6 +3,8 @@ package com.gzhuoj.contest.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.gzhuoj.contest.constant.PathConstant;
 import com.gzhuoj.contest.constant.PatternConstant;
+import com.gzhuoj.contest.dto.ContestDTO;
+import com.gzhuoj.contest.dto.req.contestProblem.ContestResultReqDTO;
 import com.gzhuoj.contest.dto.resp.contest.PrintProblemRespDTO;
 import com.gzhuoj.contest.dto.req.contest.ContestAllReqDTO;
 import com.gzhuoj.contest.dto.req.contest.ContestReqDTO;
@@ -11,8 +13,10 @@ import com.gzhuoj.contest.dto.resp.contest.ContestAllRespDTO;
 import com.gzhuoj.contest.model.entity.ContestDO;
 import com.gzhuoj.contest.model.entity.SubmitDO;
 import com.gzhuoj.contest.model.entity.TeamDO;
+import com.gzhuoj.contest.model.pojo.ContestProblemCalculation;
 import com.gzhuoj.contest.service.contest.ContestService;
 import com.gzhuoj.contest.service.contest.UploadService;
+import com.gzhuoj.contest.service.contestProblem.ContestProblemService;
 import org.gzhuoj.common.sdk.convention.result.Result;
 import org.gzhuoj.common.sdk.convention.result.Results;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +36,7 @@ import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.ADMIN_UPL
 @RequestMapping("/api/gzhuoj-contest/contest")
 public class ContestController {
     private final ContestService contestService;
+    private final ContestProblemService contestProblemService;
     private final UploadService uploadService;
     /**
      * 创建比赛
@@ -60,7 +65,24 @@ public class ContestController {
      */
     @GetMapping("/query")
     public Result<ContestDO> queryByNum(Integer num){
-        return Results.success(contestService.queryByNum(num));
+        return Results.success(contestService.getContestDO(num));
+    }
+
+    /**
+     * 向用户提供基本的比赛视图信息, 只关注  contestDO 本身
+     */
+    @GetMapping("/query/basic-contest-info-for-user")
+    public Result<ContestDTO> getContestBasicInfoForUser(Integer contestNum){
+        return Results.success(contestService.getBasicInfoForContestProblemView(contestNum));
+    }
+
+    /**
+     * 题目首页统计题目通过人数.
+     * TODO 虽然写错了一点,但是可以留下来, 提交提交列表查询的地方可以用到.
+     */
+    @PostMapping("/get/contest/problem/calculation/basic")
+    public Result<List<ContestProblemCalculation>> getContestProblemCalculation(ContestResultReqDTO contestResultReqDTO) {
+        return Results.success(contestProblemService.getContestProblemCalculation(contestResultReqDTO));
     }
 
     /**
@@ -101,7 +123,7 @@ public class ContestController {
      */
     @GetMapping("/submitData")
     public Result<List<SubmitDO> > submitData(Integer contestNum){
-        return Results.success(contestService.sumbitData(contestNum));
+        return Results.success(contestService.submitData(contestNum));
     }
 
     /**

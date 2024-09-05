@@ -10,11 +10,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gzhuacm.sdk.problem.api.ProblemApi;
 import com.gzhuacm.sdk.problem.model.dto.ProblemPrintDTO;
 import com.gzhuoj.contest.constant.PathConstant;
+import com.gzhuoj.contest.dto.ContestDTO;
 import com.gzhuoj.contest.dto.req.contest.*;
 import com.gzhuoj.contest.dto.resp.contest.ContestAllRespDTO;
 import com.gzhuoj.contest.dto.resp.contest.PrintProblemRespDTO;
@@ -136,7 +136,7 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, ContestDO> im
 
 
     @Override
-    public ContestDO queryByNum(Integer num) {
+    public ContestDO getContestDO(Integer num) {
         LambdaQueryWrapper<ContestDO> queryWrapper = Wrappers.lambdaQuery(ContestDO.class)
                 .eq(ContestDO::getContestNum, num)
                 .eq(ContestDO::getDeleteFlag, 0);
@@ -162,7 +162,7 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, ContestDO> im
     }
 
     @Override
-    public List<SubmitDO> sumbitData(Integer contestNum) {
+    public List<SubmitDO> submitData(Integer contestNum) {
         return contestMapper.sumbitSelectByContestNum(contestNum);
     }
 
@@ -210,6 +210,23 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, ContestDO> im
         IPage<ContestDO> result = baseMapper.selectPage(requestParam, queryWrapper);
         return result.convert(each -> BeanUtil.toBean(each, ContestAllRespDTO.class));
     }
+
+    /**
+     * contest时间、编号
+     */
+    @Override
+    public ContestDTO getBasicInfoForContestProblemView(Integer contestNum) {
+        ContestDO contestDO = getContestDO(contestNum);
+        return ContestDTO.builder()
+                .title(contestDO.getTitle())
+                .startTime(contestDO.getStartTime().getTime())
+                .endTime(contestDO.getEndTime().getTime())
+                .build();
+    }
+
+    /**
+     *
+     */
 
     @SneakyThrows
     private String createUniqueDir() {

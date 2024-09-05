@@ -11,7 +11,7 @@
         </foreach>
     </insert>
     <select id="selectForContest"
-            parameterType="com.gzhuoj.contest.model.pojo.SFC" resultType="int">
+            parameterType="com.gzhuoj.contest.model.example.ContestProblemSubmissionsCalculateExample" resultType="int">
         SELECT count(submit_time) from gzhuoj_contest.submit
         <where>
             contest_num=#{contestNum} and
@@ -26,5 +26,13 @@
                 and status=#{status}
             </if>
         </where>
+    </select>
+<!--    返回竞赛中的题目过题人数-->
+    <select id="getBasicCacl" parameterType="com.gzhuacm.sdk.contest.model.dto.ContestProblemDTO"
+            resultType="com.gzhuoj.contest.model.pojo.ContestProblemCalculation">
+        SELECT count(*) AS total, count(CASE WHEN s.status = 0 THEN 1 END) AS acTotal
+        FROM contest_problem cp
+                 LEFT JOIN submit s on cp.problem_num = s.problem_num
+        where cp.problem_num = #{problemNum};
     </select>
 </mapper>

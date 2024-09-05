@@ -68,8 +68,8 @@ public class ProblemController {
      * @return 题目信息实体
      */
     @GetMapping("/query")
-    public Result<ProblemRespDTO> queryProByNum(Integer num){
-        return Results.success(problemService.queryProByNum(num));
+    public Result<ProblemRespDTO> queryProByNum(Integer problemNum){
+        return Results.success(problemService.queryProByNum(problemNum));
     }
 
     /**

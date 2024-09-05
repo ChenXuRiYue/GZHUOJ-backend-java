@@ -38,7 +38,7 @@ public class UploadServiceImpl implements UploadService {
             if(!pattern.matcher(fileName).matches()){
                 throw new ClientException("文件名不合法");
             }
-            ContestDO contestDO = contestService.queryByNum(contestNum);
+            ContestDO contestDO = contestService.getContestDO(contestNum);
             if(contestDO == null){
                 throw new ClientException("比赛不存在");
             }

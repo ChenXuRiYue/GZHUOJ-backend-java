@@ -5,21 +5,25 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.gzhuacm.sdk.contest.model.dto.ContestProblemDTO;
 import com.gzhuacm.sdk.problem.api.ProblemApi;
 import com.gzhuacm.sdk.problem.model.dto.ProblemRespDTO;
 import com.gzhuoj.contest.config.JwtProperties;
 import com.gzhuoj.contest.dto.req.regContest.*;
 import com.gzhuoj.contest.dto.resp.regContest.*;
 import com.gzhuoj.contest.mapper.ContestMapper;
+import com.gzhuoj.contest.mapper.ContestProblemMapper;
 import com.gzhuoj.contest.mapper.SubmitMapper;
 import com.gzhuoj.contest.mapper.TeamMapper;
 import com.gzhuoj.contest.model.entity.ContestDO;
 import com.gzhuoj.contest.model.entity.ContestProblemDO;
 import com.gzhuoj.contest.model.entity.SubmitDO;
 import com.gzhuoj.contest.model.entity.TeamDO;
+import com.gzhuoj.contest.model.pojo.ContestProblemCalculation;
 import com.gzhuoj.contest.model.pojo.PersonSeat;
 import com.gzhuoj.contest.service.contestProblem.ContestProblemService;
 import com.gzhuoj.contest.service.contest.ContestService;
@@ -59,6 +63,7 @@ public class RegContestServiceImpl implements RegContestService {
     private final ContestService contestService;
     private final SubmitMapper submitMapper;
     private final ContestMapper contestMapper;
+    private final ContestProblemMapper contestProblemMapper;
     private final ProblemApi problemApi;
     private final ContestProblemService contestProblemService;
     private final JwtTool jwtTool;
@@ -75,7 +80,7 @@ public class RegContestServiceImpl implements RegContestService {
             throw new ClientException("请传入比赛编号");
         }
 
-        if(contestService.queryByNum(requestParam.getContestNum()) == null){
+        if(contestService.getContestDO(requestParam.getContestNum()) == null){
             throw new ClientException("比赛不存在");
         }
         if(Objects.equals(requestParam.getReset(), "on")){
@@ -194,7 +199,7 @@ public class RegContestServiceImpl implements RegContestService {
         LambdaQueryWrapper<TeamDO> queryWrapper = Wrappers.lambdaQuery(TeamDO.class)
                 .eq(TeamDO::getTeamAccount, requestParam.getTeamAccount());
         TeamDO teamDO = teamMapper.selectOne(queryWrapper);
-        ContestDO contestDO = contestService.queryByNum(teamDO.getContestNum());
+        ContestDO contestDO = contestService.getContestDO(teamDO.getContestNum());
         if(contestDO == null){
             throw new ClientException(CONTEST_NOT_FOUND_ERROR);
         }
@@ -289,7 +294,7 @@ public class RegContestServiceImpl implements RegContestService {
         if(!StrUtil.isEmpty(requestParam.getTeamAccount())){
             queryWrapper.like(SubmitDO::getTeamAccount, requestParam.getTeamAccount());
         }
-        ContestDO contestDO = contestService.queryByNum(requestParam.getContestNum());
+        ContestDO contestDO = contestService.getContestDO(requestParam.getContestNum());
         // team看不到封榜后的提交
         if(Objects.equals(UserContext.getRole(), "3")){
             Date endTime = contestDO.getEndTime();
@@ -307,7 +312,7 @@ public class RegContestServiceImpl implements RegContestService {
     @Override
     public List<RegContestProblemRespDTO> getContestProblemSetView(RegContestProSetReqDTO requestParam) {
         // 判断合法性
-        ContestDO contestDO = contestService.queryByNum(requestParam.getContestNum());
+        ContestDO contestDO = contestService.getContestDO(requestParam.getContestNum());
         if (contestDO == null) {
             throw new ClientException(CONTEST_NOT_FOUND_ERROR);
         }
@@ -442,6 +447,7 @@ public class RegContestServiceImpl implements RegContestService {
     }
 
     public void calculateGlobalProblemPassDetails(RegContestProblemRespDTO respDTO, ContestDO contestDO) {
+        // TODO 简单做一个缓存
         LambdaQueryWrapper<SubmitDO> submitDOLambdaQueryWrapper = Wrappers.lambdaQuery(SubmitDO.class)
                 .select(SubmitDO::getTeamAccount)
                 .eq(SubmitDO::getContestNum, contestDO.getContestNum())
@@ -559,6 +565,17 @@ public class RegContestServiceImpl implements RegContestService {
     public Options<String, Integer> getProblemOptions(Integer contestNum) {
         List<RegContestProblemRespDTO> regContestProblemRespDTOS = getRegProblemSet(contestNum);
         return contestProblemsToProblemOptions(regContestProblemRespDTOS);
+    }
+
+    @Override
+    public ContestProblemCalculation getContestProBasicCacl(ContestProblemDTO requestParam) {
+        // 无论什么时候,前端传进来的都不是一个problemNum 而是一个 problemLetterIndex. 因为problemNum 的细节对外隐藏
+        LambdaQueryWrapper<ContestProblemDO> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ContestProblemDO::getContestNum, requestParam.getContestNum());
+        queryWrapper.eq(ContestProblemDO::getProblemLetterIndex, requestParam.getProblemLetterIndex() );
+        ContestProblemDO contestProblemDO = contestProblemMapper.selectOne(queryWrapper);
+        requestParam.setProblemNum(contestProblemDO.getProblemNum());
+        return contestProblemMapper.getBasicCacl(requestParam);
     }
 
     public Options<String, Integer> contestProblemsToProblemOptions(List<RegContestProblemRespDTO> regContestProblemRespDTOS) {

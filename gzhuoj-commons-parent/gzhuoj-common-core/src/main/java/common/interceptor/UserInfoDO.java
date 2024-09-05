@@ -14,8 +14,7 @@ public class UserInfoDO {
     private String userId;
 
     /**
-     * 用户角色
+     * 用户角色, 为什么存入的是String?
      */
     private String role;
-
 }

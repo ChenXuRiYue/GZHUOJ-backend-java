@@ -33,7 +33,7 @@ public class ContestBalloonServiceImpl extends ServiceImpl<ContestBalloonMapper,
     private final ContestProblemService contestProblemService;
     @Override
     public List<ContestBalloonQueueRespDTO> queue(ContestBalloonQueueReqDTO requestParam) {
-        ContestDO contestDO = contestService.queryByNum(requestParam.getContestNum());
+        ContestDO contestDO = contestService.getContestDO(requestParam.getContestNum());
         if(contestDO == null){
             throw new ClientException(CONTEST_NOT_FOUND_ERROR);
         }
