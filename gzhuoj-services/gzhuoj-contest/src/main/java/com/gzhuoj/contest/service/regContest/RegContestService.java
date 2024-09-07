@@ -25,7 +25,7 @@ public interface RegContestService {
 
     RegContestTeamInfoRespDTO teamInfo(RegContestTeamInfoReqDTO requestParam);
 
-    IPage<RegContestStatusRespDTO> status(RegContestStatusReqDTO requestParam);
+    IPage<RegContestSubmissionRespDTO> getSubmissions(RegContestSubmissionsReqDTO requestParam);
 
     ContestWaitRespDTO waitTime(ContestWaitReqDTO requestParam);
 

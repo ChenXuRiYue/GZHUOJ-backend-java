@@ -95,9 +95,9 @@ public class RegContestController {
      * @param requestParam 评测结果查询参数
      * @return 评测结果分页查询
      */
-    @GetMapping("/status")
-    public Result<IPage<RegContestStatusRespDTO>> status(RegContestStatusReqDTO requestParam) {
-        return Results.success(regContestService.status(requestParam));
+    @GetMapping("/submissions")
+    public Result<IPage<RegContestSubmissionRespDTO>> getSubmissions(RegContestSubmissionsReqDTO requestParam) {
+        return Results.success(regContestService.getSubmissions(requestParam));
     }
 
     /**

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gzhuoj.contest.mapper.RegContestMapper">
+    <select id="querySubmissions"
+            resultType="com.gzhuoj.contest.dto.resp.regContest.RegContestSubmissionRespDTO">
+        SELECT t.team_name AS teamName,
+        t.school AS school,
+        s.submit_id AS submitId,
+        t.contest_num AS contestNum,
+        s.language AS language,
+        s.memory AS memory,
+        s.exec_time AS execTime,
+        s.submit_time AS submitTime,
+        s.status AS status
+        FROM team t
+        LEFT JOIN submit s on t.contest_num = s.contest_num
+        <where>
+            <if test="request.teamName != null">
+                t.team_name like CONCAT('%', #{request.teamName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="request.school != null">
+                AND t.school like CONCAT('%', #{request.school,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="request.status != null">
+                AND s.status = #{request.status,jdbcType=VARCHAR}
+            </if>
+            <if test="request.problemNum != null">
+                AND s.problem_num = #{request.problemNum}
+            </if>
+            <if test="request.contestNum != null">
+                AND s.contest_num = #{request.contestNum}
+            </if>
+        </where>
+    </select>
+</mapper>

@@ -2,6 +2,7 @@ package com.gzhuoj.contest.judge;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.gzhuacm.sdk.contest.model.dto.SubmitDTO;
+import common.constant.JudgeType;
 import common.constant.RedisKey;
 import com.gzhuoj.contest.model.entity.SubmitDO;
 import com.gzhuacm.sdk.contest.model.dto.ToJudgeDTO;
