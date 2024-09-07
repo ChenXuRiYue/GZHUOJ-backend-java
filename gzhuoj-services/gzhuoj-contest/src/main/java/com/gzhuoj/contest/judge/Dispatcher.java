@@ -10,6 +10,7 @@ import com.gzhuacm.sdk.contest.model.dto.ToJudgeDTO;
 import com.gzhuoj.contest.service.judge.JudgeServerService;
 import com.gzhuoj.contest.service.judge.SubmitService;
 import com.gzhuoj.contest.util.ChooseInstanceUtils;
+import common.constant.JudgeType;
 import org.gzhuoj.common.sdk.convention.result.Result;
 import common.enums.SubmissionStatus;
 import common.exception.ClientException;

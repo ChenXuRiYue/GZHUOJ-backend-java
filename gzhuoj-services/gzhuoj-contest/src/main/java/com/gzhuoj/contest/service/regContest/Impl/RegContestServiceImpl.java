@@ -5,20 +5,17 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gzhuacm.sdk.contest.model.dto.ContestProblemDTO;
 import com.gzhuacm.sdk.problem.api.ProblemApi;
 import com.gzhuacm.sdk.problem.model.dto.ProblemRespDTO;
 import com.gzhuoj.contest.config.JwtProperties;
 import com.gzhuoj.contest.dto.req.regContest.*;
 import com.gzhuoj.contest.dto.resp.regContest.*;
-import com.gzhuoj.contest.mapper.ContestMapper;
-import com.gzhuoj.contest.mapper.ContestProblemMapper;
-import com.gzhuoj.contest.mapper.SubmitMapper;
-import com.gzhuoj.contest.mapper.TeamMapper;
+import com.gzhuoj.contest.mapper.*;
 import com.gzhuoj.contest.model.entity.ContestDO;
 import com.gzhuoj.contest.model.entity.ContestProblemDO;
 import com.gzhuoj.contest.model.entity.SubmitDO;
@@ -29,6 +26,7 @@ import com.gzhuoj.contest.service.contestProblem.ContestProblemService;
 import com.gzhuoj.contest.service.contest.ContestService;
 import com.gzhuoj.contest.service.regContest.RegContestService;
 import com.gzhuoj.contest.util.JwtTool;
+import common.biz.contant.RoleConstant;
 import common.enums.Language;
 import common.redis.RedisKeyUtil;
 import common.redis.RedisUtil;
@@ -64,6 +62,7 @@ public class RegContestServiceImpl implements RegContestService {
     private final SubmitMapper submitMapper;
     private final ContestMapper contestMapper;
     private final ContestProblemMapper contestProblemMapper;
+    private final RegContestMapper regContestMapper;
     private final ProblemApi problemApi;
     private final ContestProblemService contestProblemService;
     private final JwtTool jwtTool;
@@ -278,34 +277,41 @@ public class RegContestServiceImpl implements RegContestService {
         return bean;
     }
 
+
+
+    // TODO problemNum -> problemLetterIndex
+    // TODO 连表查询
+    // TODO 使用更加灵活的过滤器
     @Override
-    public IPage<RegContestStatusRespDTO> status(RegContestStatusReqDTO requestParam) {
-        LambdaQueryWrapper<SubmitDO> queryWrapper = Wrappers.lambdaQuery(SubmitDO.class)
-                .eq(SubmitDO::getContestNum, requestParam.getContestNum());
-        if(requestParam.getProblemNum() != null){
-            queryWrapper.eq(SubmitDO::getProblemNum, requestParam.getProblemNum());
-        }
-        if(requestParam.getSchool() != null){
-            queryWrapper.eq(SubmitDO::getLanguage, requestParam.getSchool());
-        }
-        if(requestParam.getStatus() != null){
-            queryWrapper.eq(SubmitDO::getStatus, requestParam.getStatus());
-        }
-        if(!StrUtil.isEmpty(requestParam.getTeamAccount())){
-            queryWrapper.like(SubmitDO::getTeamAccount, requestParam.getTeamAccount());
-        }
+    public IPage<RegContestSubmissionRespDTO> getSubmissions(RegContestSubmissionsReqDTO requestParam) {
         ContestDO contestDO = contestService.getContestDO(requestParam.getContestNum());
-        // team看不到封榜后的提交
-        if(Objects.equals(UserContext.getRole(), "3")){
+        // team看不到封榜后的提交 TODO 明确队伍类型常量
+        if (Objects.equals(UserContext.getRole(), String.valueOf(RoleConstant.COMMON_TEAM))) {
             Date endTime = contestDO.getEndTime();
             endTime = addTime(endTime, -(contestDO.getFrozenMinute()));
-            queryWrapper.between(SubmitDO::getSubmitTime, contestDO.getStartTime(), endTime);
+            requestParam.setStartTime(contestDO.getStartTime());
+            requestParam.setEndTime(endTime);
         }
-        queryWrapper.orderBy(true, true, SubmitDO::getSubmitTime);
-        IPage<SubmitDO> result = submitMapper.selectPage(requestParam, queryWrapper);
 
-        return result.convert(each -> BeanUtil.toBean(each, RegContestStatusRespDTO.class));
+
+        Map<Integer, Integer> mp1 = getContestProNumToLetterIdMap(requestParam.getContestNum());
+        Map<Integer, Integer> mp2 = getContestProLetterToNumMap(requestParam.getContestNum());
+//        自定义分页
+        if(ObjectUtils.isNotEmpty(requestParam.getProblemLetterIndex())){
+            requestParam.setProblemNum(mp2.get(requestParam.getProblemLetterIndex()));
+        }
+        Page<RegContestSubmissionRespDTO> page = new Page<>(requestParam.getCurrent(), requestParam.getSize());
+        IPage<RegContestSubmissionRespDTO> result = regContestMapper.querySubmissions(page, requestParam);
+
+        return result.convert(each -> {
+            RegContestSubmissionRespDTO t = BeanUtil.toBean(each, RegContestSubmissionRespDTO.class);
+            t.setProblemLetterIndex(mp1.get(each.getProblemNum()));
+            // 对相关信息置空
+            t.setProblemNum(null);
+            return t;
+        });
     }
+
 
     // TODO 改造， 将两者分离。 并且优化缓存方案
     // 创建 contest 首页题目集里列表： 这意味着要将更多的信息展示，总体上为 problemList + 选手过题情况 + 个人过题情况
@@ -338,6 +344,26 @@ public class RegContestServiceImpl implements RegContestService {
             cacheRegProblemSetByRedis(contestNum, result);
         }
         return result;
+    }
+
+    public Map<Integer, Integer> getContestProNumToLetterIdMap(Integer contestNum){
+        // 获取题目的映射表。
+        List<RegContestProblemRespDTO> contestProSet =  getRegProblemSet(contestNum);
+        Map<Integer, Integer> mp = new HashMap<>();
+        for(RegContestProblemRespDTO pro: contestProSet){
+            mp.put(pro.getProblemNum(), pro.getProblemLetterIndex());
+        }
+        return mp;
+    }
+
+    public Map<Integer, Integer> getContestProLetterToNumMap(Integer contestNum){
+        // 获取题目的映射表。
+        List<RegContestProblemRespDTO> contestProSet =  getRegProblemSet(contestNum);
+        Map<Integer, Integer> mp = new HashMap<>();
+        for(RegContestProblemRespDTO pro: contestProSet){
+            mp.put(pro.getProblemLetterIndex(), pro.getProblemNum());
+        }
+        return mp;
     }
 
     /**

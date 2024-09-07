@@ -4,11 +4,22 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gzhuoj.contest.model.entity.SubmitDO;
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
-public class RegContestStatusReqDTO extends Page<SubmitDO> {
+public class RegContestSubmissionsReqDTO extends Page<SubmitDO> {
 
     /**
-     * 题目编号
+     * 比赛编号
+     */
+    private Integer contestNum;
+    /**
+     * 赛中题目编号
+     */
+    private Integer problemLetterIndex;
+
+    /**
+     * 题目集中题目编号
      */
     private Integer problemNum;
 
@@ -27,13 +38,19 @@ public class RegContestStatusReqDTO extends Page<SubmitDO> {
      */
     private String school;
 
-    /**
-     * 比赛编号
-     */
-    private Integer contestNum;
 
     /**
      * 评测结果
      */
     private Integer status;
+
+    /**
+     * 开始时间
+     */
+    private Date startTime;
+
+    /**
+     * 结束时间
+     */
+    private Date endTime;
 }

@@ -59,6 +59,7 @@ public class PreCheckValidator {
                 throw new ClientException(CONTEST_TEAM_NOT_FOUND);
             }
         }
+        // 非用户 判定 TODO
         if(requestParam.getProblemLetterIndex() == null){
             throw new ClientException(CONTEST_PROBLEM_MAP_IS_NULL_ERROR);
         }

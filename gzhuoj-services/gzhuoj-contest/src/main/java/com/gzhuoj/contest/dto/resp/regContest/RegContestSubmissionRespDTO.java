@@ -6,7 +6,17 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class RegContestStatusRespDTO {
+public class RegContestSubmissionRespDTO {
+
+    /**
+     * 队伍名
+     */
+    private String teamName;
+
+    /**
+     * 学校名
+     */
+    private String school;
 
     /**
      * 提交编号
@@ -19,9 +29,14 @@ public class RegContestStatusRespDTO {
     private String teamAccount;
 
     /**
-     * 题目编号
+     * 题目中竞赛编号
      */
-    private Integer problemNum;
+    private Integer problemLetterIndex;
+
+    /**
+     * 题目在题库中的编号。
+     */
+    private Integer ProblemNum;
 
     /**
      * 比赛编号
