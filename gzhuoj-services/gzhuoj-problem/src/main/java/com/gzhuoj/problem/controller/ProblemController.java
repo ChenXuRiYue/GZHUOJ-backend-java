@@ -22,8 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.ADMIN_UPLOAD_ILLEGAL_PROBLEM_DESCRIPTION_ERROR;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/gzhuoj-problem/problem")

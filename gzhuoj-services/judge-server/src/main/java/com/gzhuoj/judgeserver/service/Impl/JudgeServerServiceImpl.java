@@ -11,10 +11,13 @@ import com.gzhuoj.judgeserver.mapper.JudgeServerMapper;
 import com.gzhuoj.judgeserver.model.entity.JudgeServerDO;
 import com.gzhuoj.judgeserver.model.entity.SubmitDO;
 import com.gzhuoj.judgeserver.service.JudgeServerService;
+import common.Handler.WebSocketMessageHandler;
+import common.biz.user.UserContext;
 import lombok.extern.slf4j.Slf4j;
 import org.gzhuoj.common.sdk.convention.result.Result;
 import common.enums.SubmissionStatus;
 import lombok.RequiredArgsConstructor;
+import org.gzhuoj.common.sdk.convention.result.Results;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +30,7 @@ public class JudgeServerServiceImpl extends ServiceImpl<JudgeServerMapper, Judge
     private final ContestRemoteService contestRemoteService;
     private final ProblemApi problemRemoteService;
     private final JudgeContext judgeContext;
+    private final WebSocketMessageHandler webSocketMessageHandler;
 
     @Value("${gzhuoj-judge-server.name}")
     private String name;
@@ -46,11 +50,22 @@ public class JudgeServerServiceImpl extends ServiceImpl<JudgeServerMapper, Judge
                 .build();
         Result<Boolean> booleanResult = contestRemoteService.submitUpdate(submitRemoteDTO);
         if(!booleanResult.getData()){
-            log.error("submit update failure submitId = {}", submitDO.getSubmitId());
+            log.error("Failed to update submit status for submitId = {}", submitDO.getSubmitId());
             return;
         }
-        Result<ProblemRespDTO> problemRespDTO = problemRemoteService.queryProByNum(submitDO.getProblemNum());
-        SubmitDO submitResult = judgeContext.judge(problemRespDTO.getData(), submitDO);
-        contestRemoteService.submitUpdate(BeanUtil.toBean(submitResult, SubmitRemoteDTO.class));
+        Result<ProblemRespDTO> problemRespResult = problemRemoteService.queryProByNum(submitDO.getProblemNum());
+        if (!problemRespResult.isSuccess()) {
+            log.error("Failed to query problem for problemNum = {}", submitDO.getProblemNum());
+            return;
+        }
+        SubmitDO submitResult = judgeContext.judge(problemRespResult.getData(), submitDO);
+        Result<Boolean> updateStatus = contestRemoteService.submitUpdate(BeanUtil.toBean(submitResult, SubmitRemoteDTO.class));
+        // 如果是非服务端错误的状态则向前端发送实时信息
+        if (updateStatus.getData()){
+            String statusStr = SubmissionStatus.getStatusStr(submitResult.getStatus());
+            if(statusStr != null){
+                webSocketMessageHandler.sendMessageToOne(UserContext.getUserId(), submitDO.getContestNum(), statusStr);
+            }
+        }
     }
 }

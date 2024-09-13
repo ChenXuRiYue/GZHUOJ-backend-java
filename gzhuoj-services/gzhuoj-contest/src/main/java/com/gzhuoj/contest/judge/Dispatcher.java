@@ -1,7 +1,6 @@
 package com.gzhuoj.contest.judge;
 
 
-
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.gzhuoj.contest.model.entity.JudgeServerDO;
@@ -10,6 +9,7 @@ import com.gzhuacm.sdk.contest.model.dto.ToJudgeDTO;
 import com.gzhuoj.contest.service.judge.JudgeServerService;
 import com.gzhuoj.contest.service.judge.SubmitService;
 import com.gzhuoj.contest.util.ChooseInstanceUtils;
+import common.constant.JudgeType;
 import org.gzhuoj.common.sdk.convention.result.Result;
 import common.enums.SubmissionStatus;
 import common.exception.ClientException;
@@ -68,20 +68,20 @@ public class Dispatcher {
         // 任务ConcurrentHashMap中的key
         String taskKey = GenerateRandStrUtil.getRandStr(20) + submitId;
         Runnable getResultTask = () -> {
-            if(count.get() > MAX_TRY_NUM){
+            if (count.get() > MAX_TRY_NUM) {
                 checkResul(null, submitId);
                 releaseTaskThread(taskKey);
             }
             count.incrementAndGet();
             // 获取评测服务
             JudgeServerDO judgeServerDO = chooseInstanceUtils.chooseServer();
-            if(judgeServerDO != null){ // 有评测机能提供服务
+            if (judgeServerDO != null) { // 有评测机能提供服务
                 Result judgeResult = null;
-                try{
+                try {
                     data.setJudgeServerIp(judgeServerDO.getIp());
                     data.setJudgeServerPort(judgeServerDO.getPort());
                     judgeResult = restTemplate.postForObject("http://" + judgeServerDO.getUrl() + JUDGE_SERVER_JUDGE_PATH, data, Result.class);
-                } catch (Exception e){
+                } catch (Exception e) {
                     log.error("[Self Judge] Request the judge server [" + judgeServerDO.getUrl() + "] error -------------->", e);
                 } finally {
                     checkResul(judgeResult, submitId);
@@ -103,33 +103,29 @@ public class Dispatcher {
         LambdaUpdateWrapper<JudgeServerDO> updateWrapper = Wrappers.lambdaUpdate(JudgeServerDO.class)
                 .eq(JudgeServerDO::getId, JudgeServerId)
                 .setSql("task_number = task_number - 1");
-        boolean hasUpdate = judgeServerService.update(updateWrapper);
-        if(!hasUpdate){
-            tryAgainUpdateJudge(updateWrapper);
-        }
+        tryAgainUpdateJudge(updateWrapper);
     }
 
     /**
      * 释放JudgeServer失败, 进行重试
+     *
      * @param updateWrapper JudgeServer更新包装实体
      */
     private void tryAgainUpdateJudge(LambdaUpdateWrapper<JudgeServerDO> updateWrapper) {
-        boolean ok = false;
-        int count = 0;
-        do{
-            ok = judgeServerService.update(updateWrapper);
-            if(ok){
-               return;
-            } else {
-                count += 1;
+        CompletableFuture.runAsync(() -> {
+            int count = 0;
+            boolean ok;
+            do {
+                ok = judgeServerService.update(updateWrapper);
+                if (ok) return;
+                count++;
                 try {
-                    // 睡眠200ms来缓解数据库重试压力
-                    Thread.sleep(200);
+                    TimeUnit.MILLISECONDS.sleep(200);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    log.error("Thread interrupted during retry", e);
                 }
-            }
-        }while(count < MAX_TRY_AGAIN_NUM);
+            } while (count < MAX_TRY_AGAIN_NUM);
+        });
     }
 
     /**
@@ -137,7 +133,7 @@ public class Dispatcher {
      */
     private void releaseTaskThread(String taskKey) {
         Future future = futureTaskMap.get(taskKey);
-        if(future != null){
+        if (future != null) {
             boolean hasCancel = future.cancel(true);
             if (hasCancel) {
                 futureTaskMap.remove(taskKey);
@@ -151,16 +147,15 @@ public class Dispatcher {
     private void checkResul(Result<Void> result, Integer submitId) {
         LambdaUpdateWrapper<SubmitDO> updateWrapper = Wrappers.lambdaUpdate(SubmitDO.class)
                 .eq(SubmitDO::getSubmitId, submitId);
-        if(result == null){
+        if (result == null) {
             // 提交失败
             updateWrapper.set(SubmitDO::getStatus, SubmissionStatus.STATUS_SUBMITTED_FAILED.getCode());
-            submitService.update(updateWrapper);
         } else {
-            if(!Objects.equals(Result.SUCCESS_CODE, result.getCode())){
+            if (!Objects.equals(Result.SUCCESS_CODE, result.getCode())) {
                 // 调用失败
                 updateWrapper.set(SubmitDO::getStatus, SubmissionStatus.STATUS_SYSTEM_ERROR.getCode());
-                submitService.update(updateWrapper);
             }
         }
+        submitService.update(updateWrapper);
     }
 }

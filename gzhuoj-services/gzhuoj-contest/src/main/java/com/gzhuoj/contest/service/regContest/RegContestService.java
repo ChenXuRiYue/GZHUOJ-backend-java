@@ -1,6 +1,7 @@
 package com.gzhuoj.contest.service.regContest;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.gzhuoj.contest.dto.req.contest.ContestUpdateInfoPushReqDTO;
 import com.gzhuoj.contest.dto.req.regContest.*;
 import com.gzhuoj.contest.dto.resp.regContest.*;
 import com.gzhuoj.contest.model.entity.ContestDO;
@@ -43,4 +44,8 @@ public interface RegContestService {
     Options<String, Integer> getLanguageOptions(Integer contestNum);
 
     Options<String, Integer> getProblemOptions(Integer contestNum);
+
+    void pushContestUpdate(ContestUpdateInfoPushReqDTO requestParam);
+
+    void notifiToAll(RegContestNotifiReqDTO requestParam);
 }

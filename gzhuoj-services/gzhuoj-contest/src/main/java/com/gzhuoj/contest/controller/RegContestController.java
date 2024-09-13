@@ -1,10 +1,12 @@
 package com.gzhuoj.contest.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.gzhuoj.contest.dto.req.contest.ContestUpdateInfoPushReqDTO;
 import com.gzhuoj.contest.dto.req.regContest.*;
 import com.gzhuoj.contest.dto.resp.regContest.*;
 import com.gzhuoj.contest.model.entity.ContestDO;
 import com.gzhuoj.contest.service.regContest.RegContestService;
+import common.Handler.WebSocketMessageHandler;
 import org.gzhuoj.common.sdk.convention.result.Result;
 import org.gzhuoj.common.sdk.convention.result.Results;
 import jakarta.servlet.http.HttpServletResponse;
@@ -109,6 +111,11 @@ public class RegContestController {
         return Results.success(regContestService.getContest(contestNum));
     }
 
+    @PostMapping("/notification")
+    public Result<Void> notifiToAll(@RequestBody RegContestNotifiReqDTO requestParam){
+        regContestService.notifiToAll(requestParam);
+        return Results.success();
+    }
     /**
      * 比赛题目集界面
      *
@@ -118,6 +125,13 @@ public class RegContestController {
     @PostMapping("/problems")
     public Result<List<RegContestProblemRespDTO>> problemSet(@RequestBody RegContestProSetReqDTO requestParam) {
         return Results.success(regContestService.getContestProblemSetView(requestParam));
+    }
+
+
+    @PostMapping("/update")
+    public Result<Void> pushContestUpdate(@RequestBody ContestUpdateInfoPushReqDTO requestParam){
+        regContestService.pushContestUpdate(requestParam);
+        return Results.success();
     }
 
     @GetMapping("/wait")

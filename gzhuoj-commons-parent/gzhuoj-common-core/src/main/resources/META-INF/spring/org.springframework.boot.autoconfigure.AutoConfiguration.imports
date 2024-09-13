@@ -7,3 +7,4 @@ common.redis.RedisConfig
 common.bloom.BloomConfig
 common.config.RestTemplateConfig
 common.config.StrategyConfig
+common.config.WebSocketConfig

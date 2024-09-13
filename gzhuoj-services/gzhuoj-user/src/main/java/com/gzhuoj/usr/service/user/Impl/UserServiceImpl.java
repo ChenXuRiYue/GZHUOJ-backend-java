@@ -36,10 +36,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     private final JwtTool jwtTool;
     private final JwtProperties jwtProperties;
 
-    /**
-     * @param requestParam
-     * @return
-     */
     @Override
     public UserLoginRespDTO login(UserLoginReqDTO requestParam, HttpServletResponse response) {
         // TODO 覆盖更多的场景，用户名不存在。等等情形

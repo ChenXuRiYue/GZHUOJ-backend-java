@@ -1,6 +1,7 @@
 package com.gzhuoj.contest.controller;
 
 import com.gzhuacm.sdk.problem.model.dto.ProblemContentRespDTO;
+import com.gzhuoj.contest.dto.req.contest.ContestUpdateInfoPushReqDTO;
 import com.gzhuoj.contest.dto.resp.contestProblem.ContestResultRespDTO;
 import com.gzhuoj.contest.model.entity.ContestProblemDO;
 import com.gzhuoj.contest.service.contestProblem.ContestProblemService;
@@ -47,4 +48,5 @@ public class ContestProblemController {
     public Result<Integer> queryGobleNumByLetter(Integer contestNum, Integer problemNum){
         return Results.success(contestProblemService.queryGobleNumByLetter(contestNum, problemNum));
     }
+
 }

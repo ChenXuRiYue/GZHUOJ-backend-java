@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.gzhuacm.sdk.problem.api.ProblemApi;
 import com.gzhuacm.sdk.problem.model.dto.ProblemRespDTO;
 import com.gzhuoj.contest.config.JwtProperties;
+import com.gzhuoj.contest.dto.req.contest.ContestUpdateInfoPushReqDTO;
 import com.gzhuoj.contest.dto.req.regContest.*;
 import com.gzhuoj.contest.dto.resp.regContest.*;
 import com.gzhuoj.contest.mapper.ContestMapper;
@@ -25,6 +26,7 @@ import com.gzhuoj.contest.service.contestProblem.ContestProblemService;
 import com.gzhuoj.contest.service.contest.ContestService;
 import com.gzhuoj.contest.service.regContest.RegContestService;
 import com.gzhuoj.contest.util.JwtTool;
+import common.Handler.WebSocketMessageHandler;
 import common.enums.Language;
 import common.redis.RedisKeyUtil;
 import common.redis.RedisUtil;
@@ -64,6 +66,7 @@ public class RegContestServiceImpl implements RegContestService {
     private final JwtTool jwtTool;
     private final JwtProperties jwtProperties;
     private final StringRedisTemplate stringRedisTemplate;
+    private final WebSocketMessageHandler webSocketMessageHandler;
     @Value("${RegContest.max-gen-team}")
     private Integer MAX_GEN_TEAM;
 
@@ -559,6 +562,16 @@ public class RegContestServiceImpl implements RegContestService {
     public Options<String, Integer> getProblemOptions(Integer contestNum) {
         List<RegContestProblemRespDTO> regContestProblemRespDTOS = getRegProblemSet(contestNum);
         return contestProblemsToProblemOptions(regContestProblemRespDTOS);
+    }
+
+    @Override
+    public void pushContestUpdate(ContestUpdateInfoPushReqDTO requestParam) {
+        
+    }
+
+    @Override
+    public void notifiToAll(RegContestNotifiReqDTO requestParam) {
+        webSocketMessageHandler.sendMessageToAll(requestParam.getContestNum(), requestParam.getMessage());
     }
 
     public Options<String, Integer> contestProblemsToProblemOptions(List<RegContestProblemRespDTO> regContestProblemRespDTOS) {

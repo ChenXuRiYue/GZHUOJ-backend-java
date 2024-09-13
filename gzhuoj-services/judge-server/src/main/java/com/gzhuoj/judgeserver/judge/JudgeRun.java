@@ -15,8 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.JUDGE_TESTCASE_NOT_EXIST_ERROR;
 import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.JUDGE_TESTCASE_NUMBER_NOT_SAME_ERROR;
@@ -53,53 +53,45 @@ public class JudgeRun {
                 .runConfig(languageConfigLoader.getLanguageConfigByName(Language.getLangById(submitDO.getLanguage())))
                 .maxStack(1024)
                 .build();
-        return createJudgeFutureTask(judgeParam, testCaseInputList, testCaseOutputList);
+        return createJudgeFutureTask(judgeParam, testCaseInputList, testCaseOutputList, JudgeType.COMMON_JUDGE.getMark());
     }
 
-    private List<JSONObject> createJudgeFutureTask(JudgeParam judgeParam, List<String> testCaseInputList, List<String> testCaseOutputList) throws ExecutionException, InterruptedException {
-        List<FutureTask<JSONObject>> futureTaskList = new ArrayList<>();
-        for(int i = 0; i < testCaseInputList.size(); i++) {
+    private List<JSONObject> createJudgeFutureTask(JudgeParam judgeParam, List<String> testCaseInputList, List<String> testCaseOutputList, String mark) {
+        ExecutorService executorService = ThreadPoolUtils.getInstance().getThreadPool();
+
+        List<CompletableFuture<JSONObject>> futureList = new ArrayList<>();
+
+        for (int i = 0; i < testCaseInputList.size(); i++) {
             TestCaseParam testCaseParam = TestCaseParam.builder()
                     .testCaseNum(i + 1)
                     .testCaseInputPath(testCaseInputList.get(i))
                     .testCaseOutput(testCaseOutputList.get(i))
                     .build();
-            FutureTask<JSONObject> testCase = new FutureTask<>(() -> {
-//                JSONObject result = defaultJudge.judge(testCaseParam, judgeParam);
-                // FIXME 将mark通过参数传入
-                JSONObject result = abstractStrategyChoose.chooseAndExecuteResp(JudgeType.COMMON_JUDGE.getMark(), testCaseParam, judgeParam);
+
+            CompletableFuture<JSONObject> future = CompletableFuture.supplyAsync(() -> {
+                // 调用抽象策略执行
+                JSONObject result = abstractStrategyChoose.chooseAndExecuteResp(mark, testCaseParam, judgeParam);
                 result.set("testCaseID", testCaseParam.getTestCaseNum());
                 return result;
+            }, executorService).exceptionally(ex -> {
+                // 捕获异常并记录
+                JSONObject errorResult = new JSONObject();
+                errorResult.set("error", ex.getMessage());
+                errorResult.set("testCaseID", testCaseParam.getTestCaseNum());
+                return errorResult;
             });
-            futureTaskList.add(testCase);
+
+            futureList.add(future);
         }
-        return submitAllToThreadPool(futureTaskList);
+
+        return collectResults(futureList);
     }
 
-    private List<JSONObject> submitAllToThreadPool(List<FutureTask<JSONObject>> futureTaskList) throws ExecutionException, InterruptedException {
-        for (FutureTask<JSONObject> futureTask : futureTaskList) {
-            ThreadPoolUtils.getInstance().getThreadPool().submit(futureTask);
-        }
-        List<JSONObject> result = new LinkedList<>();
-        while (!futureTaskList.isEmpty()) {
-            Iterator<FutureTask<JSONObject>> iterable = futureTaskList.iterator();
-            //遍历一遍
-//            ExecutorService executorService = ThreadPoolUtils.getInstance().getThreadPool();
-//            ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) executorService;
-//            System.out.println(threadPoolExecutor.getActiveCount());
-            while (iterable.hasNext()) {
-                FutureTask<JSONObject> future = iterable.next();
-                if (future.isDone() && !future.isCancelled()) {
-                    // 获取线程返回结果
-                    JSONObject tmp = future.get();
-                    result.add(tmp);
-                    // 任务完成移除任务
-                    iterable.remove();
-                } else {
-                    Thread.sleep(10); // 避免CPU高速运转，这里休息10毫秒
-                }
-            }
-        }
-        return result;
+    private List<JSONObject> collectResults(List<CompletableFuture<JSONObject>> futureList) {
+        return futureList.stream()
+                .map(CompletableFuture::join) // 使用 join 获取结果，不抛出受检异常
+                .collect(Collectors.toList());
     }
+
+
 }
