@@ -14,6 +14,9 @@ import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 
+/**
+ * 普通评测处理器
+ */
 @Component
 public class DefaultJudgeHandler extends AbstractJudgeTemplate{
 

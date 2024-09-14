@@ -18,6 +18,7 @@ import org.springframework.util.DigestUtils;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -25,6 +26,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
+
+import static org.gzhuoj.common.sdk.convention.errorcode.BaseErrorCode.JUDGE_PROBLEM_RESOURCES_NOT_FOUND_ERROR;
 
 @Component
 @Slf4j
@@ -63,9 +66,9 @@ public class JudgeStrategy {
             List<JSONObject> result = judgeRun.MulThreadJudge(testCaseInputList, testCaseOutputList, submitDO, problemRespDTO, userFileId);
             return getJudgeInfo(result, problemRespDTO, submitDO);
         } catch (Exception e){
-            e.printStackTrace();
+            log.error("Error during judging process", e);
+            return Collections.singletonMap("error", "An error occurred during the judging process.");
         }
-        return null;
     }
 
     /**
@@ -100,63 +103,50 @@ public class JudgeStrategy {
     }
 
     private List<List<String>> getAllTestFromLocal(Path testCasePath) throws IOException {
-        List<String> testCaseInputList = new ArrayList<>();
-        List<String> testCaseOutputList = new ArrayList<>();
-        if(Files.exists(testCasePath)){
-            if(Files.isDirectory(testCasePath)) {
-                try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(testCasePath)) {
-                    for (Path childPath : directoryStream) {
-                        if (childPath.toString().endsWith(".in")){
-                            testCaseInputList.add(childPath.toString());
-                        } else {
-                            testCaseOutputList.add(childPath.toString());
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+        if (Files.notExists(testCasePath) || !Files.isDirectory(testCasePath)) {
+            throw new ServiceException(JUDGE_PROBLEM_RESOURCES_NOT_FOUND_ERROR);
+        }
+        Map<String, List<Path>> testCaseMap = new HashMap<>();
+
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(testCasePath)) {
+            for (Path childPath : directoryStream) {
+                String fileName = childPath.getFileName().toString();
+                if (fileName.endsWith(".in") || fileName.endsWith(".out")) {
+                    String baseName = fileName.substring(0, fileName.lastIndexOf('.'));
+                    testCaseMap.computeIfAbsent(baseName, k -> new ArrayList<>()).add(childPath);
                 }
             }
         }
-        HashMap<String, List<String>> getAscMap = new HashMap<>();
-        for (int i = 0; i < testCaseInputList.size(); i++) {
-            String s = testCaseInputList.get(i).substring(0, testCaseInputList.get(i).lastIndexOf("."));
-            String t = testCaseOutputList.get(i).substring(0, testCaseOutputList.get(i).lastIndexOf("."));
-            if(!getAscMap.containsKey(s)) {
-                getAscMap.put(s, new ArrayList<>());
-            }
-            getAscMap.get(s).add(testCaseInputList.get(i));
 
-            if(!getAscMap.containsKey(t)) {
-                getAscMap.put(t, new ArrayList<>());
-            }
-            getAscMap.get(t).add(testCaseOutputList.get(i));
-        }
-        testCaseOutputList.clear();
-        testCaseInputList.clear();
-        for(String dirPath : getAscMap.keySet()) {
-            if(getAscMap.get(dirPath).size() != 2){
+        List<String> testCaseInputList = new ArrayList<>();
+        List<String> testCaseOutputList = new ArrayList<>();
+
+        for (Map.Entry<String, List<Path>> entry : testCaseMap.entrySet()) {
+            List<Path> paths = entry.getValue();
+            if (paths.size() != 2) {
                 throw new ServiceException(BaseErrorCode.JUDGE_TESTCASE_NUMBER_NOT_SAME_ERROR);
             }
-            for(String item : getAscMap.get(dirPath)){
-                if(item.endsWith(".in")){
-                    testCaseInputList.add(item);
+            for (Path path : paths) {
+                if (path.toString().endsWith(".in")) {
+                    testCaseInputList.add(path.toString());
                 } else {
-                    StringBuilder output = new StringBuilder();
-                    try (BufferedReader br = new BufferedReader(new FileReader(item))) {
-                        String line;
-                        while ((line = br.readLine()) != null) {
-                            output.append(line).append("\r\n"); // 逐行读取并追加换行符
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    testCaseOutputList.add(DigestUtils.md5DigestAsHex(AbstractJudgeTemplate.removeEndSpace(output.toString()).getBytes(StandardCharsets.UTF_8)));
+                    String outputHash = computeFileHash(path);
+                    testCaseOutputList.add(outputHash);
                 }
             }
         }
         return Arrays.asList(testCaseInputList, testCaseOutputList);
     }
-
+    private String computeFileHash(Path filePath) throws IOException {
+        StringBuilder output = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(filePath), StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append("\n");
+            }
+        }
+        return DigestUtils.md5DigestAsHex(output.toString().getBytes(StandardCharsets.UTF_8));
+    }
     public static void main(String[] args) {
         Path path = Paths.get("C:\\Users\\11493\\Desktop\\GZHUOJ\\GZHUOJ-backend-java\\data\\public\\problem\\2024-08-17_C7ZK1B0PJ8S6NTIV\\test_case");
         if (Files.exists(path)){

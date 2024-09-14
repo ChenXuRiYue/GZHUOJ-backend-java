@@ -2,6 +2,10 @@ package common.enums;
 
 import lombok.Getter;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 @Getter
 public enum SubmissionStatus {
     ACCEPTED(0, "Accepted"),
@@ -52,5 +56,18 @@ public enum SubmissionStatus {
     SubmissionStatus(Integer code, String status) {
         this.code = code;
         this.status = status;
+    }
+
+    static final Map<Integer, String> statusMap = new HashMap<>();
+    static {
+        for (SubmissionStatus submissionStatus : SubmissionStatus.values()) {
+            if(submissionStatus.getCode() <= 7) {
+                statusMap.put(submissionStatus.getCode(), submissionStatus.getStatus());
+            }
+        }
+    }
+
+    public static String getStatusStr(Integer code){
+        return statusMap.get(code);
     }
 }

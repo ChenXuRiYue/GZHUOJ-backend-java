@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OJ System</title>
+    <style>
+        /* 通知容器的样式 */
+        .notification {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: #fff;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        /* 显示通知的样式 */
+        .notification.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 隐藏通知的样式 */
+        .notification.hide {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-100%);
+        }
+    </style>
+</head>
+<body>
+<h1>OJ System</h1>
+<div id="notifications"></div>
+
+<script>
+    function showNotification(message) {
+        // 创建通知元素
+        const notification = document.createElement('div');
+        notification.className = 'notification show';
+        notification.textContent = message;
+
+        // 将通知元素添加到页面
+        document.body.appendChild(notification);
+
+        // 设置定时器在一定时间后隐藏通知
+        setTimeout(() => {
+            notification.classList.remove('show');
+            notification.classList.add('hide');
+            // 移除通知元素
+            setTimeout(() => {
+                notification.remove();
+            }, 500); // 500ms 对应 CSS 中的 transition 时间
+        }, 3000); // 显示 3 秒钟
+    }
+
+    // 示例：在 WebSocket 消息处理程序中调用此函数
+    const socket = new WebSocket('ws://localhost:8086/notifications');
+
+    socket.onmessage = function(event) {
+        const message = event.data;
+        showNotification(message);
+    };
+
+    socket.onclose = function() {
+        console.log('WebSocket connection closed');
+    };
+
+    socket.onerror = function(error) {
+        console.error('WebSocket error:', error);
+    };
+</script>
+</body>
+</html>

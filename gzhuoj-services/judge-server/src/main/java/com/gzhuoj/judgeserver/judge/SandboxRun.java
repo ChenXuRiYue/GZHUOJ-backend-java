@@ -23,7 +23,6 @@ import java.util.List;
 @Slf4j
 public class SandboxRun {
     private final static RestTemplate restTemplate;
-
     static {
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         // 设置连接超时为20秒

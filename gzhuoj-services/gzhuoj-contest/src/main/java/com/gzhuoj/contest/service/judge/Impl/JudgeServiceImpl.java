@@ -23,7 +23,6 @@ public class JudgeServiceImpl implements JudgeService {
     private final JudgeValidator judgeValidator;
     private final PreCheckValidator preCheckValidator;
     private final JudgeDispatcher judgeDispatcher;
-    private final RegContestService regContestService;
     private final SubmitMapper submitMapper;
     @Override
     public void submit(RegContestJudgeSubmitReqDTO requestParam) {

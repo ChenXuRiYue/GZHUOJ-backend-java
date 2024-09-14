@@ -9,6 +9,7 @@ import com.gzhuacm.sdk.contest.model.dto.ToJudgeDTO;
 import com.gzhuoj.contest.service.judge.SubmitService;
 import common.redis.RedisUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
  */
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class JudgeDispenser extends AbstractDispenser {
     private final StringRedisTemplate stringRedisTemplate;
     private final SubmitService submitService;
@@ -32,7 +34,7 @@ public class JudgeDispenser extends AbstractDispenser {
 
     @Override
     public void dispenserTask(String taskStr) {
-        Integer submitId = Integer.parseInt(taskStr);
+        Integer submitId = parseSubmitId(taskStr);
         SubmitDO submitDO = submitService.getSubmitDO(submitId);
         if(submitDO != null){
             // 对提交进行派送调度
@@ -42,10 +44,20 @@ public class JudgeDispenser extends AbstractDispenser {
             toJudgeDTO.setSubmitDTO(submitDTO);
             // 根据JudgeType 指定评测类型
             dispatcher.dispatch(JudgeType.COMMON_JUDGE, toJudgeDTO);
+        } else {
+            log.warn("未找到提交记录，ID: {}", submitId);
         }
         processWaitingTasks();
     }
 
+    private Integer parseSubmitId(String taskStr) {
+        try {
+            return Integer.parseInt(taskStr);
+        } catch (NumberFormatException e) {
+            log.error("解析任务ID失败: {}", taskStr, e);
+            return null;
+        }
+    }
     private static SubmitDTO getSubmitDTO(SubmitDO submitDO) {
         return BeanUtil.toBean(submitDO, SubmitDTO.class);
     }

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* 自定义弹框样式 */
+        .notification-popup {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #4caf50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 1000;
+        }
+    </style>
+    <title>WebSocket Notification Example</title>
+</head>
+<body>
+<h1>Real-time Notifications</h1>
+<div id="messages"></div>
+
+<!-- 弹框的容器 -->
+<div id="notification-popup" class="notification-popup"></div>
+
+<script>
+    const socket = new WebSocket("ws://localhost:8088/ws?contestNum=1&teamAccount=admin");
+
+    socket.onopen = function() {
+        console.log("WebSocket connection opened");
+    };
+
+    socket.onmessage = function(event) {
+        // 显示弹框并设置消息内容
+        const popup = document.getElementById("notification-popup");
+        popup.textContent = "New notification: " + event.data;
+        popup.style.display = "block";
+
+        // 3 秒后自动隐藏弹框
+        setTimeout(() => {
+            popup.style.display = "none";
+        }, 3000);
+
+        // 同时将消息显示在页面上
+        const messageDiv = document.getElementById("messages");
+        const newMessage = document.createElement("p");
+        newMessage.textContent = event.data;
+        messageDiv.appendChild(newMessage);
+    };
+
+    socket.onclose = function() {
+        console.log("WebSocket connection closed");
+    };
+</script>
+</body>
+</html>
