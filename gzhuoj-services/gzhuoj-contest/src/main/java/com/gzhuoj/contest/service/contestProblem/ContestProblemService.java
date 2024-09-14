@@ -22,5 +22,5 @@ public interface ContestProblemService extends IService<ContestProblemDO> {
 
     List<ContestProblemCalculation> getContestProblemCalculation(ContestResultReqDTO contestResultReqDTO);
 
-    Integer queryProNumByLetterId(Integer contestNum, Integer problemLetterIndex);
+    Integer queryGobleNumByLetter(Integer contestNum, Integer problemLetterIndex);
 }

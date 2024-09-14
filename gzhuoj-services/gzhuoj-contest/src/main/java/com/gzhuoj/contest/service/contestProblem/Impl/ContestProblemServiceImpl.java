@@ -241,7 +241,7 @@ public class ContestProblemServiceImpl extends ServiceImpl<ContestProblemMapper,
     }
 
     @Override
-    public Integer queryProNumByLetterId(Integer contestNum, Integer problemLetterIndex) {
+    public Integer queryGobleNumByLetter(Integer contestNum, Integer problemLetterIndex) {
         if(contestNum == null || problemLetterIndex == null){
             throw new ClientException(CONTEST_PROBLEM_MAP_FAILURE_ERROR);
         }

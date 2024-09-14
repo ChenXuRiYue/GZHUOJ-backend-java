@@ -45,7 +45,7 @@ public class ContestProblemController {
      */
     @GetMapping("/global")
     public Result<Integer> queryGlobalNumByLetter(Integer contestNum, Integer problemLetterIndex){
-        return Results.success(contestProblemService.queryProNumByLetterId(contestNum, problemLetterIndex));
+        return Results.success(contestProblemService.queryGobleNumByLetter(contestNum, problemLetterIndex));
     }
 
 }
