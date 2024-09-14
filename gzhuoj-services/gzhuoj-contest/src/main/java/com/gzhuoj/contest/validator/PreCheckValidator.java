@@ -76,10 +76,10 @@ public class PreCheckValidator {
             throw new ClientException(CONTEST_TEAM_NOT_FOUND);
         }
 
-        Optional.ofNullable(requestParam.getProblemNum())
+        Optional.ofNullable(requestParam.getProblemLetterIndex())
                 .orElseThrow(() -> new ClientException(CONTEST_PROBLEM_MAP_IS_NULL_ERROR));
 
-        submitDO.setProblemNum(contestProblemService.queryGobleNumByLetter(requestParam.getContestNum(), requestParam.getProblemNum()));
+        submitDO.setProblemNum(contestProblemService.queryGobleNumByLetter(requestParam.getContestNum(), requestParam.getProblemLetterIndex()));
 
         if (problemApi.queryProByNum(submitDO.getProblemNum()) == null) {
             throw new ClientException(PROBLEM_NOT_FOUND);

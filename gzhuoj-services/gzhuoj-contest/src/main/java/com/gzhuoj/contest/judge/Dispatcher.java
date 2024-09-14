@@ -150,12 +150,13 @@ public class Dispatcher {
         if (result == null) {
             // 提交失败
             updateWrapper.set(SubmitDO::getStatus, SubmissionStatus.STATUS_SUBMITTED_FAILED.getCode());
+            submitService.update(updateWrapper);
         } else {
             if (!Objects.equals(Result.SUCCESS_CODE, result.getCode())) {
                 // 调用失败
                 updateWrapper.set(SubmitDO::getStatus, SubmissionStatus.STATUS_SYSTEM_ERROR.getCode());
+                submitService.update(updateWrapper);
             }
         }
-        submitService.update(updateWrapper);
     }
 }
