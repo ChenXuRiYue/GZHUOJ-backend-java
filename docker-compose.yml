@@ -1,0 +1,7 @@
+version: '3'
+services:
+  go-judge:
+    image: criyle/go-judge:v1.11.0
+    ports:
+      - "8081:8081"
+    restart: unless-stopped
